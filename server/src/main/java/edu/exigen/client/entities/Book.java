@@ -1,17 +1,29 @@
 package edu.exigen.client.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Calendar;
 
 /**
  * @author O. Tedikova
  * @version 1.0
  */
+
+@XmlRootElement(name = "book")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Book extends Entity {
 
+    @XmlElement
     private String isbn;
+    @XmlElement
     private String title;
+    @XmlElement
     private String author;
+    @XmlElement
     private String topic;
+    @XmlElement
     private Calendar year;
 
     public Book(int id) {
