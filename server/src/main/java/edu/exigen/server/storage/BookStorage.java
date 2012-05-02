@@ -20,7 +20,6 @@ public class BookStorage {
     @XmlElement(name = "book")
     private List<Book> books;
 
-    @XmlElement(name = "reader")
     public List<Book> getElements() {
         return books;
     }
