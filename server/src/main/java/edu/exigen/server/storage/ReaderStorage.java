@@ -12,7 +12,6 @@ import java.util.List;
  * @author O. Tedikova
  * @version 1.0
  */
-
 @XmlRootElement(name = "readerStorage")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ReaderStorage {
@@ -23,7 +22,6 @@ public class ReaderStorage {
     public List<Reader> getElements() {
         return readers;
     }
-
 
     public void setElements(List<Reader> readers) {
         this.readers = readers;

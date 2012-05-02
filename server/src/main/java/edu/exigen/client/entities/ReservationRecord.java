@@ -21,21 +21,17 @@ public class ReservationRecord extends Entity {
     @XmlElement
     private Date returnDate;
 
-
     public int getReaderId() {
         return readerId;
     }
-
 
     public int getBookId() {
         return bookId;
     }
 
-
     public Date getIssueDate() {
         return issueDate;
     }
-
 
     public Date getReturnDate() {
         return returnDate;

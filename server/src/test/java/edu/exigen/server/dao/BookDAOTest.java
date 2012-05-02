@@ -1,6 +1,7 @@
 package edu.exigen.server.dao;
 
 import edu.exigen.client.entities.Book;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,11 +12,11 @@ import java.io.File;
  * @version 1.0
  */
 public class BookDAOTest {
+
+    private String booksFile = "booksData.xml";
+
     @Test
     public void testCreateBook() throws Exception {
-        String booksFile = "booksData.xml";
-        File testFile = new File(booksFile);
-        testFile.delete();
         BookDAO bookDAO = new BookDAO(booksFile);
         bookDAO.loadStorage();
         Book book = new Book();
@@ -30,5 +31,11 @@ public class BookDAOTest {
         bookDAO.loadStorage();
         book.setIsbn("BE-5655");
         Assert.assertEquals(2, bookDAO.createBook(book));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        File testFile = new File(booksFile);
+        testFile.delete();
     }
 }

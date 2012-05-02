@@ -9,7 +9,6 @@ import java.util.Date;
  * @author O. Tedikova
  * @version 1.0
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Reader extends Entity {
 

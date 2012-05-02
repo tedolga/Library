@@ -13,7 +13,6 @@ import java.util.List;
  * @author Tedikova O.
  * @version 1.0
  */
-
 @XmlRootElement(name = "recordStorage")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ReservationRecordStorage {

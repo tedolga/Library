@@ -35,7 +35,6 @@ public class BookDAO {
         FileInputStream inputStream = null;
         try {
             if (!storageFile.exists()) {
-                storageFile.createNewFile();
                 storage = new BookStorage();
             } else {
                 inputStream = new FileInputStream(storeFileName);

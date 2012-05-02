@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
  * @author O. Tedikova
  * @version 1.0
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Book extends Entity {
 

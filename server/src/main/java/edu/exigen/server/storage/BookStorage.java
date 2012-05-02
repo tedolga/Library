@@ -19,13 +19,13 @@ public class BookStorage {
 
     @XmlElement
     private int id;
+
     @XmlElement(name = "book")
     private List<Book> books = new ArrayList<Book>();
 
     public List<Book> getElements() {
         return books;
     }
-
 
     public void setElements(List<Book> books) {
         this.books = books;
