@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  */
 public class StorageUtilsTest {
-    private BookStorage bookStorage;
+    private Storage<Book> bookStorage;
     private File bookXML = new File("resources/books.xml");
 
     @Test
@@ -26,10 +26,10 @@ public class StorageUtilsTest {
         book.setAuthor("B. R. Tomas");
         book.setTitle("Tom");
         book.setTopic("Biography");
-        book.setYear("1998");
+        book.setYear(1998);
         List<Book> books = new ArrayList<Book>();
         books.add(book);
-        bookStorage = new BookStorage();
+        bookStorage = new Storage<Book>();
         bookStorage.setElements(books);
         FileOutputStream outputStream = null;
         try {

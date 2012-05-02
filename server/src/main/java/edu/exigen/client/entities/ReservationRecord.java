@@ -1,6 +1,6 @@
 package edu.exigen.client.entities;
 
-import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author O. Tedikova
@@ -9,8 +9,8 @@ import java.util.Calendar;
 public class ReservationRecord extends Entity {
     private int readerId;
     private int bookId;
-    private Calendar issueDate;
-    private Calendar dateOfReturn;
+    private Date issueDate;
+    private Date dateOfReturn;
 
     public int getReaderId() {
         return readerId;
@@ -20,11 +20,11 @@ public class ReservationRecord extends Entity {
         return bookId;
     }
 
-    public Calendar getIssueDate() {
+    public Date getIssueDate() {
         return issueDate;
     }
 
-    public Calendar getDateOfReturn() {
+    public Date getDateOfReturn() {
         return dateOfReturn;
     }
 
@@ -36,11 +36,11 @@ public class ReservationRecord extends Entity {
         this.bookId = bookId;
     }
 
-    public void setIssueDate(Calendar issueDate) {
+    public void setIssueDate(Date issueDate) {
         this.issueDate = issueDate;
     }
 
-    public void setDateOfReturn(Calendar dateOfReturn) {
+    public void setDateOfReturn(Date dateOfReturn) {
         this.dateOfReturn = dateOfReturn;
     }
 }

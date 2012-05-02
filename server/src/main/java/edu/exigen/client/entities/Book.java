@@ -23,7 +23,7 @@ public class Book extends Entity {
     @XmlElement
     private String topic;
     @XmlElement
-    private String year;
+    private int year;
 
     public String getIsbn() {
         return isbn;
@@ -57,11 +57,11 @@ public class Book extends Entity {
         this.topic = topic;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 }
