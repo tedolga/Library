@@ -1,6 +1,7 @@
 package edu.exigen.server.storage;
 
 import edu.exigen.client.entities.Book;
+import edu.exigen.client.entities.Reader;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,11 +17,15 @@ import java.util.List;
  * @version 1.0
  */
 public class StorageUtilsTest {
-    private Storage<Book> bookStorage;
+    private BookStorage bookStorage;
+    private ReaderStorage readerStorage;
     private File bookXML = new File("resources/books.xml");
+    private File readerXML = new File("resources/reader.xml");
+    FileOutputStream outputStream;
 
     @Test
     public void testCreateStorage() throws Exception {
+        //Book storage creation
         Book book = new Book();
         book.setId(1);
         book.setIsbn("BE-5656");
@@ -29,9 +35,9 @@ public class StorageUtilsTest {
         book.setYear(1998);
         List<Book> books = new ArrayList<Book>();
         books.add(book);
-        bookStorage = new Storage<Book>();
+        bookStorage = new BookStorage();
         bookStorage.setElements(books);
-        FileOutputStream outputStream = null;
+        outputStream = null;
         try {
             outputStream = new FileOutputStream(bookXML);
             StorageUtils.createStorage(outputStream, bookStorage);
@@ -41,6 +47,28 @@ public class StorageUtilsTest {
             }
         }
         Assert.assertTrue(bookXML.exists());
+
+        //Reader storage creation
+        Reader reader = new Reader();
+        reader.setId(1);
+        reader.setAddress("Pylkovckoe shosse 4");
+        reader.setFirstName("Peter");
+        reader.setLastName("Petrov");
+        reader.setDateOfBirth(new Date());
+        List<Reader> readers = new ArrayList<Reader>();
+        readers.add(reader);
+        readers.add(new Reader());
+        ReaderStorage readerStorage = new ReaderStorage();
+        readerStorage.setElements(readers);
+        try {
+            outputStream = new FileOutputStream(readerXML);
+            StorageUtils.createStorage(outputStream, readerStorage);
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+        Assert.assertTrue(readerXML.exists());
 
     }
 

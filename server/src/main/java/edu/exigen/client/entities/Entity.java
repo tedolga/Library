@@ -13,12 +13,9 @@ import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Entity {
+
     @XmlElement
     private int id;
-
-    public Entity() {
-
-    }
 
     public int getId() {
         return id;

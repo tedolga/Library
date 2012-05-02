@@ -1,6 +1,6 @@
 package edu.exigen.server.storage;
 
-import edu.exigen.client.entities.Entity;
+import edu.exigen.client.entities.Reader;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,19 +13,19 @@ import java.util.List;
  * @version 1.0
  */
 
-@XmlRootElement(name = "storage")
+@XmlRootElement(name = "readerStorage")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Storage<T extends Entity> {
+public class ReaderStorage {
 
-    @XmlElement
-    private List<T> books;
+    @XmlElement(name = "reader")
+    private List<Reader> readers;
 
-    public List<T> getElements() {
-        return books;
+    public List<Reader> getElements() {
+        return readers;
     }
 
 
-    public void setElements(List<T> books) {
-        this.books = books;
+    public void setElements(List<Reader> readers) {
+        this.readers = readers;
     }
 }

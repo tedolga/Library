@@ -1,16 +1,25 @@
 package edu.exigen.client.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
 /**
  * @author O. Tedikova
  * @version 1.0
  */
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Reader extends Entity {
 
+    @XmlElement
     private String firstName;
+    @XmlElement
     private String lastName;
+    @XmlElement
     private String address;
+    @XmlElement
     private Date dateOfBirth;
 
     public String getFirstName() {

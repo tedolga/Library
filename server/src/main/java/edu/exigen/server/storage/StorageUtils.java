@@ -1,7 +1,5 @@
 package edu.exigen.server.storage;
 
-import edu.exigen.client.entities.Entity;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -15,15 +13,16 @@ import java.io.OutputStream;
  */
 public class StorageUtils {
 
-    public static <T extends Entity> void createStorage(OutputStream outputStream, Storage<T> storage) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(Storage.class);
+    public static <T> void createStorage(OutputStream outputStream, T storage) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class);
         Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.marshal(storage, outputStream);
     }
 
-    public static <T extends Entity> Storage<T> retrieveStorage(InputStream inputStream) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(Storage.class);
+    public static <T> T retrieveStorage(InputStream inputStream) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (Storage<T>) unmarshaller.unmarshal(inputStream);
+        return (T) unmarshaller.unmarshal(inputStream);
     }
 }
