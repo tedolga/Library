@@ -1,31 +1,44 @@
 package edu.exigen.client.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 
 /**
  * @author O. Tedikova
  * @version 1.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ReservationRecord extends Entity {
+
+    @XmlElement
     private int readerId;
+    @XmlElement
     private int bookId;
+    @XmlElement
     private Date issueDate;
-    private Date dateOfReturn;
+    @XmlElement
+    private Date returnDate;
+
 
     public int getReaderId() {
         return readerId;
     }
 
+
     public int getBookId() {
         return bookId;
     }
+
 
     public Date getIssueDate() {
         return issueDate;
     }
 
-    public Date getDateOfReturn() {
-        return dateOfReturn;
+
+    public Date getReturnDate() {
+        return returnDate;
     }
 
     public void setReaderId(int readerId) {
@@ -40,7 +53,7 @@ public class ReservationRecord extends Entity {
         this.issueDate = issueDate;
     }
 
-    public void setDateOfReturn(Date dateOfReturn) {
-        this.dateOfReturn = dateOfReturn;
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
 }

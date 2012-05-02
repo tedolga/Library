@@ -14,7 +14,7 @@ import java.io.OutputStream;
 public class StorageUtils {
 
     public static <T> void createStorage(OutputStream outputStream, T storage) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class);
+        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class, ReservationRecordStorage.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.marshal(storage, outputStream);
