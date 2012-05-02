@@ -7,18 +7,10 @@ import java.util.Calendar;
  * @version 1.0
  */
 public class ReservationRecord extends Entity {
-    private final int readerId;
-    private final int bookId;
-    private final Calendar issueDate;
-    private final Calendar dateOfReturn;
-
-    public ReservationRecord(int id, int readerId, int bookId, Calendar issueDate, Calendar dateOfReturn) {
-        super(id);
-        this.readerId = readerId;
-        this.bookId = bookId;
-        this.issueDate = issueDate;
-        this.dateOfReturn = dateOfReturn;
-    }
+    private int readerId;
+    private int bookId;
+    private Calendar issueDate;
+    private Calendar dateOfReturn;
 
     public int getReaderId() {
         return readerId;
@@ -34,5 +26,21 @@ public class ReservationRecord extends Entity {
 
     public Calendar getDateOfReturn() {
         return dateOfReturn;
+    }
+
+    public void setReaderId(int readerId) {
+        this.readerId = readerId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public void setIssueDate(Calendar issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public void setDateOfReturn(Calendar dateOfReturn) {
+        this.dateOfReturn = dateOfReturn;
     }
 }

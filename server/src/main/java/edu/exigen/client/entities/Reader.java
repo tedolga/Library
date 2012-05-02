@@ -11,10 +11,6 @@ public class Reader extends Entity {
     private String address;
     private String dateOfBirth;
 
-    public Reader(int id) {
-        super(id);
-    }
-
     public String getFirstName() {
         return firstName;
     }

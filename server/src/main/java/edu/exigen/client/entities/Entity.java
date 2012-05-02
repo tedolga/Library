@@ -1,19 +1,30 @@
 package edu.exigen.client.entities;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Represents basic library entity.
  *
  * @author O. Tedikova
  * @version 1.0
  */
-public class Entity {
-    private final int id;
 
-    public Entity(int id) {
-        this.id = id;
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Entity {
+    @XmlElement
+    private int id;
+
+    public Entity() {
+
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

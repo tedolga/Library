@@ -4,7 +4,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Calendar;
 
 /**
  * @author O. Tedikova
@@ -24,11 +23,7 @@ public class Book extends Entity {
     @XmlElement
     private String topic;
     @XmlElement
-    private Calendar year;
-
-    public Book(int id) {
-        super(id);
-    }
+    private String year;
 
     public String getIsbn() {
         return isbn;
@@ -62,11 +57,11 @@ public class Book extends Entity {
         this.topic = topic;
     }
 
-    public Calendar getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Calendar year) {
+    public void setYear(String year) {
         this.year = year;
     }
 }

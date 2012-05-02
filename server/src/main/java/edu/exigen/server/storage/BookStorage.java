@@ -15,16 +15,17 @@ import java.util.List;
 
 @XmlRootElement(name = "books")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class BookStorage extends Storage {
+public class BookStorage {
 
     @XmlElement
     private List<Book> books;
 
-    public List<Book> getBooks() {
+    public List<Book> getElements() {
         return books;
     }
 
-    public void setBooks(List<Book> books) {
+
+    public void setElements(List<Book> books) {
         this.books = books;
     }
 }
