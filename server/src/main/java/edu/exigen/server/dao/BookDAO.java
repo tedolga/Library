@@ -57,7 +57,9 @@ public class BookDAO {
 
     public boolean delete(int id) throws LibraryDAOException {
         Book book = readBook(id);
-        return storage.removeBook(book);
+        boolean result = storage.removeBook(book);
+        updateStorage();
+        return result;
     }
 
     public void loadStorage() throws LibraryDAOException {
