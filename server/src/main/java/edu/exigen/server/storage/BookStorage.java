@@ -38,4 +38,17 @@ public class BookStorage {
     public void addBook(Book book) {
         books.add(book);
     }
+
+    public Book getBook(int id) {
+        for (Book book : books) {
+            if (book.getId() == id) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public boolean removeBook(Book book) {
+        return books.remove(book);
+    }
 }

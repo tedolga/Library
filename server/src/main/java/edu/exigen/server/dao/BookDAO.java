@@ -8,6 +8,7 @@ import edu.exigen.server.storage.StorageUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 
 /**
  * @author Tedikova O.
@@ -30,6 +31,35 @@ public class BookDAO {
         return id;
     }
 
+    public Book readBook(int id) throws LibraryDAOException {
+        Book book = storage.getBook(id);
+        if (book == null) {
+            throw new LibraryDAOException("Book with id=" + id + "is not found");
+        }
+        return book;
+    }
+
+    public List<Book> readAll() {
+        return storage.getElements();
+    }
+
+
+    public boolean updateBook(int id, Book newBook) throws LibraryDAOException {
+        Book oldBook = readBook(id);
+        oldBook.setIsbn(newBook.getIsbn());
+        oldBook.setTitle(newBook.getTitle());
+        oldBook.setAuthor(newBook.getAuthor());
+        oldBook.setTopic(newBook.getTopic());
+        oldBook.setYear(newBook.getYear());
+        updateStorage();
+        return true;
+    }
+
+    public boolean delete(int id) throws LibraryDAOException {
+        Book book = readBook(id);
+        return storage.removeBook(book);
+    }
+
     public void loadStorage() throws LibraryDAOException {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;
@@ -41,7 +71,7 @@ public class BookDAO {
                 storage = StorageUtils.retrieveStorage(inputStream);
             }
         } catch (Exception e) {
-            throw new LibraryDAOException("Can't load data, the storage " + storageFile.getAbsolutePath() + ".", e);
+            throw new LibraryDAOException("Can't load data from the storage " + storageFile.getAbsolutePath() + ".", e);
         } finally {
             IOUtils.closeSafely(inputStream);
         }
@@ -53,7 +83,7 @@ public class BookDAO {
             outputStream = new FileOutputStream(storeFileName);
             StorageUtils.createStorage(outputStream, storage);
         } catch (Exception e) {
-            throw new LibraryDAOException("Can't save data, the storage " + storeFileName + ".", e);
+            throw new LibraryDAOException("Can't save data to the storage " + storeFileName + ".", e);
         } finally {
             IOUtils.closeSafely(outputStream);
         }
