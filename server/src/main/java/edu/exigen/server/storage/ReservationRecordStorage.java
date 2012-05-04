@@ -16,15 +16,37 @@ import java.util.List;
 @XmlRootElement(name = "recordStorage")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ReservationRecordStorage {
+    private int id;
 
     @XmlElement(name = "reservationRecord")
-    private List<ReservationRecord> elements = new ArrayList<ReservationRecord>();
+    private List<ReservationRecord> records = new ArrayList<ReservationRecord>();
 
-    public List<ReservationRecord> getElements() {
-        return elements;
+    public List<ReservationRecord> getRecords() {
+        return records;
     }
 
-    public void setElements(List<ReservationRecord> elements) {
-        this.elements = elements;
+    public void setRecords(List<ReservationRecord> records) {
+        this.records = records;
+    }
+
+    public synchronized int incrementAndGet() {
+        return ++id;
+    }
+
+    public void addRecord(ReservationRecord record) {
+        records.add(record);
+    }
+
+    public ReservationRecord getRecord(int id) {
+        for (ReservationRecord record : records) {
+            if (record.getId() == id) {
+                return record;
+            }
+        }
+        return null;
+    }
+
+    public boolean removeRecord(ReservationRecord oldRecord) {
+        return records.remove(oldRecord);
     }
 }

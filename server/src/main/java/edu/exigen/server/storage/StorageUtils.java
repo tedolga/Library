@@ -21,7 +21,7 @@ public class StorageUtils {
     }
 
     public static <T> T retrieveStorage(InputStream inputStream) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class);
+        JAXBContext context = JAXBContext.newInstance(BookStorage.class, ReaderStorage.class, ReservationRecordStorage.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         return (T) unmarshaller.unmarshal(inputStream);
     }

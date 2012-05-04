@@ -28,7 +28,7 @@ public class ReaderStorage {
         this.readers = readers;
     }
 
-    public int incrementAndGet() {
+    public synchronized int incrementAndGet() {
         return ++id;
     }
 

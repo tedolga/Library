@@ -80,7 +80,7 @@ public class StorageUtilsTest {
         List<ReservationRecord> records = new ArrayList<ReservationRecord>();
         records.add(record);
         recordStorage = new ReservationRecordStorage();
-        recordStorage.setElements(records);
+        recordStorage.setRecords(records);
         try {
             outputStream = new FileOutputStream(recordXML);
             StorageUtils.createStorage(outputStream, recordStorage);
