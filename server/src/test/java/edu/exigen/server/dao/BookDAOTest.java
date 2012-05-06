@@ -45,6 +45,17 @@ public class BookDAOTest {
         Assert.assertTrue(bookDAO.delete(1));
         bookDAO.loadStorage();
         Assert.assertEquals(1, bookDAO.readAll().size());
+        Assert.assertTrue(bookDAO.delete(2));
+        Assert.assertEquals(0, bookDAO.readAll().size());
+    }
+
+    @Test
+    public void testReadEmptyStorage() throws Exception {
+        File file = new File("Empty.xml");
+        file.createNewFile();
+        BookDAO bookDAO = new BookDAO("Empty.xml");
+        bookDAO.loadStorage();
+        Assert.assertEquals(0, bookDAO.readAll().size());
     }
 
     @After

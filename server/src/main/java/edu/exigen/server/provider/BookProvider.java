@@ -4,10 +4,7 @@ import edu.exigen.client.entities.Book;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.LibraryDAOException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Tedikova O.
@@ -16,7 +13,7 @@ import java.util.Map;
 public class BookProvider {
 
     private Map<String, List<Book>> isbnCash = new HashMap<String, List<Book>>();
-    private Map<String,List<Integer>> searchCash=new HashMap<String, List<Integer>>();
+    private Map<String, HashSet<Integer>> searchCash = new HashMap<String, HashSet<Integer>>();
     private BookDAO bookDAO;
 
     public BookProvider(BookDAO bookDAO) {
@@ -27,11 +24,13 @@ public class BookProvider {
         customizeBook(book);
         String isbn = book.getIsbn();
         checkISBNCount(isbn);
+        int id;
         try {
-            bookDAO.createBook(book);
+            id = bookDAO.createBook(book);
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
+        book.setId(id);
         addToISBNCash(isbn, book);
     }
 
@@ -64,10 +63,11 @@ public class BookProvider {
         removeFromISBNCash(book.getIsbn(), book);
     }
 
-//    public List<Book> readBooks(String searchString){
-//        String[] searchTokens=searchString.split(" ");
-//
-//    }
+    public List<Book> readBooks(String searchString) {
+        searchString = searchString.toLowerCase();
+        String[] searchTokens = searchString.split(" ");
+
+    }
 
     private void updateISBNCash(String newIsbn, Book newBook, Book oldBook) {
         List<Book> books = isbnCash.get(newIsbn);
@@ -111,10 +111,33 @@ public class BookProvider {
         }
     }
 
-    public static void customizeBook(Book book){
+    private void addBookToSearchCash(Book book) {
+        int id = book.getId();
+        addWordsToSearchCash(book.getIsbn(), id);
+        addWordsToSearchCash(book.getTitle(), id);
+        addWordsToSearchCash(book.getTopic(), id);
+        addWordsToSearchCash(book.getAuthor(), id);
+        addWordsToSearchCash(String.valueOf(book.getYear()), id);
+    }
+
+    private static void customizeBook(Book book) {
         book.setIsbn(book.getIsbn().toLowerCase());
         book.setTitle(book.getTitle().toLowerCase());
         book.setAuthor(book.getAuthor().toLowerCase());
         book.setTopic(book.getTopic().toLowerCase());
+    }
+
+    private void addWordsToSearchCash(String searchString, int id) {
+        String[] words = searchString.split(" ");
+        for (String word : words) {
+            HashSet<Integer> ids = searchCash.get(word);
+            if (ids != null) {
+                ids.add(id);
+            } else {
+                ids = new HashSet<Integer>();
+                ids.add(id);
+                searchCash.put(word, ids);
+            }
+        }
     }
 }

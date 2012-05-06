@@ -55,7 +55,7 @@ public class ReservationRecordDAO {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;
         try {
-            if (!storageFile.exists()) {
+            if (!storageFile.exists() || storageFile.length() == 0) {
                 storage = new ReservationRecordStorage();
             } else {
                 inputStream = new FileInputStream(storeFileName);
