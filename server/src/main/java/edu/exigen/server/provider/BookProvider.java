@@ -12,8 +12,8 @@ import java.util.*;
  */
 public class BookProvider {
 
-    private Map<String, List<Book>> isbnCash = new HashMap<String, List<Book>>();
-    private Map<String, HashSet<Integer>> searchCash = new HashMap<String, HashSet<Integer>>();
+    private Map<String, Book> isbnCash = new HashMap<String, Book>();
+    private Map<String, HashSet<Book>> searchCash = new HashMap<String, HashSet<Book>>();
     private BookDAO bookDAO;
 
     public BookProvider(BookDAO bookDAO) {
@@ -21,122 +21,153 @@ public class BookProvider {
     }
 
     public void createBook(Book book) throws LibraryProviderException {
-        customizeBook(book);
-        String isbn = book.getIsbn();
-        checkISBNCount(isbn);
-        int id;
-        try {
-            id = bookDAO.createBook(book);
-        } catch (LibraryDAOException e) {
-            throw new LibraryProviderException(e.getMessage(), e);
+        checkISBNCount(book);
+        Book sameBook = isbnCash.get(book.getIsbn());
+        if (sameBook == null) {
+            int id;
+            try {
+                id = bookDAO.createBook(book);
+            } catch (LibraryDAOException e) {
+                throw new LibraryProviderException(e.getMessage(), e);
+            }
+            book.setId(id);
+            addBookToSearchCash(book);
+        } else {
+            book.setCount(sameBook.getCount() + book.getCount());
+            try {
+                bookDAO.updateBook(sameBook.getId(), book);
+            } catch (LibraryDAOException e) {
+                throw new LibraryProviderException(e.getMessage(), e);
+            }
         }
-        book.setId(id);
-        addToISBNCash(isbn, book);
+        addToISBNCash(book);
     }
 
     public void updateBook(Book oldBook, Book newBook) throws LibraryProviderException {
-        customizeBook(oldBook);
-        customizeBook(newBook);
-        String newIsbn = newBook.getIsbn();
-        String oldIsbn = oldBook.getIsbn();
-        checkISBNCount(newIsbn);
+        checkISBNCount(newBook);
         try {
             bookDAO.updateBook(oldBook.getId(), newBook);
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
-        if (!newIsbn.equals(oldIsbn)) {
-            addToISBNCash(newIsbn, newBook);
-            removeFromISBNCash(oldIsbn, oldBook);
-        } else {
-            updateISBNCash(newIsbn, newBook, oldBook);
-        }
-
+        updateISBNCash(newBook, oldBook);
+        updateSearchCash(oldBook, newBook);
     }
 
-    public void deleteBook(Book book) throws LibraryProviderException {
-        try {
-            bookDAO.delete(book.getId());
-        } catch (LibraryDAOException e) {
-            throw new LibraryProviderException(e.getMessage(), e);
+    public void deleteBooks(Book book, int count) throws LibraryProviderException {
+        int bookCount = getBookCount(book);
+        if (bookCount < count) {
+            try {
+                bookDAO.delete(book.getId());
+            } catch (LibraryDAOException e) {
+                throw new LibraryProviderException(e.getMessage(), e);
+            }
+            removeFromISBNCash(book);
+            removeBookFromSearchCash(book);
+        } else {
+            book.setCount(bookCount - count);
+            try {
+                bookDAO.updateBook(book.getId(), book);
+            } catch (LibraryDAOException e) {
+                throw new LibraryProviderException(e.getMessage(), e);
+            }
+            updateISBNCash(isbnCash.get(book.getIsbn()), book);
         }
-        removeFromISBNCash(book.getIsbn(), book);
+    }
+
+    public int getBookCount(Book book) {
+        return isbnCash.get(book.getIsbn()).getCount();
     }
 
     public List<Book> readBooks(String searchString) {
         searchString = searchString.toLowerCase();
         String[] searchTokens = searchString.split(" ");
-
-    }
-
-    private void updateISBNCash(String newIsbn, Book newBook, Book oldBook) {
-        List<Book> books = isbnCash.get(newIsbn);
-        for (Book book : books) {
-            if (book.getId() == oldBook.getId()) {
-                book.setAuthor(newBook.getAuthor());
-                book.setTitle(newBook.getTitle());
-                book.setTopic(newBook.getTopic());
-                book.setYear(newBook.getYear());
-                return;
-            }
+        List<Book> result = new ArrayList<Book>();
+        for (String token : searchTokens) {
+            Set<Book> foundBooks = searchCash.get(token);
+            result.addAll(foundBooks);
         }
+        return result;
     }
 
-    private void removeFromISBNCash(String oldIsbn, Book oldBook) {
-        List<Book> books = isbnCash.get(oldIsbn);
-        for (Book book : books) {
-            if (book.getId() == oldBook.getId()) {
-                books.remove(oldBook);
-                return;
-            }
-        }
-
+    public List<Book> readAll() {
+        return bookDAO.readAll();
     }
 
-    private void checkISBNCount(String isbn) throws LibraryProviderException {
-        if (!(isbnCash.get(isbn).size() < 5)) {
-            throw new LibraryProviderException("Book with ISBN" + isbn + "can't be added to library, maximum count of " +
+    private void updateISBNCash(Book newBook, Book oldBook) {
+        removeFromISBNCash(oldBook);
+        addToISBNCash(newBook);
+    }
+
+    private void removeFromISBNCash(Book oldBook) {
+        isbnCash.remove(oldBook.getIsbn());
+    }
+
+    private void updateSearchCash(Book oldBook, Book newBook) {
+        removeBookFromSearchCash(oldBook);
+        addBookToSearchCash(newBook);
+    }
+
+    private void checkISBNCount(Book book) throws LibraryProviderException {
+        int isbnCount = getBookCount(book);
+        if (!(isbnCount < 5)) {
+            throw new LibraryProviderException("Book with ISBN" + book.getIsbn() + "can't be added to library, maximum count of " +
                     "book copies should be less than 5");
         }
     }
 
-    private void addToISBNCash(String isbn, Book book) {
-        List<Book> books = isbnCash.get(isbn);
-        if (books != null) {
-            books.add(book);
-        } else {
-            books = new ArrayList<Book>();
-            books.add(book);
-            isbnCash.put(isbn, books);
-        }
+    private void addToISBNCash(Book book) {
+        isbnCash.put(book.getIsbn(), book);
     }
 
     private void addBookToSearchCash(Book book) {
-        int id = book.getId();
-        addWordsToSearchCash(book.getIsbn(), id);
-        addWordsToSearchCash(book.getTitle(), id);
-        addWordsToSearchCash(book.getTopic(), id);
-        addWordsToSearchCash(book.getAuthor(), id);
-        addWordsToSearchCash(String.valueOf(book.getYear()), id);
+        customizeBook(book);
+        addWordsToSearchCash(book.getIsbn(), book);
+        addWordsToSearchCash(book.getTitle(), book);
+        addWordsToSearchCash(book.getTopic(), book);
+        addWordsToSearchCash(book.getAuthor(), book);
+        addWordsToSearchCash(String.valueOf(book.getYear()), book);
     }
 
-    private static void customizeBook(Book book) {
+    private void customizeBook(Book book) {
         book.setIsbn(book.getIsbn().toLowerCase());
         book.setTitle(book.getTitle().toLowerCase());
         book.setAuthor(book.getAuthor().toLowerCase());
         book.setTopic(book.getTopic().toLowerCase());
     }
 
-    private void addWordsToSearchCash(String searchString, int id) {
+    private void removeBookFromSearchCash(Book book) {
+        customizeBook(book);
+        removeBookFromSearchCash0(book.getIsbn(), book);
+        removeBookFromSearchCash0(book.getTitle(), book);
+        removeBookFromSearchCash0(book.getAuthor(), book);
+        removeBookFromSearchCash0(book.getTopic(), book);
+        removeBookFromSearchCash0(String.valueOf(book.getYear()), book);
+    }
+
+    private void removeBookFromSearchCash0(String searchString, Book book) {
         String[] words = searchString.split(" ");
         for (String word : words) {
-            HashSet<Integer> ids = searchCash.get(word);
-            if (ids != null) {
-                ids.add(id);
+            HashSet<Book> books = searchCash.get(word);
+            if (books != null) {
+                books.remove(book);
+                if (books.size() == 0) {
+                    searchCash.remove(word);
+                }
+            }
+        }
+    }
+
+    private void addWordsToSearchCash(String searchString, Book book) {
+        String[] words = searchString.split(" ");
+        for (String word : words) {
+            HashSet<Book> books = searchCash.get(word);
+            if (books != null) {
+                books.add(book);
             } else {
-                ids = new HashSet<Integer>();
-                ids.add(id);
-                searchCash.put(word, ids);
+                books = new HashSet<Book>();
+                books.add(book);
+                searchCash.put(word, books);
             }
         }
     }

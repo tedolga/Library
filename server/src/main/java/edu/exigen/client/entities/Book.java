@@ -21,6 +21,8 @@ public class Book extends Entity {
     private String topic;
     @XmlElement
     private int year;
+    @XmlElement
+    private int count;
 
     public String getIsbn() {
         return isbn;
@@ -60,5 +62,21 @@ public class Book extends Entity {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public synchronized int incrementAndGetCount() {
+        return ++count;
+    }
+
+    public synchronized int decrementAndGetCount() {
+        return --count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

@@ -23,4 +23,21 @@ public class Entity {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(this.getClass().isInstance(o))) return false;
+
+        Entity entity = (Entity) o;
+
+        if (id != entity.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

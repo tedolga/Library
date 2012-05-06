@@ -51,6 +51,7 @@ public class BookDAO {
         oldBook.setAuthor(newBook.getAuthor());
         oldBook.setTopic(newBook.getTopic());
         oldBook.setYear(newBook.getYear());
+        oldBook.setCount(newBook.getCount());
         updateStorage();
         return true;
     }
