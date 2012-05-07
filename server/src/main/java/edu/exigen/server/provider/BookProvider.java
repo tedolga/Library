@@ -91,14 +91,16 @@ public class BookProvider {
 
     public List<Book> searchBooks(String searchString) {
         String[] searchTokens = searchString.toLowerCase().split(" ");
-        List<Book> result = new ArrayList<Book>();
+        Set<Book> resultSet = new HashSet<Book>();
         for (String token : searchTokens) {
             Set<Book> foundBooks = searchCash.get(token);
             if (foundBooks != null) {
-                result.addAll(foundBooks);
+                resultSet.addAll(foundBooks);
             }
         }
-        return result;
+        List<Book> resultList = new ArrayList<Book>();
+        resultList.addAll(resultSet);
+        return resultList;
     }
 
     public List<Book> readAll() {

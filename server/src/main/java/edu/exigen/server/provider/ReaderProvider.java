@@ -22,7 +22,7 @@ public class ReaderProvider {
 
     public void createReader(Reader reader) throws LibraryProviderException {
         try {
-            int readerId = readerDAO.createReader(reader);
+            readerDAO.createReader(reader);
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
@@ -35,20 +35,23 @@ public class ReaderProvider {
 
     public List<Reader> searchReaders(String searchString) {
         String[] searchTokens = searchString.toLowerCase().split(" ");
-        List<Reader> result = new ArrayList<Reader>();
+        Set<Reader> resultSet = new HashSet<Reader>();
         for (String token : searchTokens) {
             Set<Reader> foundReaders = searchCash.get(token);
             if (foundReaders != null) {
-                result.addAll(foundReaders);
+                resultSet.addAll(foundReaders);
             }
         }
-        return result;
+        List<Reader> resultList = new ArrayList<Reader>();
+        resultList.addAll(resultSet);
+        return resultList;
     }
 
     public void updateReader(Reader oldReader, Reader newReader) throws LibraryProviderException {
         Reader copyOld = oldReader.copy();
         try {
             readerDAO.updateReader(oldReader.getId(), newReader);
+            newReader.setId(oldReader.getId());
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
@@ -62,6 +65,18 @@ public class ReaderProvider {
             throw new LibraryProviderException(e.getMessage(), e);
         }
         removeReaderFromSearchCash(reader);
+    }
+
+    public void loadData() throws LibraryProviderException {
+        try {
+            readerDAO.loadStorage();
+        } catch (LibraryDAOException e) {
+            throw new LibraryProviderException(e.getMessage(), e);
+        }
+        List<Reader> readers = readAll();
+        for (Reader reader : readers) {
+            addReaderToSearchCash(reader);
+        }
     }
 
 
@@ -117,5 +132,6 @@ public class ReaderProvider {
         String[] tokenArray = field.split(" ");
         Collections.addAll(allTokens, tokenArray);
     }
+
 
 }
