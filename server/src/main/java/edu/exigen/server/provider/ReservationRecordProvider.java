@@ -8,7 +8,6 @@ import edu.exigen.server.dao.LibraryDAOException;
 import edu.exigen.server.dao.ReaderDAO;
 import edu.exigen.server.dao.ReservationRecordDAO;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
  * @version 1.0
  */
 public class ReservationRecordProvider {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private BookDAO bookDAO;
     private ReaderDAO readerDAO;
     private ReservationRecordDAO recordDAO;
@@ -58,7 +56,7 @@ public class ReservationRecordProvider {
             int sumCount = bookDAO.readBook(bookId).getCount();
             int reservedCount = getReservedBookCount(bookId);
             if ((sumCount - reservedCount) < 1) {
-                throw new LibraryProviderException("Reservation filed. There are no available books now.");
+                throw new LibraryProviderException("Reservation failed. There are no available books now.");
             }
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
@@ -69,7 +67,7 @@ public class ReservationRecordProvider {
         List<ReservationRecord> records = readAll();
         int reservedCount = 0;
         for (ReservationRecord record : records) {
-            if (record.getBookId() == bookId && record.getReturnDate().after(new Date())) {
+            if (record.getBookId() == bookId && !(record.getReturnDate().before(new Date()))) {
                 reservedCount++;
             }
         }
@@ -81,7 +79,7 @@ public class ReservationRecordProvider {
         List<ReservationRecord> records = readAll();
         List<Book> reservedBooks = new ArrayList<Book>();
         for (ReservationRecord record : records) {
-            if (record.getReaderId() == readerId && record.getReturnDate().after(new Date())) {
+            if (record.getReaderId() == readerId && !(record.getReturnDate().before(new Date()))) {
                 try {
                     reservedBooks.add(bookDAO.readBook(record.getBookId()));
                 } catch (LibraryDAOException e) {

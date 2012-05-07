@@ -1,10 +1,15 @@
 package edu.exigen.server.provider;
 
 import edu.exigen.client.entities.Book;
+import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.ReaderDAO;
+import edu.exigen.server.dao.ReservationRecordDAO;
 import org.junit.*;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -12,9 +17,14 @@ import java.io.File;
  * @version 1.0
  */
 public class BookProviderTest {
-    private static final String FILE_NAME = "booksProvided.xml";
-    private BookDAO bookDAO = new BookDAO(FILE_NAME);
-    private BookProvider provider = new BookProvider(bookDAO, reservationRecordProvider);
+    private static final String READER_PROVIDED_XML = "readerProvided.xml";
+    private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
+    private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
+    private BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
+    private ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
+    private ReservationRecordDAO recordDAO = new ReservationRecordDAO(RECORD_PROVIDED_XML);
+    private ReservationRecordProvider recordProvider = new ReservationRecordProvider(bookDAO, readerDAO, recordDAO);
+    private BookProvider provider = new BookProvider(bookDAO, recordProvider);
 
     @Before
     public void setUp() throws Exception {
@@ -24,7 +34,11 @@ public class BookProviderTest {
     @BeforeClass
     @AfterClass
     public static void clear() {
-        File file = new File(FILE_NAME);
+        File file = new File(READER_PROVIDED_XML);
+        file.delete();
+        file = new File(BOOK_PROVIDED_XML);
+        file.delete();
+        file = new File(RECORD_PROVIDED_XML);
         file.delete();
     }
 
@@ -110,9 +124,27 @@ public class BookProviderTest {
         provider.deleteBooks(book, 1);
         Assert.assertEquals(1, provider.getBookCount(book));
         Assert.assertEquals(1, provider.searchBooks("2006").get(0).getCount());
-        provider.deleteBooks(book, 2);
+        provider.deleteBooks(book, 1);
         Assert.assertEquals(0, provider.getBookCount(book));
         Assert.assertEquals(0, provider.searchBooks("2006").size());
+        Reader reader = new Reader();
+        reader.setFirstName("Ivan");
+        reader.setLastName("Petrov");
+        reader.setAddress("34/5 Nevsky pr.");
+        reader.setDateOfBirth(new Date());
+        readerDAO.createReader(reader);
+        book = provider.searchBooks("2009").get(0);
+        Calendar returnDate = Calendar.getInstance();
+        returnDate.add(Calendar.DAY_OF_MONTH, 14);
+        recordProvider.createRecord(reader, book, returnDate.getTime());
+        provider.deleteBooks(book, 3);
+        try {
+            provider.deleteBooks(book, 1);
+            Assert.assertTrue(false);
+        } catch (LibraryProviderException e) {
+            System.out.println(e.getMessage());
+            Assert.assertTrue(true);
+        }
     }
 
     @Test

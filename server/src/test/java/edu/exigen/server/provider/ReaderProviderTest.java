@@ -1,5 +1,6 @@
 package edu.exigen.server.provider;
 
+import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.ReaderDAO;
@@ -8,6 +9,7 @@ import org.junit.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -21,7 +23,7 @@ public class ReaderProviderTest {
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
     private ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
     private BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
-    private ReservationRecordDAO recordDAO = new ReservationRecordDAO(READER_PROVIDED_XML);
+    private ReservationRecordDAO recordDAO = new ReservationRecordDAO(RECORD_PROVIDED_XML);
     private ReservationRecordProvider recordProvider = new ReservationRecordProvider(bookDAO, readerDAO, recordDAO);
     private ReaderProvider provider = new ReaderProvider(readerDAO, recordProvider);
 
@@ -90,5 +92,24 @@ public class ReaderProviderTest {
         Assert.assertEquals(1, provider.readAll().size());
         Assert.assertEquals(0, provider.searchReaders("Petr").size());
         Assert.assertEquals(1, provider.searchReaders("Petr Petrov").size());
+        Book book = new Book();
+        book.setIsbn("6767-466-676-77");
+        book.setTitle("Povesti Belkina");
+        book.setAuthor("Pushkin");
+        book.setTopic("russian classic");
+        book.setYear(1998);
+        book.setCount(1);
+        bookDAO.createBook(book);
+        Reader reader = provider.searchReaders("1").get(0);
+        Calendar returnDate = Calendar.getInstance();
+        returnDate.add(Calendar.DAY_OF_MONTH, 14);
+        recordProvider.createRecord(reader, book, returnDate.getTime());
+        try {
+            provider.deleteReader(reader);
+            Assert.assertTrue(false);
+        } catch (LibraryProviderException e) {
+            System.out.println(e.getMessage());
+            Assert.assertTrue(true);
+        }
     }
 }

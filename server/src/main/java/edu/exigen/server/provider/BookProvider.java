@@ -67,7 +67,7 @@ public class BookProvider {
     public void deleteBooks(Book book, int deleteCount) throws LibraryProviderException {
         int bookCount = getBookCount(book);
         checkDeletionChance(book, deleteCount);
-        if (bookCount < deleteCount) {
+        if (bookCount <= deleteCount) {
             try {
                 bookDAO.delete(book.getId());
             } catch (LibraryDAOException e) {

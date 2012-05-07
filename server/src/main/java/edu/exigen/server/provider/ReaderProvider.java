@@ -74,7 +74,7 @@ public class ReaderProvider {
         int reservedBooksCount = recordProvider.getReservedReaderBooks(reader).size();
         if (reservedBooksCount > 0) {
             throw new LibraryProviderException("Reader with id " + reader.getId() + " has " + reservedBooksCount +
-                    "reserved books and cannot be deleted.");
+                    " reserved book(s) and cannot be deleted.");
         }
     }
 
