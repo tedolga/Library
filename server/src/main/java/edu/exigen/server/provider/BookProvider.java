@@ -15,9 +15,11 @@ public class BookProvider {
     private Map<String, Book> isbnCash = new HashMap<String, Book>();
     private Map<String, HashSet<Book>> searchCash = new HashMap<String, HashSet<Book>>();
     private BookDAO bookDAO;
+    private ReservationRecordProvider recordProvider;
 
-    public BookProvider(BookDAO bookDAO) {
+    public BookProvider(BookDAO bookDAO, ReservationRecordProvider recordProvider) {
         this.bookDAO = bookDAO;
+        this.recordProvider = recordProvider;
     }
 
     public void createBook(Book book) throws LibraryProviderException {
@@ -62,9 +64,10 @@ public class BookProvider {
         }
     }
 
-    public void deleteBooks(Book book, int count) throws LibraryProviderException {
+    public void deleteBooks(Book book, int deleteCount) throws LibraryProviderException {
         int bookCount = getBookCount(book);
-        if (bookCount < count) {
+        checkDeletionChance(book, deleteCount);
+        if (bookCount < deleteCount) {
             try {
                 bookDAO.delete(book.getId());
             } catch (LibraryDAOException e) {
@@ -74,7 +77,7 @@ public class BookProvider {
             removeBookFromSearchCash(book);
         } else {
             Book copy = book.copyBook();
-            book.setCount(bookCount - count);
+            book.setCount(bookCount - deleteCount);
             try {
                 bookDAO.updateBook(book.getId(), book);
             } catch (LibraryDAOException e) {
@@ -110,6 +113,7 @@ public class BookProvider {
     public void loadData() throws LibraryProviderException {
         try {
             bookDAO.loadStorage();
+            recordProvider.loadData();
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
@@ -194,5 +198,15 @@ public class BookProvider {
     private void addFieldTokens(Collection<String> allTokens, String field) {
         String[] tokenArray = field.split(" ");
         Collections.addAll(allTokens, tokenArray);
+    }
+
+    private void checkDeletionChance(Book book, int deleteCount) throws LibraryProviderException {
+        int bookCount = getBookCount(book);
+        int reservedCount = recordProvider.getReservedBookCount(book.getId());
+        int availableCount = bookCount - reservedCount;
+        if (availableCount < deleteCount) {
+            throw new LibraryProviderException("Can't delete " + deleteCount + " copies of book with ISBN " + book.getIsbn()
+                    + ", only " + availableCount + " can be deleted.");
+        }
     }
 }

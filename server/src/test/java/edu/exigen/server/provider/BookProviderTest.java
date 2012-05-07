@@ -14,7 +14,7 @@ import java.io.File;
 public class BookProviderTest {
     private static final String FILE_NAME = "booksProvided.xml";
     private BookDAO bookDAO = new BookDAO(FILE_NAME);
-    private BookProvider provider = new BookProvider(bookDAO);
+    private BookProvider provider = new BookProvider(bookDAO, reservationRecordProvider);
 
     @Before
     public void setUp() throws Exception {

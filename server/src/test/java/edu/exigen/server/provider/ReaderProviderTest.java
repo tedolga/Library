@@ -16,7 +16,7 @@ public class ReaderProviderTest {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private static final String FILE_NAME = "readerProvided.xml";
     private ReaderDAO readerDAO = new ReaderDAO(FILE_NAME);
-    private ReaderProvider provider = new ReaderProvider(readerDAO);
+    private ReaderProvider provider = new ReaderProvider(readerDAO, reservationRecordProvider);
 
     @Before
     public void setUp() throws Exception {

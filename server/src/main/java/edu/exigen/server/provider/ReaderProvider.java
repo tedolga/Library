@@ -14,10 +14,12 @@ import java.util.*;
 public class ReaderProvider {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private ReaderDAO readerDAO;
+    private ReservationRecordProvider recordProvider;
     private Map<String, HashSet<Reader>> searchCash = new HashMap<String, HashSet<Reader>>();
 
-    public ReaderProvider(ReaderDAO readerDAO) {
+    public ReaderProvider(ReaderDAO readerDAO, ReservationRecordProvider recordProvider) {
         this.readerDAO = readerDAO;
+        this.recordProvider = recordProvider;
     }
 
     public void createReader(Reader reader) throws LibraryProviderException {
@@ -59,6 +61,7 @@ public class ReaderProvider {
     }
 
     public void deleteReader(Reader reader) throws LibraryProviderException {
+        checkDeletionChance(reader);
         try {
             readerDAO.delete(reader.getId());
         } catch (LibraryDAOException e) {
@@ -67,9 +70,18 @@ public class ReaderProvider {
         removeReaderFromSearchCash(reader);
     }
 
+    private void checkDeletionChance(Reader reader) throws LibraryProviderException {
+        int reservedBooksCount = recordProvider.getReservedReaderBooks(reader).size();
+        if (reservedBooksCount > 0) {
+            throw new LibraryProviderException("Reader with id " + reader.getId() + " has " + reservedBooksCount +
+                    "reserved books and cannot be deleted.");
+        }
+    }
+
     public void loadData() throws LibraryProviderException {
         try {
             readerDAO.loadStorage();
+            recordProvider.loadData();
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }
