@@ -52,4 +52,14 @@ public class Reader extends Entity {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    public Reader copy() {
+        Reader copy = new Reader();
+        copy.setId(this.getId());
+        copy.setFirstName(firstName);
+        copy.setLastName(lastName);
+        copy.setAddress(address);
+        copy.setDateOfBirth(dateOfBirth);
+        return copy;
+    }
 }

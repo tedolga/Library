@@ -159,7 +159,7 @@ public class BookProvider {
             HashSet<Book> books = searchCash.get(word);
             if (books != null) {
                 books.remove(book);
-                if (books.size() == 0) {
+                if (books.size() < 1) {
                     searchCash.remove(word);
                 }
             }
