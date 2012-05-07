@@ -1,7 +1,9 @@
 package edu.exigen.server.provider;
 
 import edu.exigen.client.entities.Reader;
+import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.ReaderDAO;
+import edu.exigen.server.dao.ReservationRecordDAO;
 import org.junit.*;
 
 import java.io.File;
@@ -14,9 +16,14 @@ import java.util.Date;
  */
 public class ReaderProviderTest {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    private static final String FILE_NAME = "readerProvided.xml";
-    private ReaderDAO readerDAO = new ReaderDAO(FILE_NAME);
-    private ReaderProvider provider = new ReaderProvider(readerDAO, reservationRecordProvider);
+    private static final String READER_PROVIDED_XML = "readerProvided.xml";
+    private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
+    private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
+    private ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
+    private BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
+    private ReservationRecordDAO recordDAO = new ReservationRecordDAO(READER_PROVIDED_XML);
+    private ReservationRecordProvider recordProvider = new ReservationRecordProvider(bookDAO, readerDAO, recordDAO);
+    private ReaderProvider provider = new ReaderProvider(readerDAO, recordProvider);
 
     @Before
     public void setUp() throws Exception {
@@ -26,7 +33,11 @@ public class ReaderProviderTest {
     @BeforeClass
     @AfterClass
     public static void clear() {
-        File file = new File(FILE_NAME);
+        File file = new File(READER_PROVIDED_XML);
+        file.delete();
+        file = new File(BOOK_PROVIDED_XML);
+        file.delete();
+        file = new File(RECORD_PROVIDED_XML);
         file.delete();
     }
 
