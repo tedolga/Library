@@ -79,4 +79,16 @@ public class Book extends Entity {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public Book copyBook() {
+        Book copy = new Book();
+        copy.setId(this.getId());
+        copy.setIsbn(isbn);
+        copy.setTitle(title);
+        copy.setAuthor(author);
+        copy.setTopic(topic);
+        copy.setYear(year);
+        copy.setCount(count);
+        return copy;
+    }
 }

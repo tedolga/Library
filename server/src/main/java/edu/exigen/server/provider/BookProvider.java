@@ -24,37 +24,41 @@ public class BookProvider {
         checkISBNCount(book);
         Book sameBook = isbnCash.get(book.getIsbn());
         if (sameBook == null) {
-            int id;
             try {
-                id = bookDAO.createBook(book);
+                bookDAO.createBook(book);
             } catch (LibraryDAOException e) {
                 throw new LibraryProviderException(e.getMessage(), e);
             }
-            book.setId(id);
             addBookToSearchCash(book);
+            addToISBNCash(book);
         } else {
             book.setCount(sameBook.getCount() + book.getCount());
+            book.setId(sameBook.getId());
             try {
                 bookDAO.updateBook(sameBook.getId(), book);
             } catch (LibraryDAOException e) {
                 throw new LibraryProviderException(e.getMessage(), e);
             }
+            updateISBNCash(sameBook, book);
+            updateSearchCash(sameBook, book);
         }
-        addToISBNCash(book);
     }
 
     public void updateBook(Book oldBook, Book newBook) throws LibraryProviderException {
+        Book copyOld = oldBook.copyBook();
         if (newBook.getCount() <= 5) {
             try {
                 bookDAO.updateBook(oldBook.getId(), newBook);
+                newBook.setId(oldBook.getId());
             } catch (LibraryDAOException e) {
                 throw new LibraryProviderException(e.getMessage(), e);
             }
-            updateISBNCash(oldBook, newBook);
-            updateSearchCash(oldBook, newBook);
+            updateISBNCash(copyOld, newBook);
+            updateSearchCash(copyOld, newBook);
         } else {
-            throw new LibraryProviderException(newBook.getCount() + " books with ISBN " + newBook.getIsbn() + "can't be added to library, maximum count of " +
-                    "book copies should be less than 5, you can save only 5 books.");
+            throw new LibraryProviderException("Count of books with ISBN " + newBook.getIsbn() + " can't be updated up " +
+                    "to " + newBook.getCount() + ", maximum count of " +
+                    "book copies should be less than 5, you can add no more than 5 books.");
         }
     }
 
@@ -69,13 +73,15 @@ public class BookProvider {
             removeFromISBNCash(book);
             removeBookFromSearchCash(book);
         } else {
+            Book copy = book.copyBook();
             book.setCount(bookCount - count);
             try {
                 bookDAO.updateBook(book.getId(), book);
             } catch (LibraryDAOException e) {
                 throw new LibraryProviderException(e.getMessage(), e);
             }
-            updateISBNCash(isbnCash.get(book.getIsbn()), book);
+            updateISBNCash(copy, book);
+            updateSearchCash(copy, book);
         }
     }
 
@@ -83,9 +89,8 @@ public class BookProvider {
         return (isbnCash.get(book.getIsbn()) != null) ? isbnCash.get(book.getIsbn()).getCount() : 0;
     }
 
-    public List<Book> readBooks(String searchString) {
-        searchString = searchString.toLowerCase();
-        String[] searchTokens = searchString.split(" ");
+    public List<Book> searchBooks(String searchString) {
+        String[] searchTokens = searchString.toLowerCase().split(" ");
         List<Book> result = new ArrayList<Book>();
         for (String token : searchTokens) {
             Set<Book> foundBooks = searchCash.get(token);
@@ -131,8 +136,8 @@ public class BookProvider {
         int isbnCount = getBookCount(book);
         int newBookCount = book.getCount();
         if (!(isbnCount + newBookCount <= 5)) {
-            throw new LibraryProviderException(newBookCount + " books with ISBN " + book.getIsbn() + "can't be added to library, maximum count of " +
-                    "book copies should be less than 5, you can add only " + (5 - isbnCount) + " books.");
+            throw new LibraryProviderException(newBookCount + " books with ISBN " + book.getIsbn() + " can't be added to library, maximum count of " +
+                    "book copies should be less than 5, you can add no more than " + (5 - isbnCount) + " book(s).");
         }
     }
 
@@ -141,25 +146,16 @@ public class BookProvider {
     }
 
     private void addBookToSearchCash(Book book) {
-        addWordsToSearchCash(book.getIsbn().toLowerCase(), book);
-        addWordsToSearchCash(book.getTitle().toLowerCase(), book);
-        addWordsToSearchCash(book.getTopic().toLowerCase(), book);
-        addWordsToSearchCash(book.getAuthor().toLowerCase(), book);
-        addWordsToSearchCash(String.valueOf(book.getYear()).toLowerCase(), book);
+        addWordsToSearchCash(getBookTokens(book), book);
     }
 
 
     private void removeBookFromSearchCash(Book book) {
-        removeTokensFromSearchCash(book.getIsbn().toLowerCase(), book);
-        removeTokensFromSearchCash(book.getTitle().toLowerCase(), book);
-        removeTokensFromSearchCash(book.getAuthor().toLowerCase(), book);
-        removeTokensFromSearchCash(book.getTopic().toLowerCase(), book);
-        removeTokensFromSearchCash(String.valueOf(book.getYear()).toLowerCase(), book);
+        removeTokensFromSearchCash(getBookTokens(book), book);
     }
 
-    private void removeTokensFromSearchCash(String searchString, Book book) {
-        String[] words = searchString.split(" ");
-        for (String word : words) {
+    private void removeTokensFromSearchCash(Iterable<String> tokens, Book book) {
+        for (String word : tokens) {
             HashSet<Book> books = searchCash.get(word);
             if (books != null) {
                 books.remove(book);
@@ -170,9 +166,8 @@ public class BookProvider {
         }
     }
 
-    private void addWordsToSearchCash(String searchString, Book book) {
-        String[] words = searchString.split(" ");
-        for (String word : words) {
+    private void addWordsToSearchCash(Iterable<String> tokens, Book book) {
+        for (String word : tokens) {
             HashSet<Book> books = searchCash.get(word);
             if (books != null) {
                 books.add(book);
@@ -182,5 +177,20 @@ public class BookProvider {
                 searchCash.put(word, books);
             }
         }
+    }
+
+    private Iterable<String> getBookTokens(Book book) {
+        List<String> tokens = new ArrayList<String>();
+        addFieldTokens(tokens, book.getIsbn().toLowerCase());
+        addFieldTokens(tokens, book.getTitle().toLowerCase());
+        addFieldTokens(tokens, book.getAuthor().toLowerCase());
+        addFieldTokens(tokens, book.getTopic().toLowerCase());
+        addFieldTokens(tokens, String.valueOf(book.getYear()).toLowerCase());
+        return tokens;
+    }
+
+    private void addFieldTokens(Collection<String> allTokens, String field) {
+        String[] tokenArray = field.split(" ");
+        Collections.addAll(allTokens, tokenArray);
     }
 }
