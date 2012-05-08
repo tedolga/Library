@@ -3,6 +3,7 @@ package edu.exigen.client.entities;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
 
 /**
  * Represents basic library entity.
@@ -11,7 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Entity {
+public class Entity implements Serializable {
 
     @XmlElement
     private int id;
