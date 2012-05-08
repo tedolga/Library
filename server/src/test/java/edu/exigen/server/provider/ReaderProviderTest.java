@@ -24,11 +24,13 @@ public class ReaderProviderTest {
     private ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
     private BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
     private ReservationRecordDAO recordDAO = new ReservationRecordDAO(RECORD_PROVIDED_XML);
-    private ReservationRecordProvider recordProvider = new ReservationRecordProvider(bookDAO, readerDAO, recordDAO);
-    private ReaderProvider provider = new ReaderProvider(readerDAO, recordProvider);
+    private ReservationRecordProviderImpl recordProvider;
+    private ReaderProviderImpl provider;
 
     @Before
     public void setUp() throws Exception {
+        recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
+        provider = new ReaderProviderImpl(readerDAO, recordProvider);
         provider.loadData();
     }
 
