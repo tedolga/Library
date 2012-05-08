@@ -40,7 +40,7 @@ public class BookSearchComponent {
         bookTableModel = new BookTableModel(new ArrayList<Book>());
         bookTable = new JTable(bookTableModel);
         JScrollPane scrollPane = new JScrollPane(bookTable);
-        bookTable.setFillsViewportHeight(true);
+        bookTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         bookSearchPanel = new JPanel();
         bookSearchPanel.setBorder(BorderFactory.createTitledBorder(PANEL_NAME));
         bookSearchPanel.setLayout(new BorderLayout());
@@ -80,6 +80,10 @@ public class BookSearchComponent {
         c.gridy = 2;
         dataEnterPanel.add(getAllButton, c);
         return dataEnterPanel;
+    }
+
+    public Book getSelectedBook() {
+        return new Book();
     }
 
 

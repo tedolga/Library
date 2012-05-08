@@ -15,13 +15,13 @@ import java.rmi.RemoteException;
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookSearchComponentFrame extends JFrame {
+public class BookAdminComponentFrame extends JFrame {
 
     private static final int FRAME_WIDHT = 800;
     private static final int FRAME_HEIGHT = 600;
-    private JPanel searchPanel;
+    private JPanel adminPanel;
 
-    public BookSearchComponentFrame(JPanel panel) throws HeadlessException {
+    public BookAdminComponentFrame(JPanel panel) throws HeadlessException {
         super();
         frameInit(panel);
     }
@@ -29,9 +29,9 @@ public class BookSearchComponentFrame extends JFrame {
     public void frameInit(JPanel panel) {
         super.frameInit();
         setSize(FRAME_WIDHT, FRAME_HEIGHT);
-        searchPanel = panel;
+        adminPanel = panel;
         setLayout(new BorderLayout());
-        add(searchPanel, BorderLayout.NORTH);
+        add(adminPanel, BorderLayout.NORTH);
     }
 
 
@@ -44,8 +44,8 @@ public class BookSearchComponentFrame extends JFrame {
                 try {
                     ReservationRecordProviderImpl recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
                     BookProvider provider = new BookProviderImpl(bookDAO, recordProvider);
-                    BookSearchComponent searchComponent = new BookSearchComponent(provider);
-                    final BookSearchComponentFrame testFrame = new BookSearchComponentFrame(searchComponent.getBookSearchPanel());
+                    BookAdminComponent adminComponent = new BookAdminComponent(provider);
+                    final BookAdminComponentFrame testFrame = new BookAdminComponentFrame(adminComponent.getAdminPanel());
                     testFrame.setLocationRelativeTo(null);
                     testFrame.setVisible(true);
                 } catch (RemoteException e) {
