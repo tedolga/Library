@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
  */
 public class BookSearchComponentFrame extends JFrame {
 
-    private static final int FRAME_WIDHT = 700;
+    private static final int FRAME_WIDHT = 800;
     private static final int FRAME_HEIGHT = 600;
     private JPanel searchPanel;
 
