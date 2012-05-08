@@ -4,6 +4,8 @@ import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Tedikova O.
@@ -41,67 +43,57 @@ public class BookAdminComponent {
         JPanel adminPanel = new JPanel();
         adminPanel.setBorder(BorderFactory.createTitledBorder(ADMIN_PANEL_NAME));
         adminPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+
+        List<JComponent> adminComponents = new ArrayList<JComponent>();
         JLabel isbn = new JLabel("ISBN :");
-        c.fill = GridBagConstraints.WEST;
+        adminComponents.add(isbn);
+        isbnField = new JTextField(20);
+        adminComponents.add(isbnField);
+        JLabel titleLabel = new JLabel("Title :");
+        adminComponents.add(titleLabel);
+        titleField = new JTextField(20);
+        adminComponents.add(titleField);
+        JLabel authorLabel = new JLabel("Author :");
+        adminComponents.add(authorLabel);
+        authorField = new JTextField(20);
+        adminComponents.add(authorField);
+        JLabel topicLabel = new JLabel("Topic:");
+        adminComponents.add(topicLabel);
+        topicField = new JTextField(20);
+        adminComponents.add(topicField);
+        JLabel yearLabel = new JLabel("Year:");
+        adminComponents.add(yearLabel);
+        yearField = new JTextField(20);
+        adminComponents.add(yearField);
+        JLabel countLabel = new JLabel("Count:");
+        adminComponents.add(countLabel);
+        countField = new JTextField(20);
+        adminComponents.add(countField);
+        fillAdminPanel(adminComponents, adminPanel);
+        return adminPanel;
+    }
+
+    private void fillAdminPanel(List<JComponent> components, JPanel panel) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.EAST;
         c.weighty = 1;
         c.weightx = 0.5;
         c.gridx = 0;
         c.gridy = 0;
-        adminPanel.add(isbn, c);
-        isbnField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(isbnField, c);
-        JLabel titleLabel = new JLabel("Title :");
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 1;
-        adminPanel.add(titleLabel, c);
-        titleField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(titleField, c);
-        JLabel authorLabel = new JLabel("Author :");
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 2;
-        adminPanel.add(authorLabel, c);
-        authorField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(authorField, c);
+        for (int i = 0; i < components.size(); i++) {
+            panel.add(components.get(i), c);
+            if (i % 2 == 0) {
+                c.fill = GridBagConstraints.WEST;
+                c.gridx = 1;
+                c.weightx = 1;
 
-        JLabel topicLabel = new JLabel("Topic:");
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 3;
-        adminPanel.add(topicLabel, c);
-        topicField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(topicField, c);
-
-        JLabel yearLabel = new JLabel("Year:");
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 4;
-        adminPanel.add(yearLabel, c);
-        yearField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(yearField, c);
-
-        JLabel countLabel = new JLabel("Count:");
-        c.weightx = 0.5;
-        c.gridx = 0;
-        c.gridy = 5;
-        adminPanel.add(countLabel, c);
-        countField = new JTextField(20);
-        c.weightx = 1;
-        c.gridx = 1;
-        adminPanel.add(countField, c);
-        return adminPanel;
+            } else {
+                c.fill = GridBagConstraints.EAST;
+                c.gridy += 1;
+                c.gridx = 0;
+                c.weightx = 0.5;
+            }
+        }
     }
 
     public JPanel getAdminPanel() {
