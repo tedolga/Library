@@ -1,8 +1,13 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.ReaderDAO;
+import edu.exigen.server.dao.ReservationRecordDAO;
 import edu.exigen.server.provider.BookProvider;
+import edu.exigen.server.provider.BookProviderImpl;
 import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.provider.ReservationRecordProviderImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +21,7 @@ import java.util.List;
  * @version 1.0
  */
 public class RecordAdminComponent {
+
     private static final String PANEL_NAME = "Reservation Record Administration";
     private static final String VIEW_PANEL_NAME = "Available Records";
     private static final String REFRESH_BUTTON_TEXT = "Refresh";
@@ -86,5 +92,22 @@ public class RecordAdminComponent {
             recordTableModel.setTableData(records);
             recordTableModel.fireTableRowsInserted(0, records.size() - 1);
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        JFrame frame = new JFrame("Test reader admin component");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        final BookDAO bookStore = new BookDAO("bookStore");
+        bookStore.loadStorage();
+        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("reservationStore");
+        recordDAO.loadStorage();
+        final ReaderDAO readerDAO = new ReaderDAO("readerStore");
+        readerDAO.loadStorage();
+        final ReservationRecordProviderImpl reservationRecordProvider = new ReservationRecordProviderImpl(bookStore, readerDAO, recordDAO);
+        final RecordAdminComponent recordAdminComponent = new RecordAdminComponent(new BookProviderImpl(bookStore, reservationRecordProvider), reservationRecordProvider);
+        frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
+        frame.setVisible(true);
+        frame.pack();
     }
 }
