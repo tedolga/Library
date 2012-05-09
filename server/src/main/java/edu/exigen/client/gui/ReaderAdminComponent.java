@@ -1,6 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.LibraryConstraints;
+import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.LibraryProviderException;
 import edu.exigen.server.provider.ReaderProvider;
@@ -60,16 +61,16 @@ public class ReaderAdminComponent {
                 lastNameField.setText(selectedReader != null ? selectedReader.getLastName() : "");
                 addressField.setText(selectedReader != null ? selectedReader.getAddress() : "");
                 dateOfBirthField.setText(selectedReader != null ? dateFormat.format(selectedReader.getDateOfBirth()) : "");
-//                List<Book> readerBooks = new ArrayList<Book>();
-//                try {
-//                    readerBooks = recordProvider.getReservedReaderBooks(tableReader);
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e.getMessage(), e);
-//                }
-//                readerBooksInfo = new String[readerBooks.size()];
-//                for (int i = 0; i < readerBooks.size(); i++) {
-//                    readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
-//                }
+                java.util.List<Book> readerBooks;
+                try {
+                    readerBooks = recordProvider.getReservedReaderBooks(tableReader);
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+                readerBooksInfo = new String[readerBooks.size()];
+                for (int i = 0; i < readerBooks.size(); i++) {
+                    readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
+                }
                 tableReader = selectedReader;
             }
         });
@@ -128,7 +129,6 @@ public class ReaderAdminComponent {
             }
         }
     }
-
 
     public JPanel getAdminPanel() {
         return adminPanel;

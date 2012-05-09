@@ -78,9 +78,7 @@ public class RecordSummaryComponent {
         return returnDateField;
     }
 
-
     public JPanel getRecordSummaryPanel() {
         return recordSummaryPanel;
     }
-
 }

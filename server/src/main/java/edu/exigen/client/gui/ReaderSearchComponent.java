@@ -86,7 +86,7 @@ public class ReaderSearchComponent {
             List<Reader> readers;
             int rowCount = readerTableModel.getRowCount();
             readerTableModel.setTableData(Collections.<Reader>emptyList());
-            readerTableModel.fireTableRowsDeleted(0, rowCount - 1);
+            readerTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
                 if (!"".equals(searchField.getText())) {
                     readers = readerProvider.searchReaders(searchField.getText());
@@ -97,7 +97,7 @@ public class ReaderSearchComponent {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
             readerTableModel.setTableData(readers);
-            readerTableModel.fireTableRowsInserted(0, readers.size() - 1);
+            readerTableModel.fireTableRowsInserted(0, Math.max(0, readers.size() - 1));
         }
     }
 

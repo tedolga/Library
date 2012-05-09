@@ -43,6 +43,7 @@ public class LibraryClient {
                 @Override
                 public void run() {
                     JFrame clientFrame = clientComponent.getLibraryClientFrame();
+                    clientFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     clientFrame.setLocationRelativeTo(null);
                     clientFrame.setVisible(true);
                 }
