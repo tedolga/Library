@@ -27,7 +27,7 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         this.recordProvider = recordProvider;
     }
 
-    public void createReader(Reader reader) throws LibraryProviderException, RemoteException {
+    public synchronized void createReader(Reader reader) throws LibraryProviderException, RemoteException {
         try {
             readerDAO.createReader(reader);
         } catch (LibraryDAOException e) {
@@ -54,7 +54,7 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         return resultList;
     }
 
-    public void updateReader(Reader oldReader, Reader newReader) throws LibraryProviderException, RemoteException {
+    public synchronized void updateReader(Reader oldReader, Reader newReader) throws LibraryProviderException, RemoteException {
         Reader copyOld = oldReader.copy();
         try {
             readerDAO.updateReader(oldReader.getId(), newReader);
@@ -65,7 +65,7 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         updateSearchCash(copyOld, newReader);
     }
 
-    public void deleteReader(Reader reader) throws LibraryProviderException, RemoteException {
+    public synchronized void deleteReader(Reader reader) throws LibraryProviderException, RemoteException {
         checkDeletionChance(reader);
         try {
             readerDAO.delete(reader.getId());

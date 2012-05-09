@@ -21,8 +21,8 @@ public class LibraryClientComponent {
     private JFrame libraryClientFrame;
 
     public LibraryClientComponent(LibraryClient libraryClient) throws RemoteException {
-        bookAdminComponent = new BookAdminComponent(libraryClient.getBookProvider());
-        readerAdminComponent = new ReaderAdminComponent(libraryClient.getReaderProvider());
+        bookAdminComponent = new BookAdminComponent(libraryClient.getBookProvider(), libraryClient.getRecordProvider());
+        readerAdminComponent = new ReaderAdminComponent(libraryClient.getReaderProvider(), libraryClient.getRecordProvider());
         recordAdminComponent = new RecordAdminComponent(libraryClient.getBookProvider(), libraryClient.getRecordProvider());
         bookReservationComponent = new BookReservationComponent(libraryClient.getBookProvider(), libraryClient.getReaderProvider(),
                 libraryClient.getRecordProvider());

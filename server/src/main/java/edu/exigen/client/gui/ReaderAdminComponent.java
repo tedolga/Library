@@ -4,6 +4,7 @@ import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.LibraryProviderException;
 import edu.exigen.server.provider.ReaderProvider;
+import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +29,7 @@ public class ReaderAdminComponent {
     private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
     private Reader tableReader;
+    private String[] readerBooksInfo = new String[0];
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
@@ -36,9 +38,12 @@ public class ReaderAdminComponent {
     private JButton createButton;
     private JButton updateButton;
     private JButton deleteButton;
+    private JList reservedBooksList;
+    private ReservationRecordProvider recordProvider;
 
-    public ReaderAdminComponent(ReaderProvider readerProvider) throws RemoteException {
+    public ReaderAdminComponent(ReaderProvider readerProvider, ReservationRecordProvider recordProvider) throws RemoteException {
         this.readerProvider = readerProvider;
+        this.recordProvider = recordProvider;
         searchComponent = new ReaderSearchComponent(readerProvider);
         initComponents();
     }
@@ -55,6 +60,16 @@ public class ReaderAdminComponent {
                 lastNameField.setText(selectedReader != null ? selectedReader.getLastName() : "");
                 addressField.setText(selectedReader != null ? selectedReader.getAddress() : "");
                 dateOfBirthField.setText(selectedReader != null ? dateFormat.format(selectedReader.getDateOfBirth()) : "");
+//                List<Book> readerBooks = new ArrayList<Book>();
+//                try {
+//                    readerBooks = recordProvider.getReservedReaderBooks(tableReader);
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e.getMessage(), e);
+//                }
+//                readerBooksInfo = new String[readerBooks.size()];
+//                for (int i = 0; i < readerBooks.size(); i++) {
+//                    readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
+//                }
                 tableReader = selectedReader;
             }
         });
@@ -72,27 +87,32 @@ public class ReaderAdminComponent {
         java.util.List<JComponent> adminComponents = new ArrayList<JComponent>();
         JLabel firstNameLabel = new JLabel("First Name :");
         adminComponents.add(firstNameLabel);
-        firstNameField = new JTextField(20);
+        firstNameField = new JTextField();
         adminComponents.add(firstNameField);
         JLabel lastNameLabel = new JLabel("Last Name :");
         adminComponents.add(lastNameLabel);
-        lastNameField = new JTextField(20);
+        lastNameField = new JTextField();
         adminComponents.add(lastNameField);
         JLabel addressLabel = new JLabel("Address:");
         adminComponents.add(addressLabel);
-        addressField = new JTextField(20);
+        addressField = new JTextField();
         adminComponents.add(addressField);
         JLabel dateOfBirthLabel = new JLabel("Date of birth:");
         adminComponents.add(dateOfBirthLabel);
-        dateOfBirthField = new JTextField(20);
+        dateOfBirthField = new JTextField();
+        dateOfBirthField.setText(LibraryConstraints.LIBRARY_DATE_PATTERN);
         adminComponents.add(dateOfBirthField);
+        JLabel reservedBooksLabel = new JLabel("Currently reserved books:");
+        adminComponents.add(reservedBooksLabel);
+        reservedBooksList = new JList(readerBooksInfo);
+        reservedBooksList.setEnabled(false);
+        adminComponents.add(reservedBooksList);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
     }
 
     private void fillAdminPanel(java.util.List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.EAST;
         c.weighty = 1;
         c.weightx = 1;
         c.gridx = 0;

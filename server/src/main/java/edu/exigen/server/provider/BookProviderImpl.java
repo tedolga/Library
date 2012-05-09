@@ -25,7 +25,7 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         this.recordProvider = recordProvider;
     }
 
-    public void createBook(Book book) throws LibraryProviderException, RemoteException {
+    public synchronized void createBook(Book book) throws LibraryProviderException, RemoteException {
         checkISBNCount(book);
         Book sameBook = isbnCash.get(book.getIsbn());
         if (sameBook == null) {
@@ -49,7 +49,7 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         }
     }
 
-    public void updateBook(Book oldBook, Book newBook) throws LibraryProviderException, RemoteException {
+    public synchronized void updateBook(Book oldBook, Book newBook) throws LibraryProviderException, RemoteException {
         Book copyOld = oldBook.copyBook();
         int newBookCount = newBook.getCount();
         int reservedBookCount = recordProvider.getReservedBookCount(oldBook.getId());
@@ -73,7 +73,7 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         }
     }
 
-    public void deleteBooks(Book book, int deleteCount) throws LibraryProviderException, RemoteException {
+    public synchronized void deleteBooks(Book book, int deleteCount) throws LibraryProviderException, RemoteException {
         int bookCount = getBookCount(book);
         checkDeletionChance(book, deleteCount);
         if (bookCount <= deleteCount) {

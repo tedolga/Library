@@ -3,6 +3,7 @@ package edu.exigen.client.gui;
 import edu.exigen.client.entities.Book;
 import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.LibraryProviderException;
+import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class BookAdminComponent {
     private static final String DELETE_BUTTON_NAME = "Delete";
 
     private BookProvider bookProvider;
+    private ReservationRecordProvider reservationRecordProvider;
     private BookSearchComponent searchComponent;
     private Book tableBook;
     private JTextField isbnField;
@@ -35,9 +37,11 @@ public class BookAdminComponent {
     private JButton createButton;
     private JButton updateButton;
     private JButton deleteButton;
+    private JTextField reservedBookCountField;
 
-    public BookAdminComponent(BookProvider bookProvider) throws RemoteException {
+    public BookAdminComponent(BookProvider bookProvider, ReservationRecordProvider reservationRecordProvider) throws RemoteException {
         this.bookProvider = bookProvider;
+        this.reservationRecordProvider = reservationRecordProvider;
         searchComponent = new BookSearchComponent(bookProvider);
         initComponents();
     }
@@ -56,6 +60,12 @@ public class BookAdminComponent {
                 topicField.setText(selectedBook != null ? selectedBook.getTopic() : "");
                 yearField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
                 countField.setText(selectedBook != null ? String.valueOf(selectedBook.getCount()) : "");
+                try {
+                    reservedBookCountField.setText(selectedBook != null ? String.valueOf
+                            (reservationRecordProvider.getReservedBookCount(selectedBook.getId())) : "");
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
                 tableBook = selectedBook;
             }
         });
@@ -73,35 +83,39 @@ public class BookAdminComponent {
         List<JComponent> adminComponents = new ArrayList<JComponent>();
         JLabel isbn = new JLabel("ISBN :");
         adminComponents.add(isbn);
-        isbnField = new JTextField(20);
+        isbnField = new JTextField();
         adminComponents.add(isbnField);
         JLabel titleLabel = new JLabel("Title :");
         adminComponents.add(titleLabel);
-        titleField = new JTextField(20);
+        titleField = new JTextField();
         adminComponents.add(titleField);
         JLabel authorLabel = new JLabel("Author :");
         adminComponents.add(authorLabel);
-        authorField = new JTextField(20);
+        authorField = new JTextField();
         adminComponents.add(authorField);
         JLabel topicLabel = new JLabel("Topic:");
         adminComponents.add(topicLabel);
-        topicField = new JTextField(20);
+        topicField = new JTextField();
         adminComponents.add(topicField);
         JLabel yearLabel = new JLabel("Year:");
         adminComponents.add(yearLabel);
-        yearField = new JTextField(20);
+        yearField = new JTextField();
         adminComponents.add(yearField);
-        JLabel countLabel = new JLabel("Count:");
+        JLabel countLabel = new JLabel("Count of copies:");
         adminComponents.add(countLabel);
-        countField = new JTextField(20);
+        countField = new JTextField();
         adminComponents.add(countField);
+        JLabel countOfReservedLabel = new JLabel("Count of reserved copies");
+        adminComponents.add(countOfReservedLabel);
+        reservedBookCountField = new JTextField();
+        reservedBookCountField.setEnabled(false);
+        adminComponents.add(reservedBookCountField);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
     }
 
     private void fillAdminPanel(List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.EAST;
         c.weighty = 1;
         c.weightx = 1;
         c.gridx = 0;
