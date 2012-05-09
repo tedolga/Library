@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,27 +17,24 @@ import java.util.List;
 public class ReaderSearchComponent {
     private static final String PANEL_NAME = "Reader Search";
     private static final String SEARCH_LABEL = "Search: ";
-    private static final String GET_ALL_BUTTON_TEXT = "Get ALL";
     private static final String SEARCH_BUTTON_TEXT = "Search";
 
     private JPanel readerSearchPanel;
     private JTextField searchField;
-    private JButton getAllButton;
-    private JButton searchButton;
-    private JTable readerTable;
 
     private ReaderProvider readerProvider;
     private ReaderTableModel readerTableModel;
 
-    public ReaderSearchComponent(ReaderProvider readerProvider) {
+    public ReaderSearchComponent(ReaderProvider readerProvider) throws RemoteException {
         this.readerProvider = readerProvider;
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
-        readerTableModel = new ReaderTableModel(new ArrayList<Reader>());
-        readerTable = new JTable(readerTableModel);
+        readerTableModel = new ReaderTableModel(readerProvider.readAll());
+        JTable readerTable = new JTable(readerTableModel);
+        readerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(readerTable);
         readerTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         readerSearchPanel = new JPanel();
@@ -55,10 +51,8 @@ public class ReaderSearchComponent {
     public JPanel createDataEnterPanel() {
         JLabel searchLabel = new JLabel(SEARCH_LABEL);
         searchField = new JTextField();
-        searchButton = new JButton(SEARCH_BUTTON_TEXT);
+        JButton searchButton = new JButton(SEARCH_BUTTON_TEXT);
         searchButton.addActionListener(new SearchButtonListener());
-        getAllButton = new JButton(GET_ALL_BUTTON_TEXT);
-        getAllButton.addActionListener(new GetALLButtonListener());
         JPanel dataEnterPanel = new JPanel();
         dataEnterPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -76,9 +70,6 @@ public class ReaderSearchComponent {
         c.gridx = 2;
         c.weightx = 0.5;
         dataEnterPanel.add(searchButton, c);
-        c.weighty = 0;
-        c.gridy = 2;
-        dataEnterPanel.add(getAllButton, c);
         return dataEnterPanel;
     }
 
@@ -90,23 +81,11 @@ public class ReaderSearchComponent {
         public void actionPerformed(ActionEvent e) {
             List<Reader> readers;
             try {
-                readers = readerProvider.searchReaders(searchField.getText());
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
-            readerTableModel.setTableData(readers);
-            readerTableModel.fireTableRowsInserted(0, readers.size() - 1);
-        }
-    }
-
-    private class GetALLButtonListener implements ActionListener {
-        /**
-         * Invoked when an action occurs.
-         */
-        public void actionPerformed(ActionEvent e) {
-            List<Reader> readers;
-            try {
-                readers = readerProvider.readAll();
+                if (!"".equals(searchField.getText())) {
+                    readers = readerProvider.searchReaders(searchField.getText());
+                } else {
+                    readers = readerProvider.readAll();
+                }
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }

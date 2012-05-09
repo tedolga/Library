@@ -1,18 +1,24 @@
 package edu.exigen.client.gui;
 
+import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
+import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.table.AbstractTableModel;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookTableModel extends AbstractTableModel {
-    private List<Book> tableData;
+public class RecordTableModel extends AbstractTableModel {
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+    BookProvider bookProvider;
+    private List<ReservationRecord> tableData;
 
-    public BookTableModel(List<Book> tableData) {
+    public RecordTableModel(List<ReservationRecord> tableData, BookProvider bookProvider) {
         this.tableData = tableData;
     }
 
@@ -21,7 +27,7 @@ public class BookTableModel extends AbstractTableModel {
     }
 
     public int getColumnCount() {
-        return 6;
+        return 5;
     }
 
     public String getColumnName(int columnIndex) {
@@ -29,15 +35,13 @@ public class BookTableModel extends AbstractTableModel {
             case 0:
                 return "id";
             case 1:
-                return "ISBN";
+                return "Library card";
             case 2:
-                return "Title";
+                return "BookISBN";
             case 3:
-                return "Author";
+                return "Date of Issue";
             case 4:
-                return "Topic";
-            case 5:
-                return "Year";
+                return "Date of Return";
             default:
                 return "";
         }
@@ -48,45 +52,43 @@ public class BookTableModel extends AbstractTableModel {
             case 0:
                 return Integer.class;
             case 1:
-                return String.class;
+                return Integer.class;
             case 2:
                 return String.class;
             case 3:
                 return String.class;
             case 4:
                 return String.class;
-            case 5:
-                return Integer.class;
             default:
                 return Object.class;
         }
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Book book = tableData.get(rowIndex);
+        ReservationRecord record = tableData.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return book.getId();
+                return record.getId();
             case 1:
-                return book.getIsbn();
+                return record.getReaderId();
             case 2:
-                return book.getTitle();
+                Book book;
+                try {
+                    book = bookProvider.getBookById(record.getBookId());
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+                return (book != null) ? book.getIsbn() : "";
             case 3:
-                return book.getAuthor();
+                return dateFormat.format(record.getIssueDate());
             case 4:
-                return book.getTopic();
-            case 5:
-                return book.getYear();
+                return dateFormat.format(record.getReturnDate());
             default:
                 return Object.class;
         }
     }
 
-    public void setTableData(List<Book> tableData) {
+    public void setTableData(List<ReservationRecord> tableData) {
         this.tableData = tableData;
-    }
-
-    public List<Book> getTableData() {
-        return tableData;
     }
 }

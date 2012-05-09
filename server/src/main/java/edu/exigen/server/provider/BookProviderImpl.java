@@ -113,6 +113,11 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         return bookDAO.readAll();
     }
 
+    @Override
+    public Book getBookById(int id) throws RemoteException, LibraryDAOException {
+        return bookDAO.readBook(id);
+    }
+
     public void loadData() throws LibraryProviderException, RemoteException {
         try {
             bookDAO.loadStorage();

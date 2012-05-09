@@ -37,7 +37,7 @@ public class ReaderAdminComponent {
     private JButton updateButton;
     private JButton deleteButton;
 
-    public ReaderAdminComponent(ReaderProvider readerProvider) {
+    public ReaderAdminComponent(ReaderProvider readerProvider) throws RemoteException {
         this.readerProvider = readerProvider;
         searchComponent = new ReaderSearchComponent(readerProvider);
         initComponents();

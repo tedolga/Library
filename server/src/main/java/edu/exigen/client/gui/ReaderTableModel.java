@@ -30,7 +30,7 @@ public class ReaderTableModel extends AbstractTableModel {
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "id";
+                return "Library Card";
             case 1:
                 return "First Name";
             case 2:

@@ -3,6 +3,7 @@ package edu.exigen.client.gui;
 import edu.exigen.client.LibraryClient;
 
 import javax.swing.*;
+import java.rmi.RemoteException;
 
 /**
  * @author Tedikova O.
@@ -15,11 +16,16 @@ public class LibraryClientComponent {
     private static final int FRAME_HEIGHT = 700;
     private BookAdminComponent bookAdminComponent;
     private ReaderAdminComponent readerAdminComponent;
+    private RecordAdminComponent recordAdminComponent;
+    private BookReservationComponent bookReservationComponent;
     private JFrame libraryClientFrame;
 
-    public LibraryClientComponent(LibraryClient libraryClient) {
+    public LibraryClientComponent(LibraryClient libraryClient) throws RemoteException {
         bookAdminComponent = new BookAdminComponent(libraryClient.getBookProvider());
         readerAdminComponent = new ReaderAdminComponent(libraryClient.getReaderProvider());
+        recordAdminComponent = new RecordAdminComponent(libraryClient.getBookProvider(), libraryClient.getRecordProvider());
+        bookReservationComponent = new BookReservationComponent(libraryClient.getBookProvider(), libraryClient.getReaderProvider(),
+                libraryClient.getRecordProvider());
         libraryClientFrame = new JFrame(LIBRARY_CLIENT_NAME);
         initFrameComponents();
     }
@@ -27,10 +33,14 @@ public class LibraryClientComponent {
     private void initFrameComponents() {
         JTabbedPane bookAdministrationTab = new JTabbedPane();
         libraryClientFrame.setSize(FRAME_WIDHT, FRAME_HEIGHT);
+        JPanel bookReservationPanel = bookReservationComponent.getReservationPanel();
         JPanel bookAdminPanel = bookAdminComponent.getAdminPanel();
         JPanel readerAdminPanel = readerAdminComponent.getAdminPanel();
+        JPanel recordAdminPanel = recordAdminComponent.getRecordAdminPanel();
+        bookAdministrationTab.addTab(bookReservationPanel.getName(), bookReservationPanel);
         bookAdministrationTab.addTab(bookAdminPanel.getName(), bookAdminPanel);
         bookAdministrationTab.addTab(readerAdminPanel.getName(), readerAdminPanel);
+        bookAdministrationTab.addTab(recordAdminPanel.getName(), recordAdminPanel);
         libraryClientFrame.add(bookAdministrationTab);
         libraryClientFrame.setLocationRelativeTo(null);
         libraryClientFrame.setVisible(true);

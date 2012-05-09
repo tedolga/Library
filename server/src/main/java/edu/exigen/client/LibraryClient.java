@@ -7,7 +7,6 @@ import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.swing.*;
 
 /**
@@ -46,7 +45,7 @@ public class LibraryClient {
                     clientFrame.setVisible(true);
                 }
             });
-        } catch (NamingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }

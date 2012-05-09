@@ -1,6 +1,7 @@
 package edu.exigen.server.provider;
 
 import edu.exigen.client.entities.Book;
+import edu.exigen.server.dao.LibraryDAOException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -22,4 +23,6 @@ public interface BookProvider extends Remote {
     List<Book> searchBooks(String searchString) throws RemoteException;
 
     List<Book> readAll() throws RemoteException;
+
+    Book getBookById(int id) throws RemoteException, LibraryDAOException;
 }

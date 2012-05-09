@@ -24,6 +24,7 @@ public class BookAdminComponent {
 
     private BookProvider bookProvider;
     private BookSearchComponent searchComponent;
+    private JTextField idField;
     private JTextField isbnField;
     private JTextField titleField;
     private JTextField authorField;
@@ -35,7 +36,7 @@ public class BookAdminComponent {
     private JButton updateButton;
     private JButton deleteButton;
 
-    public BookAdminComponent(BookProvider bookProvider) {
+    public BookAdminComponent(BookProvider bookProvider) throws RemoteException {
         this.bookProvider = bookProvider;
         searchComponent = new BookSearchComponent(bookProvider);
         initComponents();
@@ -57,6 +58,7 @@ public class BookAdminComponent {
     private JPanel createAdminPanel() {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
+        idField = new JTextField();
         List<JComponent> adminComponents = new ArrayList<JComponent>();
         JLabel isbn = new JLabel("ISBN :");
         adminComponents.add(isbn);

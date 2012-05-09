@@ -4,11 +4,12 @@ import edu.exigen.client.entities.Book;
 import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,27 +19,26 @@ import java.util.List;
 public class BookSearchComponent {
     private static final String PANEL_NAME = "Book Search";
     private static final String SEARCH_LABEL = "Search: ";
-    private static final String GET_ALL_BUTTON_TEXT = "Get ALL";
     private static final String SEARCH_BUTTON_TEXT = "Search";
 
     private JPanel bookSearchPanel;
     private JTextField searchField;
-    private JButton getAllButton;
-    private JButton searchButton;
-    private JTable bookTable;
 
     private BookProvider bookProvider;
     private BookTableModel bookTableModel;
 
-    public BookSearchComponent(BookProvider bookProvider) {
+    public BookSearchComponent(BookProvider bookProvider) throws RemoteException {
         this.bookProvider = bookProvider;
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
-        bookTableModel = new BookTableModel(new ArrayList<Book>());
-        bookTable = new JTable(bookTableModel);
+        bookTableModel = new BookTableModel(bookProvider.readAll());
+        JTable bookTable = new JTable(bookTableModel);
+        bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSelectionModel bookSelection = bookTable.getSelectionModel();
+        bookSelection.addListSelectionListener(new BookSelectionListener());
         JScrollPane scrollPane = new JScrollPane(bookTable);
         bookTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         bookSearchPanel = new JPanel();
@@ -55,10 +55,8 @@ public class BookSearchComponent {
     public JPanel createDataEnterPanel() {
         JLabel searchLabel = new JLabel(SEARCH_LABEL);
         searchField = new JTextField();
-        searchButton = new JButton(SEARCH_BUTTON_TEXT);
+        JButton searchButton = new JButton(SEARCH_BUTTON_TEXT);
         searchButton.addActionListener(new SearchButtonListener());
-        getAllButton = new JButton(GET_ALL_BUTTON_TEXT);
-        getAllButton.addActionListener(new GetALLButtonListener());
         JPanel dataEnterPanel = new JPanel();
         dataEnterPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -76,9 +74,6 @@ public class BookSearchComponent {
         c.gridx = 2;
         c.weightx = 0.5;
         dataEnterPanel.add(searchButton, c);
-        c.weighty = 0;
-        c.gridy = 2;
-        dataEnterPanel.add(getAllButton, c);
         return dataEnterPanel;
     }
 
@@ -90,7 +85,11 @@ public class BookSearchComponent {
         public void actionPerformed(ActionEvent e) {
             List<Book> books;
             try {
-                books = bookProvider.searchBooks(searchField.getText());
+                if (!"".equals(searchField.getText())) {
+                    books = bookProvider.searchBooks(searchField.getText());
+                } else {
+                    books = bookProvider.readAll();
+                }
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
@@ -99,19 +98,19 @@ public class BookSearchComponent {
         }
     }
 
-    private class GetALLButtonListener implements ActionListener {
+    private class BookSelectionListener implements ListSelectionListener {
         /**
-         * Invoked when an action occurs.
+         * Called whenever the value of the selection changes.
+         *
+         * @param e the event that characterizes the change.
          */
-        public void actionPerformed(ActionEvent e) {
-            List<Book> books;
-            try {
-                books = bookProvider.readAll();
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+            if (!lsm.isSelectionEmpty()) {
+                int selectedRow = lsm.getMinSelectionIndex();
+                Book selectedBook = bookTableModel.getTableData().get(selectedRow);
             }
-            bookTableModel.setTableData(books);
-            bookTableModel.fireTableRowsInserted(0, books.size() - 1);
         }
     }
 }
