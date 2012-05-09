@@ -27,7 +27,7 @@ public class ReaderAdminComponent {
 
     private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
-    private JTextField idField;
+    private int readerId;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
@@ -48,6 +48,16 @@ public class ReaderAdminComponent {
         adminPanel.setName(ADMIN_PANEL_NAME);
         JPanel searchPanel = searchComponent.getReaderSearchPanel();
         JPanel readerAdminPanel = createAdminPanel();
+        searchComponent.addReaderSelectionListener(new ReaderSelectionListener() {
+            @Override
+            public void readerSelected(Reader selectedReader) {
+                firstNameField.setText(selectedReader != null ? selectedReader.getFirstName() : "");
+                lastNameField.setText(selectedReader != null ? selectedReader.getLastName() : "");
+                addressField.setText(selectedReader != null ? selectedReader.getAddress() : "");
+                dateOfBirthField.setText(selectedReader != null ? dateFormat.format(selectedReader.getDateOfBirth()) : "");
+                readerId = selectedReader != null ? selectedReader.getId() : 0;
+            }
+        });
         adminPanel.setLayout(new BorderLayout());
         adminPanel.add(searchPanel, BorderLayout.NORTH);
         adminPanel.add(readerAdminPanel, BorderLayout.CENTER);
@@ -60,7 +70,6 @@ public class ReaderAdminComponent {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
         java.util.List<JComponent> adminComponents = new ArrayList<JComponent>();
-        idField = new JTextField(20);
         JLabel firstNameLabel = new JLabel("First Name :");
         adminComponents.add(firstNameLabel);
         firstNameField = new JTextField(20);

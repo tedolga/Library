@@ -4,6 +4,8 @@ import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.ReaderProvider;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +26,7 @@ public class ReaderSearchComponent {
 
     private ReaderProvider readerProvider;
     private ReaderTableModel readerTableModel;
+    private JTable readerTable;
 
     public ReaderSearchComponent(ReaderProvider readerProvider) throws RemoteException {
         this.readerProvider = readerProvider;
@@ -33,7 +36,7 @@ public class ReaderSearchComponent {
     private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
         readerTableModel = new ReaderTableModel(readerProvider.readAll());
-        JTable readerTable = new JTable(readerTableModel);
+        readerTable = new JTable(readerTableModel);
         readerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(readerTable);
         readerTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
@@ -92,5 +95,22 @@ public class ReaderSearchComponent {
             readerTableModel.setTableData(readers);
             readerTableModel.fireTableRowsInserted(0, readers.size() - 1);
         }
+    }
+
+    public void addReaderSelectionListener(final ReaderSelectionListener selectionListener) {
+        final ListSelectionModel model = readerTable.getSelectionModel();
+        model.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                Reader selectedReader = null;
+                if (!lsm.isSelectionEmpty()) {
+                    int selectedRow = lsm.getMinSelectionIndex();
+                    selectedReader = readerTableModel.getTableData().get(selectedRow);
+                }
+                selectionListener.readerSelected(selectedReader);
+            }
+        });
     }
 }

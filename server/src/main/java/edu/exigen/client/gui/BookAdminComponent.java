@@ -24,7 +24,7 @@ public class BookAdminComponent {
 
     private BookProvider bookProvider;
     private BookSearchComponent searchComponent;
-    private JTextField idField;
+    private int bookId;
     private JTextField isbnField;
     private JTextField titleField;
     private JTextField authorField;
@@ -47,6 +47,18 @@ public class BookAdminComponent {
         adminPanel.setName(ADMIN_PANEL_NAME);
         JPanel searchPanel = searchComponent.getBookSearchPanel();
         JPanel bookAdminPanel = createAdminPanel();
+        searchComponent.addBookSelectionListener(new BookSelectionListener() {
+            @Override
+            public void bookSelected(Book selectedBook) {
+                isbnField.setText(selectedBook != null ? selectedBook.getIsbn() : "");
+                titleField.setText(selectedBook != null ? selectedBook.getTitle() : "");
+                authorField.setText(selectedBook != null ? selectedBook.getAuthor() : "");
+                topicField.setText(selectedBook != null ? selectedBook.getTopic() : "");
+                yearField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
+                countField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
+                bookId = selectedBook != null ? selectedBook.getId() : 0;
+            }
+        });
         adminPanel.setLayout(new BorderLayout());
         adminPanel.add(searchPanel, BorderLayout.NORTH);
         adminPanel.add(bookAdminPanel, BorderLayout.CENTER);
@@ -58,7 +70,6 @@ public class BookAdminComponent {
     private JPanel createAdminPanel() {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
-        idField = new JTextField();
         List<JComponent> adminComponents = new ArrayList<JComponent>();
         JLabel isbn = new JLabel("ISBN :");
         adminComponents.add(isbn);
@@ -111,6 +122,7 @@ public class BookAdminComponent {
     public JPanel getAdminPanel() {
         return adminPanel;
     }
+
 
     private JPanel createButtonPanel() {
         createButton = new JButton(CREATE_BUTTON_NAME);

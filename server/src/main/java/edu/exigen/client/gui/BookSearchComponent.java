@@ -26,6 +26,7 @@ public class BookSearchComponent {
 
     private BookProvider bookProvider;
     private BookTableModel bookTableModel;
+    private JTable bookTable;
 
     public BookSearchComponent(BookProvider bookProvider) throws RemoteException {
         this.bookProvider = bookProvider;
@@ -35,10 +36,8 @@ public class BookSearchComponent {
     private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
         bookTableModel = new BookTableModel(bookProvider.readAll());
-        JTable bookTable = new JTable(bookTableModel);
+        bookTable = new JTable(bookTableModel);
         bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionModel bookSelection = bookTable.getSelectionModel();
-        bookSelection.addListSelectionListener(new BookSelectionListener());
         JScrollPane scrollPane = new JScrollPane(bookTable);
         bookTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         bookSearchPanel = new JPanel();
@@ -98,19 +97,23 @@ public class BookSearchComponent {
         }
     }
 
-    private class BookSelectionListener implements ListSelectionListener {
-        /**
-         * Called whenever the value of the selection changes.
-         *
-         * @param e the event that characterizes the change.
-         */
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-            if (!lsm.isSelectionEmpty()) {
-                int selectedRow = lsm.getMinSelectionIndex();
-                Book selectedBook = bookTableModel.getTableData().get(selectedRow);
+    public void addBookSelectionListener(final BookSelectionListener selectionListener) {
+        final ListSelectionModel model = bookTable.getSelectionModel();
+        model.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                Book selectedBook = null;
+                if (!lsm.isSelectionEmpty()) {
+                    int selectedRow = lsm.getMinSelectionIndex();
+                    selectedBook = bookTableModel.getTableData().get(selectedRow);
+                }
+                selectionListener.bookSelected(selectedBook);
             }
+
         }
+
+        );
     }
 }
