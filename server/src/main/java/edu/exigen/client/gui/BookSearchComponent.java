@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.List;
 public class BookSearchComponent {
     private static final String PANEL_NAME = "Book Search";
     private static final String SEARCH_LABEL = "Search: ";
-    private static final String SEARCH_BUTTON_TEXT = "Search";
 
     private JPanel bookSearchPanel;
     private JTextField searchField;
@@ -55,30 +55,25 @@ public class BookSearchComponent {
     public JPanel createDataEnterPanel() {
         JLabel searchLabel = new JLabel(SEARCH_LABEL);
         searchField = new JTextField();
-        JButton searchButton = new JButton(SEARCH_BUTTON_TEXT);
-        searchButton.addActionListener(new SearchButtonListener());
+        searchField.registerKeyboardAction(new SearchListener(), KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
         JPanel dataEnterPanel = new JPanel();
         dataEnterPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.EAST;
+        c.fill = GridBagConstraints.NONE;
         c.weighty = 1;
-        c.weightx = 0.5;
+        c.weightx = 0.0;
         c.gridx = 0;
         c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
         dataEnterPanel.add(searchLabel, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridx = 1;
         dataEnterPanel.add(searchField, c);
-        c.fill = GridBagConstraints.CENTER;
-        c.gridx = 2;
-        c.weightx = 0.5;
-        dataEnterPanel.add(searchButton, c);
         return dataEnterPanel;
     }
 
-
-    private class SearchButtonListener implements ActionListener {
+    private class SearchListener implements ActionListener {
         /**
          * Invoked when an action occurs.
          */
@@ -86,7 +81,7 @@ public class BookSearchComponent {
             List<Book> books;
             int rowCount = bookTableModel.getRowCount();
             bookTableModel.setTableData(Collections.<Book>emptyList());
-            bookTableModel.fireTableRowsDeleted(0, rowCount - 1);
+            bookTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
                 if (!"".equals(searchField.getText())) {
                     books = bookProvider.searchBooks(searchField.getText());
@@ -97,7 +92,7 @@ public class BookSearchComponent {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
             bookTableModel.setTableData(books);
-            bookTableModel.fireTableRowsInserted(0, books.size() - 1);
+            bookTableModel.fireTableRowsInserted(0, Math.max(0, books.size() - 1));
         }
     }
 

@@ -21,22 +21,20 @@ public class BookTableModel extends AbstractTableModel {
     }
 
     public int getColumnCount() {
-        return 6;
+        return 5;
     }
 
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "id";
-            case 1:
                 return "ISBN";
-            case 2:
+            case 1:
                 return "Title";
-            case 3:
+            case 2:
                 return "Author";
-            case 4:
+            case 3:
                 return "Topic";
-            case 5:
+            case 4:
                 return "Year";
             default:
                 return "";
@@ -46,7 +44,7 @@ public class BookTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return Integer.class;
+                return String.class;
             case 1:
                 return String.class;
             case 2:
@@ -54,8 +52,6 @@ public class BookTableModel extends AbstractTableModel {
             case 3:
                 return String.class;
             case 4:
-                return String.class;
-            case 5:
                 return Integer.class;
             default:
                 return Object.class;
@@ -66,16 +62,14 @@ public class BookTableModel extends AbstractTableModel {
         Book book = tableData.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return book.getId();
-            case 1:
                 return book.getIsbn();
-            case 2:
+            case 1:
                 return book.getTitle();
-            case 3:
+            case 2:
                 return book.getAuthor();
-            case 4:
+            case 3:
                 return book.getTopic();
-            case 5:
+            case 4:
                 return book.getYear();
             default:
                 return Object.class;

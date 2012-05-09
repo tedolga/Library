@@ -114,14 +114,14 @@ public class RecordAdminComponent {
             List<ReservationRecord> records;
             int rowCount = recordTableModel.getRowCount();
             recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
-            recordTableModel.fireTableRowsDeleted(0, rowCount - 1);
+            recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
                 records = recordProvider.readAll();
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
             recordTableModel.setTableData(records);
-            recordTableModel.fireTableRowsInserted(0, records.size() - 1);
+            recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
         }
     }
 
