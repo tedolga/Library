@@ -114,6 +114,7 @@ public class BookSearchComponent {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
             bookTableModel.setTableData(books);
+            bookTableModel.fireTableRowsInserted(0, books.size() - 1);
         }
     }
 }

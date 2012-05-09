@@ -36,19 +36,27 @@ public class BookAdminComponentFrame extends JFrame {
 
 
     public static void main(String[] args) {
+        final BookDAO bookDAO = new BookDAO("book.xml");
+        final ReaderDAO readerDAO = new ReaderDAO("readers.xml");
+        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("records.xml");
+        ReservationRecordProviderImpl recordProvider = null;
+        try {
+            recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
+        } catch (RemoteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        BookProvider provider = null;
+        try {
+            provider = new BookProviderImpl(bookDAO, recordProvider);
+        } catch (RemoteException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        final BookAdminComponent adminComponent = new BookAdminComponent(provider);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                BookDAO bookDAO = new BookDAO("book.xml");
-                ReaderDAO readerDAO = new ReaderDAO("readers.xml");
-                ReservationRecordDAO recordDAO = new ReservationRecordDAO("records.xml");
-                try {
-                    ReservationRecordProviderImpl recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
-                    BookProvider provider = new BookProviderImpl(bookDAO, recordProvider);
-                    BookAdminComponent adminComponent = new BookAdminComponent(provider);
-                    final BookAdminComponentFrame testFrame = new BookAdminComponentFrame(adminComponent.getAdminPanel());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+
+                final BookAdminComponentFrame testFrame = new BookAdminComponentFrame(adminComponent.getAdminPanel());
+                testFrame.setVisible(true);
             }
         });
 

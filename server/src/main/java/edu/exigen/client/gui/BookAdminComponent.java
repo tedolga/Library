@@ -92,19 +92,18 @@ public class BookAdminComponent {
         c.weightx = 1;
         c.gridx = 0;
         c.gridy = 0;
+        c.fill = GridBagConstraints.BOTH;
         for (int i = 0; i < components.size(); i++) {
             panel.add(components.get(i), c);
             if (i % 2 == 0) {
-                c.fill = GridBagConstraints.WEST;
                 c.gridx = 1;
-
             } else {
-                c.fill = GridBagConstraints.EAST;
                 c.gridy += 1;
                 c.gridx = 0;
             }
         }
     }
+
 
     public JPanel getAdminPanel() {
         return adminPanel;

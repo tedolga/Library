@@ -2,15 +2,14 @@ package edu.exigen.client.gui;
 
 import edu.exigen.client.entities.Book;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookTableModel implements TableModel {
+public class BookTableModel extends AbstractTableModel {
     private List<Book> tableData;
 
     public BookTableModel(List<Book> tableData) {
@@ -85,18 +84,6 @@ public class BookTableModel implements TableModel {
             default:
                 return Object.class;
         }
-    }
-
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-    }
-
-    public void addTableModelListener(TableModelListener l) {
-
-    }
-
-    public void removeTableModelListener(TableModelListener l) {
-
     }
 
     public List<Book> getTableData() {
