@@ -69,10 +69,10 @@ public class ReservationRecordProviderTest {
         bookProvider.createBook(book);
         Calendar returnDate = Calendar.getInstance();
         returnDate.add(Calendar.DAY_OF_MONTH, 14);
-        recordProvider.createRecord(reader, book, returnDate.getTime());
-        recordProvider.createRecord(reader, book, returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
         try {
-            recordProvider.createRecord(reader, book, returnDate.getTime());
+            recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
             Assert.assertTrue(false);
         } catch (LibraryProviderException e) {
             System.out.println(e.getMessage());
@@ -90,6 +90,6 @@ public class ReservationRecordProviderTest {
         Book book = bookProvider.searchBooks("6767-466-676-77").get(0);
         Calendar returnDate = Calendar.getInstance();
         returnDate.add(Calendar.DAY_OF_MONTH, 14);
-        recordProvider.createRecord(reader, book, returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
     }
 }

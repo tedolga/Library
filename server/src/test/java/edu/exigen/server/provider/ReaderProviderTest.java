@@ -106,7 +106,7 @@ public class ReaderProviderTest {
         Reader reader = provider.searchReaders("1").get(0);
         Calendar returnDate = Calendar.getInstance();
         returnDate.add(Calendar.DAY_OF_MONTH, 14);
-        recordProvider.createRecord(reader, book, returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
         try {
             provider.deleteReader(reader);
             Assert.assertTrue(false);

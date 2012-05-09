@@ -31,10 +31,9 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
         this.recordDAO = recordDAO;
     }
 
-    public void createRecord(Reader reader, Book book, Date dateOfReturn) throws LibraryProviderException, RemoteException {
-        int bookId = book.getId();
+    public void createRecord(int readerId, int bookId, Date dateOfReturn) throws LibraryProviderException, RemoteException {
         checkAvailableBooks(bookId);
-        ReservationRecord record = createReservationRecord(reader, book, dateOfReturn);
+        ReservationRecord record = createReservationRecord(readerId, bookId, dateOfReturn);
         try {
             recordDAO.createRecord(record);
         } catch (LibraryDAOException e) {
@@ -94,10 +93,10 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
         return reservedBooks;
     }
 
-    private ReservationRecord createReservationRecord(Reader reader, Book book, Date dateOfReturn) {
+    private ReservationRecord createReservationRecord(int readerId, int bookId, Date dateOfReturn) {
         ReservationRecord reservationRecord = new ReservationRecord();
-        reservationRecord.setBookId(book.getId());
-        reservationRecord.setReaderId(reader.getId());
+        reservationRecord.setBookId(readerId);
+        reservationRecord.setReaderId(bookId);
         reservationRecord.setIssueDate(new Date());
         reservationRecord.setReturnDate(dateOfReturn);
         return reservationRecord;

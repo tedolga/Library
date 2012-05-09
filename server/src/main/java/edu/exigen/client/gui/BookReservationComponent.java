@@ -1,5 +1,6 @@
 package edu.exigen.client.gui;
 
+import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.BookProvider;
@@ -8,13 +9,17 @@ import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
 public class BookReservationComponent {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private static final String ADMIN_PANEL_NAME = "Book Reservation";
     private static final String CREATE_BUTTON_NAME = "Reserve Book";
 
@@ -23,6 +28,8 @@ public class BookReservationComponent {
     private JPanel bookSearchPanel;
     private JPanel readerSearchPanel;
     private JPanel recordSummaryPanel;
+    private JButton reserveButton;
+    private JTextField returnDateField;
     private BookProvider bookProvider;
     private ReaderProvider readerProvider;
     private ReservationRecordProvider reservationRecordProvider;
@@ -33,6 +40,7 @@ public class BookReservationComponent {
             reservationRecordProvider) throws RemoteException {
         this.bookProvider = bookProvider;
         this.readerProvider = readerProvider;
+        this.reservationRecordProvider = reservationRecordProvider;
         initComponents();
     }
 
@@ -43,6 +51,9 @@ public class BookReservationComponent {
         readerSearchPanel = readerSearchComponent.getReaderSearchPanel();
         final RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
         recordSummaryPanel = recordSummaryComponent.getRecordSummaryPanel();
+        recordSummaryComponent.getIssueDateField().setEnabled(false);
+        recordSummaryComponent.getIssueDateField().setText("current date");
+        returnDateField = recordSummaryComponent.getReturnDateField();
         bookSearchComponent.addBookSelectionListener(new BookSelectionListener() {
             @Override
             public void bookSelected(Book selectedBook) {
@@ -58,7 +69,8 @@ public class BookReservationComponent {
                         .getId()) : "");
             }
         });
-        JButton reserveButton = new JButton(CREATE_BUTTON_NAME);
+        reserveButton = new JButton(CREATE_BUTTON_NAME);
+        reserveButton.addActionListener(new ReserveButtonListener());
         reservationPanel = new JPanel();
         reservationPanel.setName(ADMIN_PANEL_NAME);
         reservationPanel.setBorder(BorderFactory.createTitledBorder(ADMIN_PANEL_NAME));
@@ -81,5 +93,19 @@ public class BookReservationComponent {
 
     public JPanel getReservationPanel() {
         return reservationPanel;
+    }
+
+    private class ReserveButtonListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                reservationRecordProvider.createRecord(readerId, bookId, dateFormat.parse(returnDateField.getText()));
+            } catch (Exception ex) {
+                new RuntimeException(ex.getMessage(), ex);
+            }
+        }
     }
 }

@@ -55,7 +55,7 @@ public class BookAdminComponent {
                 authorField.setText(selectedBook != null ? selectedBook.getAuthor() : "");
                 topicField.setText(selectedBook != null ? selectedBook.getTopic() : "");
                 yearField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
-                countField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
+                countField.setText(selectedBook != null ? String.valueOf(selectedBook.getCount()) : "");
                 bookId = selectedBook != null ? selectedBook.getId() : 0;
             }
         });

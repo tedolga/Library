@@ -20,6 +20,7 @@ public class RecordTableModel extends AbstractTableModel {
 
     public RecordTableModel(List<ReservationRecord> tableData, BookProvider bookProvider) {
         this.tableData = tableData;
+        this.bookProvider = bookProvider;
     }
 
     public int getRowCount() {

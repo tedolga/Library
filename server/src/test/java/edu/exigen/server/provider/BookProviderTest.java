@@ -138,7 +138,7 @@ public class BookProviderTest {
         book = provider.searchBooks("2009").get(0);
         Calendar returnDate = Calendar.getInstance();
         returnDate.add(Calendar.DAY_OF_MONTH, 14);
-        recordProvider.createRecord(reader, book, returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
         provider.deleteBooks(book, 3);
         try {
             provider.deleteBooks(book, 1);

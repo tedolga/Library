@@ -66,39 +66,21 @@ public class RecordSummaryComponent {
         return libraryCardField;
     }
 
-    public void setLibraryCardField(JTextField libraryCardField) {
-        this.libraryCardField = libraryCardField;
-    }
-
     public JTextField getIsbnField() {
         return isbnField;
-    }
-
-    public void setIsbnField(JTextField isbnField) {
-        this.isbnField = isbnField;
     }
 
     public JTextField getIssueDateField() {
         return issueDateField;
     }
 
-    public void setIssueDateField(JTextField issueDateField) {
-        this.issueDateField = issueDateField;
-    }
-
     public JTextField getReturnDateField() {
         return returnDateField;
     }
 
-    public void setReturnDateField(JTextField returnDateField) {
-        this.returnDateField = returnDateField;
-    }
 
     public JPanel getRecordSummaryPanel() {
         return recordSummaryPanel;
     }
 
-    public void setRecordSummaryPanel(JPanel recordSummaryPanel) {
-        this.recordSummaryPanel = recordSummaryPanel;
-    }
 }
