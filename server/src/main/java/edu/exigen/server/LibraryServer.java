@@ -11,6 +11,7 @@ import edu.exigen.server.provider.ReservationRecordProviderImpl;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
@@ -27,16 +28,28 @@ public class LibraryServer {
     private static final String BOOK_PROVIDER_NAME = "rmi:book_provider";
     private static final String READER_PROVIDER_NAME = "rmi:reader_provider";
     private static final String RECORD_PROVIDER_NAME = "rmi:record_provider";
+    private static final int SERVER_PORT = 1099;
 
     private ReservationRecordProviderImpl recordProvider;
     private BookProviderImpl bookProvider;
     private ReaderProviderImpl readerProvider;
 
-    public static void main(String[] args) throws Exception {
-        LibraryServer libraryServer = new LibraryServer();
-        libraryServer.loadServer();
-        LocateRegistry.createRegistry(1099);
-        libraryServer.registerProviders();
+    public static void main(String[] args) {
+        try {
+            LibraryServer libraryServer = new LibraryServer();
+            libraryServer.loadServer();
+            LocateRegistry.createRegistry(SERVER_PORT);
+            libraryServer.registerProviders();
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server is already started.", "Library server", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        } catch (LibraryProviderException e) {
+            JOptionPane.showMessageDialog(null, "Can't load data, cause: " + e.getMessage(), "Library server", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        } catch (NamingException e) {
+            JOptionPane.showMessageDialog(null, "Can't find server providers, cause: " + e.getMessage(), "Library server", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        }
     }
 
     public LibraryServer() throws RemoteException {
@@ -60,5 +73,4 @@ public class LibraryServer {
         namingContext.bind(READER_PROVIDER_NAME, readerProvider);
         namingContext.bind(RECORD_PROVIDER_NAME, recordProvider);
     }
-
 }
