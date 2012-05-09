@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,13 +35,13 @@ public class RecordAdminComponent {
     private BookProvider bookProvider;
     private ReservationRecordProvider recordProvider;
     private RecordTableModel recordTableModel;
-    private int recordId;
     private JTextField libraryCardField;
     private JTextField isbnField;
     private JTextField issueDateField;
     private JTextField returnDateField;
     private JPanel recordSummaryPanel;
     private JTable recordTable;
+    private ReservationRecord tableRecord;
 
 
     public RecordAdminComponent(BookProvider bookProvider, ReservationRecordProvider recordProvider) throws RemoteException {
@@ -54,7 +55,7 @@ public class RecordAdminComponent {
         addRecordSelectionListener(new RecordSelectionListener() {
             @Override
             public void recordSelected(ReservationRecord selectedRecord) {
-                recordId = selectedRecord != null ? selectedRecord.getId() : 0;
+                tableRecord = selectedRecord;
                 libraryCardField.setText(selectedRecord != null ? String.valueOf(selectedRecord.getReaderId()) : "");
                 try {
                     isbnField.setText(selectedRecord != null ? bookProvider.getBookById(selectedRecord.getBookId()).getIsbn() : "");
@@ -72,6 +73,7 @@ public class RecordAdminComponent {
         issueDateField = recordSummaryComponent.getIssueDateField();
         returnDateField = recordSummaryComponent.getReturnDateField();
         JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new DeleteButtonListener());
         recordAdminPanel = new JPanel();
         recordAdminPanel.setName(PANEL_NAME);
         recordAdminPanel.setLayout(new BorderLayout());
@@ -110,6 +112,9 @@ public class RecordAdminComponent {
          */
         public void actionPerformed(ActionEvent e) {
             List<ReservationRecord> records;
+            int rowCount = recordTableModel.getRowCount();
+            recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
+            recordTableModel.fireTableRowsDeleted(0, rowCount - 1);
             try {
                 records = recordProvider.readAll();
             } catch (RemoteException e1) {
@@ -155,5 +160,19 @@ public class RecordAdminComponent {
         frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
         frame.setVisible(true);
         frame.pack();
+    }
+
+    private class DeleteButtonListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                recordProvider.deleteRecord(tableRecord);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
+            }
+        }
     }
 }

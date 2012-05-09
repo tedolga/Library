@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -83,6 +84,9 @@ public class ReaderSearchComponent {
          */
         public void actionPerformed(ActionEvent e) {
             List<Reader> readers;
+            int rowCount = readerTableModel.getRowCount();
+            readerTableModel.setTableData(Collections.<Reader>emptyList());
+            readerTableModel.fireTableRowsDeleted(0, rowCount - 1);
             try {
                 if (!"".equals(searchField.getText())) {
                     readers = readerProvider.searchReaders(searchField.getText());

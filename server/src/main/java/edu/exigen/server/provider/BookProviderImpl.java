@@ -54,7 +54,7 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         int newBookCount = newBook.getCount();
         int reservedBookCount = recordProvider.getReservedBookCount(oldBook.getId());
         if (newBookCount < reservedBookCount) {
-            throw new LibraryProviderException("Can't increase count of copies of book with ISBN " + oldBook.getIsbn() +
+            throw new LibraryProviderException("Can't decrease count of copies of book with ISBN " + oldBook.getIsbn() +
                     " to " + newBookCount + ", minimum value is " + reservedBookCount);
         }
         if (newBook.getCount() <= 5) {
@@ -219,7 +219,7 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         int reservedCount = recordProvider.getReservedBookCount(book.getId());
         int availableCount = bookCount - reservedCount;
         if (availableCount < deleteCount) {
-            throw new LibraryProviderException("Can't increase count of copies of book with ISBN " + book.getIsbn() + "" +
+            throw new LibraryProviderException("Can't decrease count of copies of book with ISBN " + book.getIsbn() + "" +
                     " on " + deleteCount + ", only " + availableCount + " can be deleted.");
         }
     }
