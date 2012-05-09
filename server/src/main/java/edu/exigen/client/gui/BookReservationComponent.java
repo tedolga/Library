@@ -47,10 +47,14 @@ public class BookReservationComponent {
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
-        reservationPanel.add(bookSearchPanel, BorderLayout.NORTH);
-        reservationPanel.add(readerSearchPanel, BorderLayout.CENTER);
-        reservationPanel.add(recordSummaryPanel, BorderLayout.CENTER);
-        reservationPanel.add(reserveButton, BorderLayout.SOUTH);
+        reservationPanel.add(bookSearchPanel, c);
+        c.gridy = 1;
+        reservationPanel.add(readerSearchPanel, c);
+        c.gridy = 2;
+        reservationPanel.add(recordSummaryPanel, c);
+        c.gridy = 3;
+        c.fill = GridBagConstraints.CENTER;
+        reservationPanel.add(reserveButton, c);
     }
 
     public JPanel getReservationPanel() {
