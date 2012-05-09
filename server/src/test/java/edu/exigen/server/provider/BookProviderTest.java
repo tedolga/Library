@@ -118,17 +118,38 @@ public class BookProviderTest {
         book.setCount(2);
         Assert.assertEquals(0, provider.getBookCount(book));
         Assert.assertEquals(0, provider.searchBooks(isbn).size());
+        book = provider.searchBooks("6767-466-676-78").get(0);
+        newBook = book.copyBook();
+        Reader reader = new Reader();
+        reader.setFirstName("Ivan");
+        reader.setLastName("Petrov");
+        reader.setAddress("34/5 Nevsky pr.");
+        Calendar returnDate = Calendar.getInstance();
+        returnDate.add(Calendar.DAY_OF_MONTH, 14);
+        reader.setDateOfBirth(new Date());
+        readerDAO.createReader(reader);
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
+        recordProvider.createRecord(reader.getId(), book.getId(), returnDate.getTime());
+        newBook.setCount(1);
+        try {
+            provider.updateBook(book, newBook);
+            Assert.assertTrue(false);
+        } catch (LibraryProviderException e) {
+            Assert.assertTrue(true);
+        }
+        newBook.setCount(4);
+        provider.updateBook(book, newBook);
     }
 
     @Test
     public void testDeleteBooks() throws Exception {
         Book book = provider.searchBooks("2006").get(0);
         provider.deleteBooks(book, 1);
-        Assert.assertEquals(1, provider.getBookCount(book));
-        Assert.assertEquals(1, provider.searchBooks("2006").get(0).getCount());
+        Assert.assertEquals(3, provider.getBookCount(book));
+        Assert.assertEquals(3, provider.searchBooks("2006").get(0).getCount());
         provider.deleteBooks(book, 1);
-        Assert.assertEquals(0, provider.getBookCount(book));
-        Assert.assertEquals(0, provider.searchBooks("2006").size());
+        Assert.assertEquals(2, provider.getBookCount(book));
+        Assert.assertEquals(1, provider.searchBooks("2006").size());
         Reader reader = new Reader();
         reader.setFirstName("Ivan");
         reader.setLastName("Petrov");

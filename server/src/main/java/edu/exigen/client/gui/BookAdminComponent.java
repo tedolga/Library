@@ -24,7 +24,7 @@ public class BookAdminComponent {
 
     private BookProvider bookProvider;
     private BookSearchComponent searchComponent;
-    private int bookId;
+    private Book tableBook;
     private JTextField isbnField;
     private JTextField titleField;
     private JTextField authorField;
@@ -56,7 +56,7 @@ public class BookAdminComponent {
                 topicField.setText(selectedBook != null ? selectedBook.getTopic() : "");
                 yearField.setText(selectedBook != null ? String.valueOf(selectedBook.getYear()) : "");
                 countField.setText(selectedBook != null ? String.valueOf(selectedBook.getCount()) : "");
-                bookId = selectedBook != null ? selectedBook.getId() : 0;
+                tableBook = selectedBook;
             }
         });
         adminPanel.setLayout(new BorderLayout());
@@ -128,6 +128,7 @@ public class BookAdminComponent {
         createButton = new JButton(CREATE_BUTTON_NAME);
         createButton.addActionListener(new CreateButtonListener());
         updateButton = new JButton(UPDATE_BUTTON_NAME);
+        updateButton.addActionListener(new UpdateButtonActionListener());
         deleteButton = new JButton(DELETE_BUTTON_NAME);
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createButton);
@@ -159,6 +160,28 @@ public class BookAdminComponent {
                 throw new RuntimeException(e1.getMessage(), e1);
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
+            }
+        }
+    }
+
+    private class UpdateButtonActionListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Book newBook = new Book();
+            newBook.setId(tableBook.getId());
+            newBook.setIsbn(isbnField.getText());
+            newBook.setTitle(titleField.getText());
+            newBook.setAuthor(authorField.getText());
+            newBook.setTopic(topicField.getText());
+            newBook.setYear(Integer.parseInt(yearField.getText()));
+            newBook.setCount(Integer.parseInt(countField.getText()));
+            try {
+                bookProvider.updateBook(tableBook, newBook);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
     }

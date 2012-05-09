@@ -51,6 +51,12 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
 
     public void updateBook(Book oldBook, Book newBook) throws LibraryProviderException, RemoteException {
         Book copyOld = oldBook.copyBook();
+        int newBookCount = newBook.getCount();
+        int reservedBookCount = recordProvider.getReservedBookCount(oldBook.getId());
+        if (newBookCount < reservedBookCount) {
+            throw new LibraryProviderException("Can't increase count of copies of book with ISBN " + oldBook.getIsbn() +
+                    " to " + newBookCount + ", minimum value is " + reservedBookCount);
+        }
         if (newBook.getCount() <= 5) {
             try {
                 bookDAO.updateBook(oldBook.getId(), newBook);
@@ -213,8 +219,8 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         int reservedCount = recordProvider.getReservedBookCount(book.getId());
         int availableCount = bookCount - reservedCount;
         if (availableCount < deleteCount) {
-            throw new LibraryProviderException("Can't delete " + deleteCount + " copies of book with ISBN " + book.getIsbn()
-                    + ", only " + availableCount + " can be deleted.");
+            throw new LibraryProviderException("Can't increase count of copies of book with ISBN " + book.getIsbn() + "" +
+                    " on " + deleteCount + ", only " + availableCount + " can be deleted.");
         }
     }
 }

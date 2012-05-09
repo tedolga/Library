@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Tedikova O.
@@ -102,9 +103,13 @@ public class BookReservationComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
+                Date currentDate = dateFormat.parse(returnDateField.getText());
+                if (currentDate.before(new Date())) {
+                    throw new IllegalArgumentException("Date of return must be after current date");
+                }
                 reservationRecordProvider.createRecord(readerId, bookId, dateFormat.parse(returnDateField.getText()));
             } catch (Exception ex) {
-                new RuntimeException(ex.getMessage(), ex);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
     }

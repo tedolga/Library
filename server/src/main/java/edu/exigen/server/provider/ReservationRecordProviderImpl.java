@@ -95,8 +95,8 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
 
     private ReservationRecord createReservationRecord(int readerId, int bookId, Date dateOfReturn) {
         ReservationRecord reservationRecord = new ReservationRecord();
-        reservationRecord.setBookId(readerId);
-        reservationRecord.setReaderId(bookId);
+        reservationRecord.setBookId(bookId);
+        reservationRecord.setReaderId(readerId);
         reservationRecord.setIssueDate(new Date());
         reservationRecord.setReturnDate(dateOfReturn);
         return reservationRecord;
