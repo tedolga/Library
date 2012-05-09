@@ -14,7 +14,6 @@ import javax.naming.NamingException;
 import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 /**
  * @author Tedikova O.
@@ -35,7 +34,7 @@ public class LibraryServer {
     private BookProviderImpl bookProvider;
     private ReaderProviderImpl readerProvider;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try {
             LibraryServer libraryServer = new LibraryServer();
             libraryServer.loadServer();
@@ -43,6 +42,12 @@ public class LibraryServer {
             libraryServer.registerProviders();
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Server is already started.", "Library server", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        } catch (LibraryProviderException e) {
+            JOptionPane.showMessageDialog(null, "Can't load data, cause: " + e.getMessage(), "Library server", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        } catch (NamingException e) {
+            JOptionPane.showMessageDialog(null, "Can't find server providers, cause: " + e.getMessage(), "Library server", JOptionPane.INFORMATION_MESSAGE);
             System.exit(-1);
         }
     }
