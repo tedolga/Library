@@ -1,5 +1,6 @@
 package edu.exigen.server.provider;
 
+import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
@@ -17,7 +18,7 @@ import java.util.Date;
  * @version 1.0
  */
 public class ReaderProviderTest {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private static final String READER_PROVIDED_XML = "readerProvided.xml";
     private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";

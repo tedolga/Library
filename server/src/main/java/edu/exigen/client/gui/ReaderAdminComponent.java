@@ -1,54 +1,56 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.server.provider.BookProvider;
+import edu.exigen.LibraryConstraints;
+import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.LibraryProviderException;
+import edu.exigen.server.provider.ReaderProvider;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookAdminComponent {
-    private static final String ADMIN_PANEL_NAME = "Book Administration";
+public class ReaderAdminComponent {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+    private static final String ADMIN_PANEL_NAME = "Reader Administration";
     private static final String CREATE_BUTTON_NAME = "Create";
     private static final String UPDATE_BUTTON_NAME = "Update";
     private static final String DELETE_BUTTON_NAME = "Delete";
 
-    private BookProvider bookProvider;
-    private BookSearchComponent searchComponent;
-    private JTextField isbnField;
-    private JTextField titleField;
-    private JTextField authorField;
-    private JTextField topicField;
-    private JTextField yearField;
-    private JTextField countField;
+    private ReaderProvider readerProvider;
+    private ReaderSearchComponent searchComponent;
+    private JTextField idField;
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField addressField;
+    private JTextField dateOfBirthField;
     private JPanel adminPanel;
     private JButton createButton;
     private JButton updateButton;
     private JButton deleteButton;
 
-    public BookAdminComponent(BookProvider bookProvider) {
-        this.bookProvider = bookProvider;
-        searchComponent = new BookSearchComponent(bookProvider);
+    public ReaderAdminComponent(ReaderProvider readerProvider) {
+        this.readerProvider = readerProvider;
+        searchComponent = new ReaderSearchComponent(readerProvider);
         initComponents();
     }
 
     public void initComponents() {
         adminPanel = new JPanel();
         adminPanel.setName(ADMIN_PANEL_NAME);
-        JPanel searchPanel = searchComponent.getBookSearchPanel();
-        JPanel bookAdminPanel = createAdminPanel();
+        JPanel searchPanel = searchComponent.getReaderSearchPanel();
+        JPanel readerAdminPanel = createAdminPanel();
         adminPanel.setLayout(new BorderLayout());
         adminPanel.add(searchPanel, BorderLayout.NORTH);
-        adminPanel.add(bookAdminPanel, BorderLayout.CENTER);
+        adminPanel.add(readerAdminPanel, BorderLayout.CENTER);
         JPanel buttonPanel = createButtonPanel();
         adminPanel.add(buttonPanel, BorderLayout.SOUTH);
         adminPanel.setBorder(BorderFactory.createTitledBorder(ADMIN_PANEL_NAME));
@@ -57,36 +59,29 @@ public class BookAdminComponent {
     private JPanel createAdminPanel() {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
-        List<JComponent> adminComponents = new ArrayList<JComponent>();
-        JLabel isbn = new JLabel("ISBN :");
-        adminComponents.add(isbn);
-        isbnField = new JTextField(20);
-        adminComponents.add(isbnField);
-        JLabel titleLabel = new JLabel("Title :");
-        adminComponents.add(titleLabel);
-        titleField = new JTextField(20);
-        adminComponents.add(titleField);
-        JLabel authorLabel = new JLabel("Author :");
-        adminComponents.add(authorLabel);
-        authorField = new JTextField(20);
-        adminComponents.add(authorField);
-        JLabel topicLabel = new JLabel("Topic:");
-        adminComponents.add(topicLabel);
-        topicField = new JTextField(20);
-        adminComponents.add(topicField);
-        JLabel yearLabel = new JLabel("Year:");
-        adminComponents.add(yearLabel);
-        yearField = new JTextField(20);
-        adminComponents.add(yearField);
-        JLabel countLabel = new JLabel("Count:");
-        adminComponents.add(countLabel);
-        countField = new JTextField(20);
-        adminComponents.add(countField);
+        java.util.List<JComponent> adminComponents = new ArrayList<JComponent>();
+        idField = new JTextField(20);
+        JLabel firstNameLabel = new JLabel("First Name :");
+        adminComponents.add(firstNameLabel);
+        firstNameField = new JTextField(20);
+        adminComponents.add(firstNameField);
+        JLabel lastNameLabel = new JLabel("Last Name :");
+        adminComponents.add(lastNameLabel);
+        lastNameField = new JTextField(20);
+        adminComponents.add(lastNameField);
+        JLabel addressLabel = new JLabel("Address:");
+        adminComponents.add(addressLabel);
+        addressField = new JTextField(20);
+        adminComponents.add(addressField);
+        JLabel dateOfBirthLabel = new JLabel("Date of birth:");
+        adminComponents.add(dateOfBirthLabel);
+        dateOfBirthField = new JTextField(20);
+        adminComponents.add(dateOfBirthField);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
     }
 
-    private void fillAdminPanel(List<JComponent> components, JPanel panel) {
+    private void fillAdminPanel(java.util.List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.EAST;
         c.weighty = 1;
@@ -128,19 +123,17 @@ public class BookAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            Book book = new Book();
-            book.setIsbn(isbnField.getText());
-            book.setTitle(titleField.getText());
-            book.setAuthor(authorField.getText());
-            book.setTopic(topicField.getText());
+            Reader reader = new Reader();
+            reader.setFirstName(firstNameField.getText());
+            reader.setLastName(lastNameField.getText());
+            reader.setAddress(addressField.getText());
             try {
-                book.setYear(Integer.parseInt(yearField.getText()));
-                book.setCount(Integer.parseInt(countField.getText()));
-            } catch (IllegalArgumentException iae) {
-                throw new RuntimeException(iae.getMessage(), iae);
+                reader.setDateOfBirth(dateFormat.parse(dateOfBirthField.getText()));
+            } catch (ParseException e1) {
+                throw new RuntimeException(e1.getMessage(), e1);
             }
             try {
-                bookProvider.createBook(book);
+                readerProvider.createReader(reader);
             } catch (LibraryProviderException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             } catch (RemoteException e1) {

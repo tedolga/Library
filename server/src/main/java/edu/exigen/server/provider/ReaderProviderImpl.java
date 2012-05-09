@@ -1,5 +1,6 @@
 package edu.exigen.server.provider;
 
+import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.LibraryDAOException;
 import edu.exigen.server.dao.ReaderDAO;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderProvider {
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private ReaderDAO readerDAO;
     private ReservationRecordProviderImpl recordProvider;
     private Map<String, HashSet<Reader>> searchCash = new HashMap<String, HashSet<Reader>>();

@@ -1,7 +1,7 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.server.provider.BookProvider;
+import edu.exigen.client.entities.Reader;
+import edu.exigen.server.provider.ReaderProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,41 +15,41 @@ import java.util.List;
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookSearchComponent {
-    private static final String PANEL_NAME = "Book Search";
+public class ReaderSearchComponent {
+    private static final String PANEL_NAME = "Reader Search";
     private static final String SEARCH_LABEL = "Search: ";
     private static final String GET_ALL_BUTTON_TEXT = "Get ALL";
     private static final String SEARCH_BUTTON_TEXT = "Search";
 
-    private JPanel bookSearchPanel;
+    private JPanel readerSearchPanel;
     private JTextField searchField;
     private JButton getAllButton;
     private JButton searchButton;
-    private JTable bookTable;
+    private JTable readerTable;
 
-    private BookProvider bookProvider;
-    private BookTableModel bookTableModel;
+    private ReaderProvider readerProvider;
+    private ReaderTableModel readerTableModel;
 
-    public BookSearchComponent(BookProvider bookProvider) {
-        this.bookProvider = bookProvider;
+    public ReaderSearchComponent(ReaderProvider readerProvider) {
+        this.readerProvider = readerProvider;
         initComponents();
     }
 
     private void initComponents() {
         JPanel dataEnterPanel = createDataEnterPanel();
-        bookTableModel = new BookTableModel(new ArrayList<Book>());
-        bookTable = new JTable(bookTableModel);
-        JScrollPane scrollPane = new JScrollPane(bookTable);
-        bookTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
-        bookSearchPanel = new JPanel();
-        bookSearchPanel.setBorder(BorderFactory.createTitledBorder(PANEL_NAME));
-        bookSearchPanel.setLayout(new BorderLayout());
-        bookSearchPanel.add(dataEnterPanel, BorderLayout.NORTH);
-        bookSearchPanel.add(scrollPane, BorderLayout.CENTER);
+        readerTableModel = new ReaderTableModel(new ArrayList<Reader>());
+        readerTable = new JTable(readerTableModel);
+        JScrollPane scrollPane = new JScrollPane(readerTable);
+        readerTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
+        readerSearchPanel = new JPanel();
+        readerSearchPanel.setBorder(BorderFactory.createTitledBorder(PANEL_NAME));
+        readerSearchPanel.setLayout(new BorderLayout());
+        readerSearchPanel.add(dataEnterPanel, BorderLayout.NORTH);
+        readerSearchPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
-    public JPanel getBookSearchPanel() {
-        return bookSearchPanel;
+    public JPanel getReaderSearchPanel() {
+        return readerSearchPanel;
     }
 
     public JPanel createDataEnterPanel() {
@@ -88,14 +88,14 @@ public class BookSearchComponent {
          * Invoked when an action occurs.
          */
         public void actionPerformed(ActionEvent e) {
-            List<Book> books;
+            List<Reader> readers;
             try {
-                books = bookProvider.searchBooks(searchField.getText());
+                readers = readerProvider.searchReaders(searchField.getText());
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
-            bookTableModel.setTableData(books);
-            bookTableModel.fireTableRowsInserted(0, books.size() - 1);
+            readerTableModel.setTableData(readers);
+            readerTableModel.fireTableRowsInserted(0, readers.size() - 1);
         }
     }
 
@@ -104,14 +104,14 @@ public class BookSearchComponent {
          * Invoked when an action occurs.
          */
         public void actionPerformed(ActionEvent e) {
-            List<Book> books;
+            List<Reader> readers;
             try {
-                books = bookProvider.readAll();
+                readers = readerProvider.readAll();
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
-            bookTableModel.setTableData(books);
-            bookTableModel.fireTableRowsInserted(0, books.size() - 1);
+            readerTableModel.setTableData(readers);
+            readerTableModel.fireTableRowsInserted(0, readers.size() - 1);
         }
     }
 }

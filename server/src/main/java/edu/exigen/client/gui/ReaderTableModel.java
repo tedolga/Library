@@ -1,18 +1,21 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
+import edu.exigen.LibraryConstraints;
+import edu.exigen.client.entities.Reader;
 
 import javax.swing.table.AbstractTableModel;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-public class BookTableModel extends AbstractTableModel {
-    private List<Book> tableData;
+public class ReaderTableModel extends AbstractTableModel {
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+    private List<Reader> tableData;
 
-    public BookTableModel(List<Book> tableData) {
+    public ReaderTableModel(List<Reader> tableData) {
         this.tableData = tableData;
     }
 
@@ -21,7 +24,7 @@ public class BookTableModel extends AbstractTableModel {
     }
 
     public int getColumnCount() {
-        return 6;
+        return 5;
     }
 
     public String getColumnName(int columnIndex) {
@@ -29,15 +32,13 @@ public class BookTableModel extends AbstractTableModel {
             case 0:
                 return "id";
             case 1:
-                return "ISBN";
+                return "First Name";
             case 2:
-                return "Title";
+                return "Last Name";
             case 3:
-                return "Author";
+                return "Address";
             case 4:
-                return "Topic";
-            case 5:
-                return "Year";
+                return "Date of Birth";
             default:
                 return "";
         }
@@ -55,34 +56,34 @@ public class BookTableModel extends AbstractTableModel {
                 return String.class;
             case 4:
                 return String.class;
-            case 5:
-                return Integer.class;
             default:
                 return Object.class;
         }
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Book book = tableData.get(rowIndex);
+        Reader reader = tableData.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return book.getId();
+                return reader.getId();
             case 1:
-                return book.getIsbn();
+                return reader.getFirstName();
             case 2:
-                return book.getTitle();
+                return reader.getLastName();
             case 3:
-                return book.getAuthor();
+                return reader.getAddress();
             case 4:
-                return book.getTopic();
-            case 5:
-                return book.getYear();
+                return dateFormat.format(reader.getDateOfBirth());
             default:
                 return Object.class;
         }
     }
 
-    public void setTableData(List<Book> tableData) {
+    public List<Reader> getTableData() {
+        return tableData;
+    }
+
+    public void setTableData(List<Reader> tableData) {
         this.tableData = tableData;
     }
 }
