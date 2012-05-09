@@ -92,4 +92,8 @@ public class RecordTableModel extends AbstractTableModel {
     public void setTableData(List<ReservationRecord> tableData) {
         this.tableData = tableData;
     }
+
+    public List<ReservationRecord> getTableData() {
+        return tableData;
+    }
 }

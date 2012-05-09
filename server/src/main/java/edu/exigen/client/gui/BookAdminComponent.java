@@ -130,6 +130,7 @@ public class BookAdminComponent {
         updateButton = new JButton(UPDATE_BUTTON_NAME);
         updateButton.addActionListener(new UpdateButtonActionListener());
         deleteButton = new JButton(DELETE_BUTTON_NAME);
+        deleteButton.addActionListener(new DeleteButtonListener());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createButton);
         buttonPanel.add(updateButton);
@@ -180,6 +181,20 @@ public class BookAdminComponent {
             newBook.setCount(Integer.parseInt(countField.getText()));
             try {
                 bookProvider.updateBook(tableBook, newBook);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
+            }
+        }
+    }
+
+    private class DeleteButtonListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
