@@ -46,8 +46,6 @@ public class BookAdminComponentFrame extends JFrame {
                     BookProvider provider = new BookProviderImpl(bookDAO, recordProvider);
                     BookAdminComponent adminComponent = new BookAdminComponent(provider);
                     final BookAdminComponentFrame testFrame = new BookAdminComponentFrame(adminComponent.getAdminPanel());
-                    testFrame.setLocationRelativeTo(null);
-                    testFrame.setVisible(true);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

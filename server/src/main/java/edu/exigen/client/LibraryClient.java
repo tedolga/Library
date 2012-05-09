@@ -1,5 +1,6 @@
 package edu.exigen.client;
 
+import edu.exigen.client.gui.LibraryClientComponent;
 import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
@@ -7,6 +8,7 @@ import edu.exigen.server.provider.ReservationRecordProvider;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.swing.*;
 
 /**
  * @author Tedikova O.
@@ -35,10 +37,30 @@ public class LibraryClient {
             ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
             ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
             LibraryClient libraryClient = new LibraryClient(bookProvider, readerProvider, recordProvider);
+            final LibraryClientComponent clientComponent = new LibraryClientComponent(libraryClient);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JFrame clientFrame = clientComponent.getLibraryClientFrame();
+                    clientFrame.setLocationRelativeTo(null);
+                    clientFrame.setVisible(true);
+                }
+            });
         } catch (NamingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
 
+    public BookProvider getBookProvider() {
+        return bookProvider;
+    }
+
+    public ReaderProvider getReaderProvider() {
+        return readerProvider;
+    }
+
+    public ReservationRecordProvider getRecordProvider() {
+        return recordProvider;
+    }
 }
