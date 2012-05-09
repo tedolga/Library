@@ -7,7 +7,9 @@ import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.swing.*;
+import java.rmi.RemoteException;
 
 /**
  * @author Tedikova O.
@@ -45,11 +47,14 @@ public class LibraryClient {
                     clientFrame.setVisible(true);
                 }
             });
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+        } catch (NamingException e) {
+            JOptionPane.showMessageDialog(null, "Can't find Library server at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Read server data failed.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(-1);
         }
     }
-
 
     public BookProvider getBookProvider() {
         return bookProvider;
