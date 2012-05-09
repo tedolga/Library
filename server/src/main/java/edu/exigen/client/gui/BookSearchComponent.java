@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -83,6 +84,9 @@ public class BookSearchComponent {
          */
         public void actionPerformed(ActionEvent e) {
             List<Book> books;
+            int rowCount = bookTableModel.getRowCount();
+            bookTableModel.setTableData(Collections.<Book>emptyList());
+            bookTableModel.fireTableRowsDeleted(0, rowCount - 1);
             try {
                 if (!"".equals(searchField.getText())) {
                     books = bookProvider.searchBooks(searchField.getText());
