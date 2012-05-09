@@ -27,7 +27,7 @@ public class ReaderAdminComponent {
 
     private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
-    private int readerId;
+    private Reader tableReader;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
@@ -55,7 +55,7 @@ public class ReaderAdminComponent {
                 lastNameField.setText(selectedReader != null ? selectedReader.getLastName() : "");
                 addressField.setText(selectedReader != null ? selectedReader.getAddress() : "");
                 dateOfBirthField.setText(selectedReader != null ? dateFormat.format(selectedReader.getDateOfBirth()) : "");
-                readerId = selectedReader != null ? selectedReader.getId() : 0;
+                tableReader = selectedReader;
             }
         });
         adminPanel.setLayout(new BorderLayout());
@@ -118,7 +118,9 @@ public class ReaderAdminComponent {
         createButton = new JButton(CREATE_BUTTON_NAME);
         createButton.addActionListener(new CreateButtonListener());
         updateButton = new JButton(UPDATE_BUTTON_NAME);
+        updateButton.addActionListener(new UpdateButtonListener());
         deleteButton = new JButton(DELETE_BUTTON_NAME);
+        deleteButton.addActionListener(new DeleteButtonListener());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createButton);
         buttonPanel.add(updateButton);
@@ -147,6 +149,41 @@ public class ReaderAdminComponent {
                 throw new RuntimeException(e1.getMessage(), e1);
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
+            }
+        }
+    }
+
+    private class UpdateButtonListener implements ActionListener {
+
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Reader newReader = new Reader();
+            newReader.setId(tableReader.getId());
+            newReader.setFirstName(firstNameField.getText());
+            newReader.setLastName(lastNameField.getText());
+            newReader.setAddress(addressField.getText());
+            try {
+                newReader.setDateOfBirth(dateFormat.parse(dateOfBirthField.getText()));
+                readerProvider.updateReader(tableReader, newReader);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
+            }
+        }
+    }
+
+    private class DeleteButtonListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                readerProvider.deleteReader(tableReader);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
     }
