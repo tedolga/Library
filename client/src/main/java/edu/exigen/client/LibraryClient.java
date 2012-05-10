@@ -60,7 +60,7 @@ public class LibraryClient {
                 }
             });
         } catch (NamingException e) {
-            JOptionPane.showMessageDialog(null, "Can't find Library server at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Can't find 'Library Server' at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
             System.exit(-1);
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Read server data failed.", "Library client", JOptionPane.INFORMATION_MESSAGE);
