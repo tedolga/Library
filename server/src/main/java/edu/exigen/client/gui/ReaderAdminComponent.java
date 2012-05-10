@@ -74,7 +74,8 @@ public class ReaderAdminComponent {
                         readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
                     }
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                    throw new RuntimeException(e.getMessage(), e);
+                    //JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -165,7 +166,8 @@ public class ReaderAdminComponent {
             try {
                 readerProvider.createReader(reader);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
+                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -186,7 +188,8 @@ public class ReaderAdminComponent {
                 newReader.setDateOfBirth(dateOfBirthField.getDate());
                 readerProvider.updateReader(tableReader, newReader);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
+                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -200,7 +203,8 @@ public class ReaderAdminComponent {
             try {
                 readerProvider.deleteReader(tableReader);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
+                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

@@ -210,7 +210,8 @@ public class BookAdminComponent {
             try {
                 bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
+                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

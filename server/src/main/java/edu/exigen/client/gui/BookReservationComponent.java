@@ -117,7 +117,8 @@ public class BookReservationComponent {
                 }
                 reservationRecordProvider.createRecord(reader.getId(), book.getId(), returnDateField.getDate());
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
+                //JOptionPane.showMessageDialog(null, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

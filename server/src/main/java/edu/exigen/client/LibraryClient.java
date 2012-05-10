@@ -36,7 +36,11 @@ public class LibraryClient {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Internal client error. " + e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
+                if (e.getMessage().contains("java.net.ConnectException")) {
+                    JOptionPane.showMessageDialog(null, "Client was disconnected, please, check server.", "Library client", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Internal client error. " + e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         try {
