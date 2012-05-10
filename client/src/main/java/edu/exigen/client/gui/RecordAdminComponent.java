@@ -29,7 +29,6 @@ public class RecordAdminComponent {
 
     private static final String PANEL_NAME = "Reservation Record Administration";
     private static final String VIEW_PANEL_NAME = "Available Records";
-    private static final String REFRESH_BUTTON_TEXT = "Refresh";
 
     private JPanel recordAdminPanel;
     private BookProvider bookProvider;
@@ -61,8 +60,8 @@ public class RecordAdminComponent {
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
-                issueDateField.setDate(selectedRecord != null ? selectedRecord.getIssueDate() : new Date());
-                returnDateField.setDate(selectedRecord != null ? selectedRecord.getReturnDate() : new Date());
+                issueDateField.setDate(selectedRecord != null ? selectedRecord.getIssueDate() : null);
+                returnDateField.setDate(selectedRecord != null ? selectedRecord.getReturnDate() : null);
             }
         });
         RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
@@ -89,10 +88,7 @@ public class RecordAdminComponent {
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         recordTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         JScrollPane scrollPane = new JScrollPane(recordTable);
-        JButton refreshButton = new JButton(REFRESH_BUTTON_TEXT);
-        refreshButton.addActionListener(new RefreshButtonListener());
         dataViewPanel.add(scrollPane, BorderLayout.CENTER);
-        dataViewPanel.add(refreshButton, BorderLayout.SOUTH);
         return dataViewPanel;
     }
 

@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -67,7 +68,7 @@ public class ReaderAdminComponent {
                 dateOfBirthField.setDate(selectedReader != null ? selectedReader.getDateOfBirth() : new Date());
                 java.util.List<Book> readerBooks;
                 try {
-                    readerBooks = recordProvider.getReservedReaderBooks(tableReader);
+                    readerBooks = tableReader != null ? recordProvider.getReservedReaderBooks(tableReader) : Collections.<Book>emptyList();
                     final DefaultListModel model = new DefaultListModel();
                     for (Book readerBook : readerBooks) {
                         model.addElement(readerBook.getIsbn() + " " + readerBook.getTitle());
