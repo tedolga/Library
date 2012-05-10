@@ -1,6 +1,6 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.ReservationRecord;
 
 /**
  * @author Tedikova O.

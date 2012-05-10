@@ -1,6 +1,6 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Reader;
 import edu.exigen.server.provider.ReaderProvider;
 
 import javax.swing.*;

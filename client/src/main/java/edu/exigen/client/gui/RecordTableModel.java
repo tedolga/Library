@@ -1,7 +1,7 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.Book;
+import edu.exigen.entities.ReservationRecord;
 import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.table.AbstractTableModel;

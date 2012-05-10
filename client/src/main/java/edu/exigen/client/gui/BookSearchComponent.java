@@ -1,6 +1,6 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
+import edu.exigen.entities.Book;
 import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.*;

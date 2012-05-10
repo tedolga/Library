@@ -1,6 +1,6 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Reader;
 
 import javax.swing.table.AbstractTableModel;
 import javax.xml.crypto.Data;

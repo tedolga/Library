@@ -1,6 +1,6 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.ReservationRecord;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.ReaderDAO;
 import edu.exigen.server.dao.ReservationRecordDAO;
@@ -42,7 +42,6 @@ public class RecordAdminComponent {
     private JPanel recordSummaryPanel;
     private JTable recordTable;
     private ReservationRecord tableRecord;
-
 
     public RecordAdminComponent(BookProvider bookProvider, ReservationRecordProvider recordProvider) throws RemoteException {
         this.bookProvider = bookProvider;

@@ -1,7 +1,7 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Book;
+import edu.exigen.entities.Reader;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
 import org.jdesktop.swingx.JXDatePicker;
