@@ -1,7 +1,7 @@
 package edu.exigen.server.provider;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Book;
+import edu.exigen.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.ReaderDAO;
 import edu.exigen.server.dao.ReservationRecordDAO;

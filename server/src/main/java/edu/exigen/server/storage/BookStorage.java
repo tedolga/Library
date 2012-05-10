@@ -1,6 +1,6 @@
 package edu.exigen.server.storage;
 
-import edu.exigen.client.entities.Book;
+import edu.exigen.entities.Book;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -1,6 +1,6 @@
 package edu.exigen.server.dao;
 
-import edu.exigen.client.entities.Book;
+import edu.exigen.entities.Book;
 import edu.exigen.server.IOUtils;
 import edu.exigen.server.storage.BookStorage;
 import edu.exigen.server.storage.StorageUtils;

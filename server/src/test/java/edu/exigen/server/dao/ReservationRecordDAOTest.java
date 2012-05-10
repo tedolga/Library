@@ -1,6 +1,6 @@
 package edu.exigen.server.dao;
 
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.ReservationRecord;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

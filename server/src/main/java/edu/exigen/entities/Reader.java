@@ -1,4 +1,4 @@
-package edu.exigen.client.entities;
+package edu.exigen.entities;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

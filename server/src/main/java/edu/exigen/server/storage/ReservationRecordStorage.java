@@ -1,6 +1,6 @@
 package edu.exigen.server.storage;
 
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.ReservationRecord;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

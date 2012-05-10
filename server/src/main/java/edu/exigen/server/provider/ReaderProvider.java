@@ -1,6 +1,6 @@
 package edu.exigen.server.provider;
 
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Reader;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

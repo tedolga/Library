@@ -1,6 +1,6 @@
 package edu.exigen.server.provider;
 
-import edu.exigen.client.entities.Book;
+import edu.exigen.entities.Book;
 import edu.exigen.server.dao.LibraryDAOException;
 
 import java.rmi.Remote;

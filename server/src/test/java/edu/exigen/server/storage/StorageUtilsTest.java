@@ -1,8 +1,8 @@
 package edu.exigen.server.storage;
 
-import edu.exigen.client.entities.Book;
-import edu.exigen.client.entities.Reader;
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.Book;
+import edu.exigen.entities.Reader;
+import edu.exigen.entities.ReservationRecord;
 import edu.exigen.server.IOUtils;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -88,7 +88,6 @@ public class StorageUtilsTest {
             IOUtils.closeSafely(outputStream);
         }
         Assert.assertTrue(recordXML.exists());
-
     }
 
     @Test
@@ -104,6 +103,5 @@ public class StorageUtilsTest {
         List<Book> books = bookStorage.getElements();
         Assert.assertEquals(1, books.size());
         Assert.assertEquals("BE-5656", books.get(0).getIsbn());
-
     }
 }

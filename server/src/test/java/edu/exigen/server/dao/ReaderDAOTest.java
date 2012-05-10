@@ -1,6 +1,6 @@
 package edu.exigen.server.dao;
 
-import edu.exigen.client.entities.Reader;
+import edu.exigen.entities.Reader;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;

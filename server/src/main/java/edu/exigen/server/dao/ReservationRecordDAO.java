@@ -1,6 +1,6 @@
 package edu.exigen.server.dao;
 
-import edu.exigen.client.entities.ReservationRecord;
+import edu.exigen.entities.ReservationRecord;
 import edu.exigen.server.IOUtils;
 import edu.exigen.server.storage.ReservationRecordStorage;
 import edu.exigen.server.storage.StorageUtils;
