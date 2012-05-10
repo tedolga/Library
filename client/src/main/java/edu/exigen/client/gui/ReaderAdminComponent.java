@@ -2,8 +2,7 @@ package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.provider.ReaderProvider;
-import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.ProvidersHolder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -32,7 +31,6 @@ public class ReaderAdminComponent {
     private static final String DATE_OF_BIRTH = "Date of birth:";
     private static final String RESERVED_BOOKS = "Reserved books:";
 
-    private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
     private Reader tableReader;
     private JTextField firstNameField;
@@ -44,12 +42,11 @@ public class ReaderAdminComponent {
     private JButton updateButton;
     private JButton deleteButton;
     private JList reservedBooksList;
-    private ReservationRecordProvider recordProvider;
+    private ProvidersHolder providersHolder;
 
-    public ReaderAdminComponent(ReaderProvider readerProvider, ReservationRecordProvider recordProvider) throws RemoteException {
-        this.readerProvider = readerProvider;
-        this.recordProvider = recordProvider;
-        searchComponent = new ReaderSearchComponent(readerProvider);
+    public ReaderAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
+        searchComponent = new ReaderSearchComponent(providersHolder);
         initComponents();
     }
 
@@ -68,7 +65,7 @@ public class ReaderAdminComponent {
                 dateOfBirthField.setDate(selectedReader != null ? selectedReader.getDateOfBirth() : new Date());
                 java.util.List<Book> readerBooks;
                 try {
-                    readerBooks = tableReader != null ? recordProvider.getReservedReaderBooks(tableReader) : Collections.<Book>emptyList();
+                    readerBooks = tableReader != null ? providersHolder.getRecordProvider().getReservedReaderBooks(tableReader) : Collections.<Book>emptyList();
                     final DefaultListModel model = new DefaultListModel();
                     for (Book readerBook : readerBooks) {
                         model.addElement(readerBook.getIsbn() + " " + readerBook.getTitle());
@@ -167,7 +164,7 @@ public class ReaderAdminComponent {
             reader.setAddress(addressField.getText());
             reader.setDateOfBirth(dateOfBirthField.getDate());
             try {
-                readerProvider.createReader(reader);
+                providersHolder.getReaderProvider().createReader(reader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
@@ -188,7 +185,7 @@ public class ReaderAdminComponent {
             newReader.setAddress(addressField.getText());
             try {
                 newReader.setDateOfBirth(dateOfBirthField.getDate());
-                readerProvider.updateReader(tableReader, newReader);
+                providersHolder.getReaderProvider().updateReader(tableReader, newReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
@@ -202,7 +199,7 @@ public class ReaderAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                readerProvider.deleteReader(tableReader);
+                providersHolder.getReaderProvider().deleteReader(tableReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

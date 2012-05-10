@@ -1,6 +1,7 @@
 package edu.exigen.client;
 
 import edu.exigen.client.gui.LibraryClientComponent;
+import edu.exigen.server.ProvidersHolder;
 import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
@@ -21,14 +22,10 @@ public class LibraryClient {
     private static final String READER_PROVIDER_URL = "rmi://localhost/reader_provider";
     private static final String RECORD_PROVIDER_URL = "rmi://localhost/record_provider";
 
-    private BookProvider bookProvider;
-    private ReaderProvider readerProvider;
-    private ReservationRecordProvider recordProvider;
+    private ProvidersHolder providersHolder;
 
-    public LibraryClient(BookProvider bookProvider, ReaderProvider readerProvider, ReservationRecordProvider recordProvider) {
-        this.bookProvider = bookProvider;
-        this.readerProvider = readerProvider;
-        this.recordProvider = recordProvider;
+    public LibraryClient(ProvidersHolder providersHolder) {
+        this.providersHolder = providersHolder;
     }
 
     public static void main(String[] args) {
@@ -38,6 +35,16 @@ public class LibraryClient {
                 e.printStackTrace();
                 if (e.getMessage().contains("java.net.ConnectException")) {
                     JOptionPane.showMessageDialog(null, "Client was disconnected, please, check server.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+                        Context namingContext = new InitialContext();
+                        BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);
+                        ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
+                        ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
+                        providersHolder = new ProvidersHolder(bookProvider, readerProvider, recordProvider);
+                    } catch (NamingException ne) {
+                        JOptionPane.showMessageDialog(null, "Can't find 'Library Server' at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+                        System.exit(-1);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -48,7 +55,8 @@ public class LibraryClient {
             BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);
             ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
             ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
-            final LibraryClient libraryClient = new LibraryClient(bookProvider, readerProvider, recordProvider);
+            ProvidersHolder providersHolder = new ProvidersHolder(bookProvider, readerProvider, recordProvider);
+            final LibraryClient libraryClient = new LibraryClient(providersHolder);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -71,15 +79,11 @@ public class LibraryClient {
         }
     }
 
-    public BookProvider getBookProvider() {
-        return bookProvider;
+    public ProvidersHolder getProvidersHolder() {
+        return providersHolder;
     }
 
-    public ReaderProvider getReaderProvider() {
-        return readerProvider;
-    }
-
-    public ReservationRecordProvider getRecordProvider() {
-        return recordProvider;
+    public void setProvidersHolder(ProvidersHolder providersHolder) {
+        this.providersHolder = providersHolder;
     }
 }

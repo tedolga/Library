@@ -1,13 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.ReservationRecord;
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
-import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.BookProviderImpl;
-import edu.exigen.server.provider.ReservationRecordProvider;
-import edu.exigen.server.provider.ReservationRecordProviderImpl;
+import edu.exigen.server.ProvidersHolder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -30,8 +24,6 @@ public class RecordAdminComponent {
     private static final String VIEW_PANEL_NAME = "Available Records";
 
     private JPanel recordAdminPanel;
-    private BookProvider bookProvider;
-    private ReservationRecordProvider recordProvider;
     private RecordTableModel recordTableModel;
     private JTextField libraryCardField;
     private JTextField isbnField;
@@ -40,10 +32,10 @@ public class RecordAdminComponent {
     private JPanel recordSummaryPanel;
     private JTable recordTable;
     private ReservationRecord tableRecord;
+    private ProvidersHolder providersHolder;
 
-    public RecordAdminComponent(BookProvider bookProvider, ReservationRecordProvider recordProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
-        this.recordProvider = recordProvider;
+    public RecordAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
         initComponents();
     }
 
@@ -55,7 +47,7 @@ public class RecordAdminComponent {
                 tableRecord = selectedRecord;
                 libraryCardField.setText(selectedRecord != null ? String.valueOf(selectedRecord.getReaderId()) : "");
                 try {
-                    isbnField.setText(selectedRecord != null ? bookProvider.getBookById(selectedRecord.getBookId()).getIsbn() : "");
+                    isbnField.setText(selectedRecord != null ? providersHolder.getBookProvider().getBookById(selectedRecord.getBookId()).getIsbn() : "");
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
@@ -80,7 +72,7 @@ public class RecordAdminComponent {
     }
 
     private JComponent createDataViewPanel() throws RemoteException {
-        recordTableModel = new RecordTableModel(recordProvider.readAll(), bookProvider);
+        recordTableModel = new RecordTableModel(providersHolder.getRecordProvider().readAll(), providersHolder.getBookProvider());
         recordTable = new JTable(recordTableModel);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return new JScrollPane(recordTable);
@@ -100,7 +92,7 @@ public class RecordAdminComponent {
             recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
             recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
-                records = recordProvider.readAll();
+                records = providersHolder.getRecordProvider().readAll();
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
@@ -127,20 +119,20 @@ public class RecordAdminComponent {
     }
 
     public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame("Test reader admin component");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        final BookDAO bookStore = new BookDAO("bookStore");
-        bookStore.loadStorage();
-        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("reservationStore");
-        recordDAO.loadStorage();
-        final ReaderDAO readerDAO = new ReaderDAO("readerStore");
-        readerDAO.loadStorage();
-        final ReservationRecordProviderImpl reservationRecordProvider = new ReservationRecordProviderImpl(bookStore, readerDAO, recordDAO);
-        final RecordAdminComponent recordAdminComponent = new RecordAdminComponent(new BookProviderImpl(bookStore, reservationRecordProvider), reservationRecordProvider);
-        frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
-        frame.setVisible(true);
-        frame.pack();
+//        JFrame frame = new JFrame("Test reader admin component");
+//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        frame.setLayout(new BorderLayout());
+//        final BookDAO bookStore = new BookDAO("bookStore");
+//        bookStore.loadStorage();
+//        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("reservationStore");
+//        recordDAO.loadStorage();
+//        final ReaderDAO readerDAO = new ReaderDAO("readerStore");
+//        readerDAO.loadStorage();
+//        final ReservationRecordProviderImpl reservationRecordProvider = new ReservationRecordProviderImpl(bookStore, readerDAO, recordDAO);
+//        final RecordAdminComponent recordAdminComponent = new RecordAdminComponent(new BookProviderImpl(bookStore, reservationRecordProvider), reservationRecordProvider);
+//        frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
+//        frame.setVisible(true);
+//        frame.pack();
     }
 
     private class DeleteRecordListener implements ActionListener {
@@ -150,7 +142,7 @@ public class RecordAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                recordProvider.deleteRecord(tableRecord);
+                providersHolder.getRecordProvider().deleteRecord(tableRecord);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

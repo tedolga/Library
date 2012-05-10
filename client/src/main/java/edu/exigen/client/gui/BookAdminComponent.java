@@ -46,7 +46,7 @@ public class BookAdminComponent {
 
     public BookAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
         this.providersHolder = providersHolder;
-        searchComponent = new BookSearchComponent(providersHolder.getBookProvider());
+        searchComponent = new BookSearchComponent(providersHolder);
         initComponents();
     }
 
