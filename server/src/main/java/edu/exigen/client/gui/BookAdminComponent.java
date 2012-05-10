@@ -2,7 +2,6 @@ package edu.exigen.client.gui;
 
 import edu.exigen.client.entities.Book;
 import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.LibraryProviderException;
 import edu.exigen.server.provider.ReservationRecordProvider;
 
 import javax.swing.*;
@@ -18,6 +17,7 @@ import java.util.List;
  * @version 1.0
  */
 public class BookAdminComponent {
+
     private static final String ADMIN_PANEL_NAME = "Book Administration";
     private static final String CREATE_BUTTON_NAME = "Create";
     private static final String UPDATE_BUTTON_NAME = "Update";
@@ -64,7 +64,7 @@ public class BookAdminComponent {
                     reservedBookCountField.setText(selectedBook != null ? String.valueOf
                             (reservationRecordProvider.getReservedBookCount(selectedBook.getId())) : "");
                 } catch (RemoteException e) {
-                    throw new RuntimeException(e.getMessage(), e);
+                    JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
                 tableBook = selectedBook;
             }
@@ -132,15 +132,13 @@ public class BookAdminComponent {
         }
     }
 
-
     public JPanel getAdminPanel() {
         return adminPanel;
     }
 
-
     private JPanel createButtonPanel() {
         createButton = new JButton(CREATE_BUTTON_NAME);
-        createButton.addActionListener(new CreateButtonListener());
+        createButton.addActionListener(new CreateBookListener());
         updateButton = new JButton(UPDATE_BUTTON_NAME);
         updateButton.addActionListener(new UpdateButtonActionListener());
         deleteButton = new JButton(DELETE_BUTTON_NAME);
@@ -152,7 +150,7 @@ public class BookAdminComponent {
         return buttonPanel;
     }
 
-    private class CreateButtonListener implements ActionListener {
+    private class CreateBookListener implements ActionListener {
         /**
          * Invoked when an action occurs.
          */
@@ -166,15 +164,9 @@ public class BookAdminComponent {
             try {
                 book.setYear(Integer.parseInt(yearField.getText()));
                 book.setCount(Integer.parseInt(countField.getText()));
-            } catch (IllegalArgumentException iae) {
-                throw new RuntimeException(iae.getMessage(), iae);
-            }
-            try {
                 bookProvider.createBook(book);
-            } catch (LibraryProviderException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -196,7 +188,7 @@ public class BookAdminComponent {
             try {
                 bookProvider.updateBook(tableBook, newBook);
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
