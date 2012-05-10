@@ -119,14 +119,19 @@ public class RecordAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkRecordSelection();
             try {
-                if (tableRecord != null) {
-                    providersHolder.getRecordProvider().deleteRecord(tableRecord);
-                    updateTable();
-                }
+                providersHolder.getRecordProvider().deleteRecord(tableRecord);
+                updateTable();
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
+        }
+    }
+
+    private void checkRecordSelection() {
+        if (tableRecord == null) {
+            throw new RuntimeException("Select record from table.");
         }
     }
 }

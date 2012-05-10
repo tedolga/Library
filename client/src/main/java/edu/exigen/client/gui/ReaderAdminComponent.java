@@ -159,15 +159,43 @@ public class ReaderAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Reader reader = new Reader();
+            checkFirstNameField();
             reader.setFirstName(firstNameField.getText());
+            checkLastNameField();
             reader.setLastName(lastNameField.getText());
+            checkAddressField();
             reader.setAddress(addressField.getText());
+            checkDateOfBirthField();
             reader.setDateOfBirth(dateOfBirthField.getDate());
             try {
                 providersHolder.getReaderProvider().createReader(reader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
+        }
+    }
+
+    private void checkDateOfBirthField() {
+        if (dateOfBirthField.getDate() == null) {
+            throw new RuntimeException("Enter date of birth");
+        }
+    }
+
+    private void checkAddressField() {
+        if ("".equals(addressField.getText())) {
+            throw new RuntimeException("Enter address");
+        }
+    }
+
+    private void checkLastNameField() {
+        if ("".equals(lastNameField.getText())) {
+            throw new RuntimeException("Enter last name");
+        }
+    }
+
+    private void checkFirstNameField() {
+        if ("".equals(firstNameField.getText())) {
+            throw new RuntimeException("Enter first name");
         }
     }
 
@@ -179,16 +207,26 @@ public class ReaderAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Reader newReader = new Reader();
+            checkReaderSelection();
             newReader.setId(tableReader.getId());
+            checkFirstNameField();
             newReader.setFirstName(firstNameField.getText());
+            checkLastNameField();
             newReader.setLastName(lastNameField.getText());
             newReader.setAddress(addressField.getText());
             try {
+                checkDateOfBirthField();
                 newReader.setDateOfBirth(dateOfBirthField.getDate());
                 providersHolder.getReaderProvider().updateReader(tableReader, newReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
+        }
+    }
+
+    private void checkReaderSelection() {
+        if (tableReader == null) {
+            throw new RuntimeException("Select reader from table");
         }
     }
 
@@ -198,6 +236,7 @@ public class ReaderAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkReaderSelection();
             try {
                 providersHolder.getReaderProvider().deleteReader(tableReader);
             } catch (Exception ex) {

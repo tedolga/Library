@@ -233,9 +233,7 @@ public class BookAdminComponent {
             checkSelectedBook();
             checkCountValue(countField.getText());
             try {
-                if (tableBook != null) {
-                    providersHolder.getBookProvider().deleteBooks(tableBook, Integer.parseInt(countField.getText()));
-                }
+                providersHolder.getBookProvider().deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

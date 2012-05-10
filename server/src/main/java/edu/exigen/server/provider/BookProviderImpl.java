@@ -219,8 +219,8 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         int reservedCount = recordProvider.getReservedBookCount(book.getId());
         int availableCount = bookCount - reservedCount;
         if (availableCount < deleteCount) {
-            throw new LibraryProviderException("Can't delete book with ISBN '" + book.getIsbn() + "'. There are " +
-                    reservedCount + " books reserved.");
+            throw new LibraryProviderException("Can't delete" + deleteCount + " book(s) with ISBN '" + book.getIsbn() + "'. There are " +
+                    reservedCount + " book(s) reserved and " + availableCount + " book(s) available.");
         }
     }
 }
