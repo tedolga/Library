@@ -73,7 +73,7 @@ public class RecordAdminComponent {
         issueDateField = recordSummaryComponent.getIssueDateField();
         returnDateField = recordSummaryComponent.getReturnDateField();
         JButton deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(new DeleteButtonListener());
+        deleteButton.addActionListener(new DeleteRecordListener());
         recordAdminPanel = new JPanel();
         recordAdminPanel.setName(PANEL_NAME);
         recordAdminPanel.setLayout(new BorderLayout());
@@ -162,7 +162,7 @@ public class RecordAdminComponent {
         frame.pack();
     }
 
-    private class DeleteButtonListener implements ActionListener {
+    private class DeleteRecordListener implements ActionListener {
         /**
          * Invoked when an action occurs.
          */
@@ -171,7 +171,7 @@ public class RecordAdminComponent {
             try {
                 recordProvider.deleteRecord(tableRecord);
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(recordAdminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

@@ -40,7 +40,6 @@ public class BookSearchComponent {
         bookTable = new JTable(bookTableModel);
         bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(bookTable);
-        bookTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
         bookSearchPanel = new JPanel();
         bookSearchPanel.setBorder(BorderFactory.createTitledBorder(PANEL_NAME));
         bookSearchPanel.setLayout(new BorderLayout());
@@ -111,8 +110,6 @@ public class BookSearchComponent {
                 selectionListener.bookSelected(selectedBook);
             }
 
-        }
-
-        );
+        });
     }
 }

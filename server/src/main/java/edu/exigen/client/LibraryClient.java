@@ -32,6 +32,12 @@ public class LibraryClient {
     }
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                JOptionPane.showMessageDialog(null, "Internal client error. " + e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         try {
             Context namingContext = new InitialContext();
             BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);

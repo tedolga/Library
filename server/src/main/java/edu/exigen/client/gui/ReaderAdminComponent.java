@@ -2,7 +2,6 @@ package edu.exigen.client.gui;
 
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
-import edu.exigen.server.provider.LibraryProviderException;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
 import org.jdesktop.swingx.JXDatePicker;
@@ -70,14 +69,13 @@ public class ReaderAdminComponent {
                 java.util.List<Book> readerBooks;
                 try {
                     readerBooks = recordProvider.getReservedReaderBooks(tableReader);
+                    readerBooksInfo = new String[readerBooks.size()];
+                    for (int i = 0; i < readerBooks.size(); i++) {
+                        readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
+                    }
                 } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage(), e);
+                    JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
-                readerBooksInfo = new String[readerBooks.size()];
-                for (int i = 0; i < readerBooks.size(); i++) {
-                    readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
-                }
-
             }
         });
         adminPanel.setLayout(new BorderLayout());
@@ -166,10 +164,8 @@ public class ReaderAdminComponent {
             reader.setDateOfBirth(dateOfBirthField.getDate());
             try {
                 readerProvider.createReader(reader);
-            } catch (LibraryProviderException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -190,7 +186,7 @@ public class ReaderAdminComponent {
                 newReader.setDateOfBirth(dateOfBirthField.getDate());
                 readerProvider.updateReader(tableReader, newReader);
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -204,7 +200,7 @@ public class ReaderAdminComponent {
             try {
                 readerProvider.deleteReader(tableReader);
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

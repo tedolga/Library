@@ -144,7 +144,7 @@ public class BookAdminComponent {
         updateButton = new JButton(UPDATE_BUTTON_NAME);
         updateButton.addActionListener(new UpdateButtonActionListener());
         deleteButton = new JButton(DELETE_BUTTON_NAME);
-        deleteButton.addActionListener(new DeleteButtonListener());
+        deleteButton.addActionListener(new DeleteBookListener());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createButton);
         buttonPanel.add(updateButton);
@@ -201,7 +201,7 @@ public class BookAdminComponent {
         }
     }
 
-    private class DeleteButtonListener implements ActionListener {
+    private class DeleteBookListener implements ActionListener {
         /**
          * Invoked when an action occurs.
          */
@@ -210,7 +210,7 @@ public class BookAdminComponent {
             try {
                 bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

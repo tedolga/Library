@@ -35,6 +35,12 @@ public class LibraryServer {
     private ReaderProviderImpl readerProvider;
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                JOptionPane.showMessageDialog(null, "Internal server error. " + e.getMessage(), "Library server", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         try {
             LibraryServer libraryServer = new LibraryServer();
             libraryServer.loadServer();
