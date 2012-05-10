@@ -1,10 +1,9 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Reader;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.SimpleDateFormat;
+import javax.xml.crypto.Data;
 import java.util.List;
 
 /**
@@ -12,7 +11,6 @@ import java.util.List;
  * @version 1.0
  */
 public class ReaderTableModel extends AbstractTableModel {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private List<Reader> tableData;
 
     public ReaderTableModel(List<Reader> tableData) {
@@ -55,7 +53,7 @@ public class ReaderTableModel extends AbstractTableModel {
             case 3:
                 return String.class;
             case 4:
-                return String.class;
+                return Data.class;
             default:
                 return Object.class;
         }
@@ -73,7 +71,7 @@ public class ReaderTableModel extends AbstractTableModel {
             case 3:
                 return reader.getAddress();
             case 4:
-                return dateFormat.format(reader.getDateOfBirth());
+                return reader.getDateOfBirth();
             default:
                 return Object.class;
         }
