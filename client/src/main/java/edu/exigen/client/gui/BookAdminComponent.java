@@ -1,8 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
-import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.ProvidersHolder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +29,7 @@ public class BookAdminComponent {
     private static final String COUNT_OF_COPIES = "Count of copies:";
     private static final String COUNT_OF_RESERVED_COPIES = "Count of reserved copies:";
 
-    private BookProvider bookProvider;
-    private ReservationRecordProvider reservationRecordProvider;
+    private ProvidersHolder providersHolder;
     private BookSearchComponent searchComponent;
     private Book tableBook;
     private JTextField isbnField;
@@ -46,10 +44,9 @@ public class BookAdminComponent {
     private JButton deleteButton;
     private JTextField reservedBookCountField;
 
-    public BookAdminComponent(BookProvider bookProvider, ReservationRecordProvider reservationRecordProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
-        this.reservationRecordProvider = reservationRecordProvider;
-        searchComponent = new BookSearchComponent(bookProvider);
+    public BookAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
+        searchComponent = new BookSearchComponent(providersHolder.getBookProvider());
         initComponents();
     }
 
@@ -69,7 +66,7 @@ public class BookAdminComponent {
                 countField.setText(selectedBook != null ? String.valueOf(selectedBook.getCount()) : "");
                 try {
                     reservedBookCountField.setText(selectedBook != null ? String.valueOf
-                            (reservationRecordProvider.getReservedBookCount(selectedBook.getId())) : "");
+                            (providersHolder.getRecordProvider().getReservedBookCount(selectedBook.getId())) : "");
                 } catch (RemoteException e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
@@ -171,7 +168,7 @@ public class BookAdminComponent {
             try {
                 book.setYear(Integer.parseInt(yearField.getText()));
                 book.setCount(Integer.parseInt(countField.getText()));
-                bookProvider.createBook(book);
+                providersHolder.getBookProvider().createBook(book);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
@@ -193,7 +190,7 @@ public class BookAdminComponent {
             newBook.setYear(Integer.parseInt(yearField.getText()));
             newBook.setCount(Integer.parseInt(countField.getText()));
             try {
-                bookProvider.updateBook(tableBook, newBook);
+                providersHolder.getBookProvider().updateBook(tableBook, newBook);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
@@ -207,7 +204,7 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
+                providersHolder.getBookProvider().deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
