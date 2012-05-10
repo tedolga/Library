@@ -3,6 +3,10 @@ package edu.exigen.client.gui;
 import edu.exigen.client.LibraryClient;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
 /**
@@ -32,6 +36,12 @@ public class LibraryClientComponent {
 
     private void initFrameComponents() {
         JTabbedPane bookAdministrationTab = new JTabbedPane();
+        bookAdministrationTab.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                recordAdminComponent.updateTable();
+            }
+        });
         libraryClientFrame.setSize(FRAME_WIDHT, FRAME_HEIGHT);
         JPanel bookReservationPanel = bookReservationComponent.getReservationPanel();
         JPanel bookAdminPanel = bookAdminComponent.getAdminPanel();
@@ -41,6 +51,12 @@ public class LibraryClientComponent {
         bookAdministrationTab.addTab(bookAdminPanel.getName(), bookAdminPanel);
         bookAdministrationTab.addTab(readerAdminPanel.getName(), readerAdminPanel);
         bookAdministrationTab.addTab(recordAdminPanel.getName(), recordAdminPanel);
+        libraryClientFrame.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                recordAdminComponent.updateTable();
+            }
+        });
         libraryClientFrame.add(bookAdministrationTab);
         libraryClientFrame.setLocationRelativeTo(null);
         libraryClientFrame.setVisible(true);

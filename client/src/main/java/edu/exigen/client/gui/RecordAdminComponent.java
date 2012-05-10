@@ -13,6 +13,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,23 +91,18 @@ public class RecordAdminComponent {
         return recordAdminPanel;
     }
 
-    private class RefreshButtonListener implements ActionListener {
-        /**
-         * Invoked when an action occurs.
-         */
-        public void actionPerformed(ActionEvent e) {
-            List<ReservationRecord> records;
-            int rowCount = recordTableModel.getRowCount();
-            recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
-            recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
-            try {
-                records = recordProvider.readAll();
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
-            recordTableModel.setTableData(records);
-            recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
+    public void updateTable() {
+        List<ReservationRecord> records;
+        int rowCount = recordTableModel.getRowCount();
+        recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
+        recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
+        try {
+            records = recordProvider.readAll();
+        } catch (RemoteException e1) {
+            throw new RuntimeException(e1.getMessage(), e1);
         }
+        recordTableModel.setTableData(records);
+        recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
     }
 
     public void addRecordSelectionListener(final RecordSelectionListener selectionListener) {
@@ -151,6 +147,7 @@ public class RecordAdminComponent {
         public void actionPerformed(ActionEvent e) {
             try {
                 recordProvider.deleteRecord(tableRecord);
+                updateTable();
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

@@ -44,7 +44,9 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
 
     public synchronized void deleteRecord(ReservationRecord reservationRecord) throws LibraryProviderException, RemoteException {
         try {
-            recordDAO.delete(reservationRecord.getId());
+            if (reservationRecord != null) {
+                recordDAO.delete(reservationRecord.getId());
+            }
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);
         }

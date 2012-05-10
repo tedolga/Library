@@ -211,7 +211,9 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
+                if (tableBook != null) {
+                    bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
+                }
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
