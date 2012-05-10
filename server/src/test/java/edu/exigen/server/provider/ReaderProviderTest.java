@@ -1,6 +1,5 @@
 package edu.exigen.server.provider;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
@@ -9,7 +8,6 @@ import edu.exigen.server.dao.ReservationRecordDAO;
 import org.junit.*;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,7 +16,6 @@ import java.util.Date;
  * @version 1.0
  */
 public class ReaderProviderTest {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private static final String READER_PROVIDED_XML = "readerProvided.xml";
     private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
@@ -70,7 +67,6 @@ public class ReaderProviderTest {
         Assert.assertEquals(1, provider.searchReaders("Petr").size());
         Assert.assertEquals(2, provider.searchReaders("Petrov").size());
         Assert.assertEquals(2, provider.searchReaders("Petr Petrov").size());
-        Assert.assertEquals(2, provider.searchReaders(dateFormat.format(new Date())).size());
     }
 
     @Test

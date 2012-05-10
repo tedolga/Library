@@ -3,6 +3,7 @@ package edu.exigen.server.dao;
 import edu.exigen.client.entities.ReservationRecord;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,11 +16,17 @@ import java.util.GregorianCalendar;
  * @version 1.0
  */
 public class ReservationRecordDAOTest {
-    private String recordsFileName = "records.xml";
+
+    private String recordsFileName = "test_records.xml";
+
+    @Before
+    public void setUp() throws Exception {
+        File testFile = new File(recordsFileName);
+        testFile.delete();
+    }
 
     @Test
     public void testAllDAOPositive() throws Exception {
-
         ReservationRecordDAO recordDAO = new ReservationRecordDAO(recordsFileName);
         recordDAO.loadStorage();
         Assert.assertEquals(0, recordDAO.readAll().size());
