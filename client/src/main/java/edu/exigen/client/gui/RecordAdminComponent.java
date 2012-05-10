@@ -96,13 +96,8 @@ public class RecordAdminComponent {
         return dataViewPanel;
     }
 
-
     public JPanel getRecordAdminPanel() {
         return recordAdminPanel;
-    }
-
-    public JPanel getRecordSummaryPanel() {
-        return recordSummaryPanel;
     }
 
     private class RefreshButtonListener implements ActionListener {
@@ -138,10 +133,7 @@ public class RecordAdminComponent {
                 }
                 selectionListener.recordSelected(selectedRecord);
             }
-
-        }
-
-        );
+        });
     }
 
     public static void main(String[] args) throws Exception {

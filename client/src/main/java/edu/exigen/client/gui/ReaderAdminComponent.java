@@ -29,12 +29,11 @@ public class ReaderAdminComponent {
     private static final String LAST_NAME = "Last Name:";
     private static final String ADDRESS = "Address:";
     private static final String DATE_OF_BIRTH = "Date of birth:";
-    private static final String CURRENTLY_RESERVED_BOOKS = "Currently reserved books:";
+    private static final String RESERVED_BOOKS = "Reserved books:";
 
     private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
     private Reader tableReader;
-    private String[] readerBooksInfo = new String[0];
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
@@ -69,10 +68,11 @@ public class ReaderAdminComponent {
                 java.util.List<Book> readerBooks;
                 try {
                     readerBooks = recordProvider.getReservedReaderBooks(tableReader);
-                    readerBooksInfo = new String[readerBooks.size()];
-                    for (int i = 0; i < readerBooks.size(); i++) {
-                        readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
+                    final DefaultListModel model = new DefaultListModel();
+                    for (Book readerBook : readerBooks) {
+                        model.addElement(readerBook.getIsbn() + " " + readerBook.getTitle());
                     }
+                    reservedBooksList.setModel(model);
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
@@ -106,10 +106,9 @@ public class ReaderAdminComponent {
         adminComponents.add(dateOfBirthLabel);
         dateOfBirthField = new JXDatePicker();
         adminComponents.add(dateOfBirthField);
-        JLabel reservedBooksLabel = new JLabel(CURRENTLY_RESERVED_BOOKS);
+        JLabel reservedBooksLabel = new JLabel(RESERVED_BOOKS);
         adminComponents.add(reservedBooksLabel);
-        reservedBooksList = new JList(readerBooksInfo);
-        reservedBooksList.setEnabled(false);
+        reservedBooksList = new JList();
         adminComponents.add(reservedBooksList);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
@@ -118,15 +117,19 @@ public class ReaderAdminComponent {
     private void fillAdminPanel(java.util.List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
         c.weighty = 1;
-        c.weightx = 1;
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.WEST;
         for (int i = 0; i < components.size(); i++) {
             panel.add(components.get(i), c);
             if (i % 2 == 0) {
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
                 c.gridx = 1;
             } else {
+                c.fill = GridBagConstraints.NONE;
+                c.anchor = GridBagConstraints.WEST;
+                c.weightx = 0;
                 c.gridy += 1;
                 c.gridx = 0;
             }
