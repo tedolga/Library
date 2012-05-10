@@ -1,18 +1,17 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -20,7 +19,7 @@ import java.util.Date;
  * @version 1.0
  */
 public class BookReservationComponent {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+
     private static final String ADMIN_PANEL_NAME = "Book Reservation";
     private static final String CREATE_BUTTON_NAME = "Reserve Book";
 
@@ -30,7 +29,7 @@ public class BookReservationComponent {
     private JPanel readerSearchPanel;
     private JPanel recordSummaryPanel;
     private JButton reserveButton;
-    private JTextField returnDateField;
+    private JXDatePicker returnDateField;
     private BookProvider bookProvider;
     private ReaderProvider readerProvider;
     private ReservationRecordProvider reservationRecordProvider;
@@ -53,7 +52,7 @@ public class BookReservationComponent {
         final RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
         recordSummaryPanel = recordSummaryComponent.getRecordSummaryPanel();
         recordSummaryComponent.getIssueDateField().setEnabled(false);
-        recordSummaryComponent.getIssueDateField().setText("current date");
+        recordSummaryComponent.getIssueDateField().setDate(new Date());
         returnDateField = recordSummaryComponent.getReturnDateField();
         bookSearchComponent.addBookSelectionListener(new BookSelectionListener() {
             @Override
@@ -104,11 +103,11 @@ public class BookReservationComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                Date currentDate = dateFormat.parse(returnDateField.getText());
+                Date currentDate = returnDateField.getDate();
                 if (currentDate.before(new Date())) {
                     throw new IllegalArgumentException("Date of return must be after current date");
                 }
-                reservationRecordProvider.createRecord(readerId, bookId, dateFormat.parse(returnDateField.getText()));
+                reservationRecordProvider.createRecord(readerId, bookId, returnDateField.getDate());
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

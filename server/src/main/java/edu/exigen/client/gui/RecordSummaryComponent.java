@@ -1,5 +1,7 @@
 package edu.exigen.client.gui;
 
+import org.jdesktop.swingx.JXDatePicker;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,8 +20,8 @@ public class RecordSummaryComponent {
 
     private JTextField libraryCardField;
     private JTextField isbnField;
-    private JTextField issueDateField;
-    private JTextField returnDateField;
+    private JXDatePicker issueDateField;
+    private JXDatePicker returnDateField;
     private JPanel recordSummaryPanel;
 
     public RecordSummaryComponent() {
@@ -40,11 +42,11 @@ public class RecordSummaryComponent {
         panelComponents.add(isbnField);
         JLabel issueDateLabel = new JLabel(ISSUE_DATE);
         panelComponents.add(issueDateLabel);
-        issueDateField = new JTextField();
+        issueDateField = new JXDatePicker();
         panelComponents.add(issueDateField);
         JLabel returnDateLabel = new JLabel(RETURN_DATE);
         panelComponents.add(returnDateLabel);
-        returnDateField = new JTextField();
+        returnDateField = new JXDatePicker();
         panelComponents.add(returnDateField);
         fillSummaryPanel(panelComponents, recordSummaryPanel);
     }
@@ -80,11 +82,11 @@ public class RecordSummaryComponent {
         return isbnField;
     }
 
-    public JTextField getIssueDateField() {
+    public JXDatePicker getIssueDateField() {
         return issueDateField;
     }
 
-    public JTextField getReturnDateField() {
+    public JXDatePicker getReturnDateField() {
         return returnDateField;
     }
 

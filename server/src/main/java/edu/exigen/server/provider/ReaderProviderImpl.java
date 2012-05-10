@@ -1,13 +1,11 @@
 package edu.exigen.server.provider;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.dao.LibraryDAOException;
 import edu.exigen.server.dao.ReaderDAO;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -16,7 +14,6 @@ import java.util.*;
  */
 public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderProvider {
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
     private ReaderDAO readerDAO;
     private ReservationRecordProviderImpl recordProvider;
     private Map<String, HashSet<Reader>> searchCash = new HashMap<String, HashSet<Reader>>();
@@ -141,7 +138,9 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         addFieldTokens(tokens, reader.getFirstName().toLowerCase());
         addFieldTokens(tokens, reader.getLastName().toLowerCase());
         addFieldTokens(tokens, reader.getAddress().toLowerCase());
-        addFieldTokens(tokens, dateFormat.format(reader.getDateOfBirth()).toLowerCase());
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(reader.getDateOfBirth());
+        addFieldTokens(tokens, String.valueOf(calendar.get(Calendar.YEAR)));
         return tokens;
     }
 
@@ -149,6 +148,4 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         String[] tokenArray = field.split(" ");
         Collections.addAll(allTokens, tokenArray);
     }
-
-
 }

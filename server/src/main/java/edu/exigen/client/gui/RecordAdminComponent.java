@@ -1,6 +1,5 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.ReservationRecord;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.ReaderDAO;
@@ -9,6 +8,7 @@ import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.BookProviderImpl;
 import edu.exigen.server.provider.ReservationRecordProvider;
 import edu.exigen.server.provider.ReservationRecordProviderImpl;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,8 +17,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ import java.util.List;
  * @version 1.0
  */
 public class RecordAdminComponent {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+
     private static final String PANEL_NAME = "Reservation Record Administration";
     private static final String VIEW_PANEL_NAME = "Available Records";
     private static final String REFRESH_BUTTON_TEXT = "Refresh";
@@ -37,8 +37,8 @@ public class RecordAdminComponent {
     private RecordTableModel recordTableModel;
     private JTextField libraryCardField;
     private JTextField isbnField;
-    private JTextField issueDateField;
-    private JTextField returnDateField;
+    private JXDatePicker issueDateField;
+    private JXDatePicker returnDateField;
     private JPanel recordSummaryPanel;
     private JTable recordTable;
     private ReservationRecord tableRecord;
@@ -62,8 +62,8 @@ public class RecordAdminComponent {
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
-                issueDateField.setText(selectedRecord != null ? dateFormat.format(selectedRecord.getIssueDate()) : "");
-                returnDateField.setText(selectedRecord != null ? dateFormat.format(selectedRecord.getReturnDate()) : "");
+                issueDateField.setDate(selectedRecord != null ? selectedRecord.getIssueDate() : new Date());
+                returnDateField.setDate(selectedRecord != null ? selectedRecord.getReturnDate() : new Date());
             }
         });
         RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();

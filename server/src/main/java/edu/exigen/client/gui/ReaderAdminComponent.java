@@ -1,27 +1,26 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.Reader;
 import edu.exigen.server.provider.LibraryProviderException;
 import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
 public class ReaderAdminComponent {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+
     private static final String ADMIN_PANEL_NAME = "Reader Administration";
     private static final String CREATE_BUTTON_NAME = "Create";
     private static final String UPDATE_BUTTON_NAME = "Update";
@@ -40,7 +39,7 @@ public class ReaderAdminComponent {
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
-    private JTextField dateOfBirthField;
+    private JXDatePicker dateOfBirthField;
     private JPanel adminPanel;
     private JButton createButton;
     private JButton updateButton;
@@ -63,10 +62,11 @@ public class ReaderAdminComponent {
         searchComponent.addReaderSelectionListener(new ReaderSelectionListener() {
             @Override
             public void readerSelected(Reader selectedReader) {
+                tableReader = selectedReader;
                 firstNameField.setText(selectedReader != null ? selectedReader.getFirstName() : "");
                 lastNameField.setText(selectedReader != null ? selectedReader.getLastName() : "");
                 addressField.setText(selectedReader != null ? selectedReader.getAddress() : "");
-                dateOfBirthField.setText(selectedReader != null ? dateFormat.format(selectedReader.getDateOfBirth()) : "");
+                dateOfBirthField.setDate(selectedReader != null ? selectedReader.getDateOfBirth() : new Date());
                 java.util.List<Book> readerBooks;
                 try {
                     readerBooks = recordProvider.getReservedReaderBooks(tableReader);
@@ -77,7 +77,7 @@ public class ReaderAdminComponent {
                 for (int i = 0; i < readerBooks.size(); i++) {
                     readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
                 }
-                tableReader = selectedReader;
+
             }
         });
         adminPanel.setLayout(new BorderLayout());
@@ -106,8 +106,7 @@ public class ReaderAdminComponent {
         adminComponents.add(addressField);
         JLabel dateOfBirthLabel = new JLabel(DATE_OF_BIRTH);
         adminComponents.add(dateOfBirthLabel);
-        dateOfBirthField = new JTextField();
-        dateOfBirthField.setText(LibraryConstraints.LIBRARY_DATE_PATTERN);
+        dateOfBirthField = new JXDatePicker();
         adminComponents.add(dateOfBirthField);
         JLabel reservedBooksLabel = new JLabel(CURRENTLY_RESERVED_BOOKS);
         adminComponents.add(reservedBooksLabel);
@@ -164,11 +163,7 @@ public class ReaderAdminComponent {
             reader.setFirstName(firstNameField.getText());
             reader.setLastName(lastNameField.getText());
             reader.setAddress(addressField.getText());
-            try {
-                reader.setDateOfBirth(dateFormat.parse(dateOfBirthField.getText()));
-            } catch (ParseException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
+            reader.setDateOfBirth(dateOfBirthField.getDate());
             try {
                 readerProvider.createReader(reader);
             } catch (LibraryProviderException e1) {
@@ -192,7 +187,7 @@ public class ReaderAdminComponent {
             newReader.setLastName(lastNameField.getText());
             newReader.setAddress(addressField.getText());
             try {
-                newReader.setDateOfBirth(dateFormat.parse(dateOfBirthField.getText()));
+                newReader.setDateOfBirth(dateOfBirthField.getDate());
                 readerProvider.updateReader(tableReader, newReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
