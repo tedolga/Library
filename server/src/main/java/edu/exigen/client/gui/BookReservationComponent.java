@@ -86,9 +86,10 @@ public class BookReservationComponent {
         c.gridy = 1;
         reservationPanel.add(readerSearchPanel, c);
         c.gridy = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
         reservationPanel.add(recordSummaryPanel, c);
         c.gridy = 3;
-        c.fill = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
         reservationPanel.add(reserveButton, c);
     }
 
