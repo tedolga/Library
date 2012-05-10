@@ -5,6 +5,8 @@ import edu.exigen.server.provider.ReaderProvider;
 import edu.exigen.server.provider.ReservationRecordProvider;
 
 /**
+ * Class for holding all required providers.
+ *
  * @author O. Tedikova
  * @version 1.0
  */

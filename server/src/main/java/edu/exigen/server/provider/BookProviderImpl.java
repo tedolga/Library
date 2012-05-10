@@ -9,14 +9,31 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 /**
+ * Manages creation, deletion and update of books on server side.
+ *
  * @author Tedikova O.
  * @version 1.0
  */
 public class BookProviderImpl extends UnicastRemoteObject implements BookProvider {
 
+    /**
+     * Map for cashing all books for appropriate isbn.
+     */
     private Map<String, Book> isbnCash = new HashMap<String, Book>();
+
+    /**
+     * Map for cashing all books for appropriate key word.
+     */
     private Map<String, HashSet<Book>> searchCash = new HashMap<String, HashSet<Book>>();
+
+    /**
+     * DAO for working with books.
+     */
     private BookDAO bookDAO;
+
+    /**
+     * Provider for reservation information.
+     */
     private ReservationRecordProviderImpl recordProvider;
 
     public BookProviderImpl(BookDAO bookDAO, ReservationRecordProviderImpl recordProvider) throws RemoteException {
@@ -25,6 +42,14 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         this.recordProvider = recordProvider;
     }
 
+    /**
+     * Creates new book in book storage. If book with the isbn as in new book is already exists, updates count
+     * of books with appropriate isbn. Doesn't allow to create more than 5 copies of books with the same isbn.
+     *
+     * @param book for creation
+     * @throws LibraryProviderException in case of LibraryProviderException
+     * @throws RemoteException          in case of RemoteException
+     */
     public synchronized void createBook(Book book) throws LibraryProviderException, RemoteException {
         checkISBNCount(book);
         Book sameBook = isbnCash.get(book.getIsbn());
@@ -49,6 +74,14 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
         }
     }
 
+    /**
+     * Updates book information.
+     *
+     * @param oldBook book, which parameters should be updated.
+     * @param newBook book, which parameters will be set to old book.
+     * @throws LibraryProviderException in case of LibraryProviderException
+     * @throws RemoteException          in case of RemoteException
+     */
     public synchronized void updateBook(Book oldBook, Book newBook) throws LibraryProviderException, RemoteException {
         Book copyOld = oldBook.copyBook();
         int newBookCount = newBook.getCount();

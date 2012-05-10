@@ -18,8 +18,19 @@ import java.rmi.RemoteException;
  */
 public class LibraryClient {
 
+    /**
+     * Book provider url in rmi registry.
+     */
     private static final String BOOK_PROVIDER_URL = "rmi://localhost/book_provider";
+
+    /**
+     * Reader provider url in rmi registry.
+     */
     private static final String READER_PROVIDER_URL = "rmi://localhost/reader_provider";
+
+    /**
+     * Record provider url in rmi registry.
+     */
     private static final String RECORD_PROVIDER_URL = "rmi://localhost/record_provider";
 
     private static ProvidersHolder providersHolder;
