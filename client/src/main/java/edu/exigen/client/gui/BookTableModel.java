@@ -13,6 +13,9 @@ public class BookTableModel extends AbstractTableModel {
     private List<Book> tableData;
 
     public BookTableModel(List<Book> tableData) {
+        if (tableData == null){
+            throw new IllegalArgumentException();
+        }
         this.tableData = tableData;
     }
 
@@ -42,20 +45,7 @@ public class BookTableModel extends AbstractTableModel {
     }
 
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return String.class;
-            case 1:
-                return String.class;
-            case 2:
-                return String.class;
-            case 3:
-                return String.class;
-            case 4:
-                return Integer.class;
-            default:
-                return Object.class;
-        }
+        return getValueAt(0, columnIndex).getClass();
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -77,6 +67,9 @@ public class BookTableModel extends AbstractTableModel {
     }
 
     public void setTableData(List<Book> tableData) {
+        if (tableData == null){
+            throw new IllegalArgumentException();
+        }
         this.tableData = tableData;
     }
 

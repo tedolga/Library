@@ -48,22 +48,25 @@ public class LibraryClient {
             BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);
             ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
             ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
-            LibraryClient libraryClient = new LibraryClient(bookProvider, readerProvider, recordProvider);
-            final LibraryClientComponent clientComponent = new LibraryClientComponent(libraryClient);
+            final LibraryClient libraryClient = new LibraryClient(bookProvider, readerProvider, recordProvider);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JFrame clientFrame = clientComponent.getLibraryClientFrame();
-                    clientFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    clientFrame.setLocationRelativeTo(null);
-                    clientFrame.setVisible(true);
+                    final LibraryClientComponent clientComponent;
+                    try {
+                        clientComponent = new LibraryClientComponent(libraryClient);
+                        JFrame clientFrame = clientComponent.getLibraryClientFrame();
+                        clientFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        clientFrame.setLocationRelativeTo(null);
+                        clientFrame.setVisible(true);
+                    } catch (RemoteException e) {
+                        JOptionPane.showMessageDialog(null, "Read server data failed.", "Library client", JOptionPane.INFORMATION_MESSAGE);
+                        System.exit(-1);
+                    }
                 }
             });
         } catch (NamingException e) {
             JOptionPane.showMessageDialog(null, "Can't find 'Library Server' at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
-            System.exit(-1);
-        } catch (RemoteException e) {
-            JOptionPane.showMessageDialog(null, "Read server data failed.", "Library client", JOptionPane.INFORMATION_MESSAGE);
             System.exit(-1);
         }
     }

@@ -47,8 +47,13 @@ public class LibraryServer {
             libraryServer.loadServer();
             LocateRegistry.createRegistry(SERVER_PORT);
             libraryServer.registerProviders();
-            JOptionPane.showMessageDialog(null, "Server was started.\nPress 'OK' to destroy the Server", "Library server", JOptionPane.INFORMATION_MESSAGE);
-            System.exit(0);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(null, "Server was started.\nPress 'OK' to destroy the Server", "Library server", JOptionPane.INFORMATION_MESSAGE);
+                    System.exit(0);
+                }
+            });
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Server is already started.", "Library server", JOptionPane.INFORMATION_MESSAGE);
             System.exit(-1);
