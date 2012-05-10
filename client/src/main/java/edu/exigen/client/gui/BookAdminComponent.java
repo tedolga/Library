@@ -165,18 +165,30 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Book book = new Book();
+            checkISBNField();
             book.setIsbn(isbnField.getText());
+            checkTitleField();
             book.setTitle(titleField.getText());
+            checkAuthorField();
             book.setAuthor(authorField.getText());
+            checkTopicField();
             book.setTopic(topicField.getText());
+            String countFieldValue = countField.getText();
+            checkCountValue(countFieldValue);
+            book.setCount(Integer.parseInt(countFieldValue));
             try {
                 book.setYear(Integer.parseInt(yearField.getText()));
-                book.setCount(Integer.parseInt(countField.getText()));
+            } catch (IllegalArgumentException iae) {
+                throw new RuntimeException("Set valid year data");
+            }
+            try {
                 providersHolder.getBookProvider().createBook(book);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
         }
+
+
     }
 
     private class UpdateButtonActionListener implements ActionListener {
@@ -186,12 +198,22 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Book newBook = new Book();
+            checkSelectedBook();
             newBook.setId(tableBook.getId());
+            checkISBNField();
             newBook.setIsbn(isbnField.getText());
+            checkTitleField();
             newBook.setTitle(titleField.getText());
+            checkAuthorField();
             newBook.setAuthor(authorField.getText());
+            checkTopicField();
             newBook.setTopic(topicField.getText());
-            newBook.setYear(Integer.parseInt(yearField.getText()));
+            try {
+                newBook.setYear(Integer.parseInt(yearField.getText()));
+            } catch (IllegalArgumentException iae) {
+                throw new RuntimeException("Set valid year data");
+            }
+            checkCountValue(countField.getText());
             newBook.setCount(Integer.parseInt(countField.getText()));
             try {
                 providersHolder.getBookProvider().updateBook(tableBook, newBook);
@@ -199,6 +221,7 @@ public class BookAdminComponent {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
         }
+
     }
 
     private class DeleteBookListener implements ActionListener {
@@ -207,6 +230,8 @@ public class BookAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkSelectedBook();
+            checkCountValue(countField.getText());
             try {
                 if (tableBook != null) {
                     providersHolder.getBookProvider().deleteBooks(tableBook, Integer.parseInt(countField.getText()));
@@ -214,6 +239,46 @@ public class BookAdminComponent {
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
+        }
+    }
+
+    private void checkISBNField() {
+        if ("".equals(isbnField.getText())) {
+            throw new RuntimeException("Enter ISBN data");
+        }
+    }
+
+    private void checkTitleField() {
+        if ("".equals(titleField.getText())) {
+            throw new RuntimeException("Enter title data");
+        }
+    }
+
+    private void checkAuthorField() {
+        if ("".equals(authorField.getText())) {
+            throw new RuntimeException("Enter author data");
+        }
+    }
+
+    private void checkTopicField() {
+        if ("".equals(topicField.getText())) {
+            throw new RuntimeException("Enter topic data");
+        }
+    }
+
+    private void checkCountValue(String countFieldValue) {
+        try {
+            if (Integer.parseInt(countField.getText()) < 0) {
+                throw new RuntimeException("Count must be > 0");
+            }
+        } catch (IllegalArgumentException iae) {
+            throw new RuntimeException("Set valid count value > 0 ");
+        }
+    }
+
+    private void checkSelectedBook() {
+        if (tableBook == null) {
+            throw new RuntimeException("Select book from table");
         }
     }
 }
