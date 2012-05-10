@@ -1,12 +1,10 @@
 package edu.exigen.client.gui;
 
-import edu.exigen.LibraryConstraints;
 import edu.exigen.client.entities.Book;
 import edu.exigen.client.entities.ReservationRecord;
 import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -14,7 +12,7 @@ import java.util.List;
  * @version 1.0
  */
 public class RecordTableModel extends AbstractTableModel {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(LibraryConstraints.LIBRARY_DATE_PATTERN);
+
     BookProvider bookProvider;
     private List<ReservationRecord> tableData;
 
@@ -81,9 +79,9 @@ public class RecordTableModel extends AbstractTableModel {
                 }
                 return (book != null) ? book.getIsbn() : "";
             case 3:
-                return dateFormat.format(record.getIssueDate());
+                return record.getIssueDate();
             case 4:
-                return dateFormat.format(record.getReturnDate());
+                return record.getReturnDate();
             default:
                 return Object.class;
         }
