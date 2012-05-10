@@ -67,6 +67,10 @@ public class ReaderTableModel extends AbstractTableModel {
         }
     }
 
+    public List<Reader> getTableData() {
+        return tableData;
+    }
+
     public void setTableData(List<Reader> tableData) {
         if (tableData == null) {
             throw new IllegalArgumentException();

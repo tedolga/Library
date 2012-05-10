@@ -75,7 +75,6 @@ public class ReaderAdminComponent {
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
-                    //JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -167,7 +166,6 @@ public class ReaderAdminComponent {
                 readerProvider.createReader(reader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -189,7 +187,6 @@ public class ReaderAdminComponent {
                 readerProvider.updateReader(tableReader, newReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -204,7 +201,6 @@ public class ReaderAdminComponent {
                 readerProvider.deleteReader(tableReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

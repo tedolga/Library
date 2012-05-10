@@ -96,19 +96,19 @@ public class ReaderSearchComponent {
     }
 
     public void addReaderSelectionListener(final ReaderSelectionListener selectionListener) {
-//        final ListSelectionModel model = readerTable.getSelectionModel();
-//        model.addListSelectionListener(new ListSelectionListener() {
-//
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-//                Reader selectedReader = null;
-//                if (!lsm.isSelectionEmpty()) {
-//                    int selectedRow = lsm.getMinSelectionIndex();
-//                    selectedReader = readerTableModel.getTableData().get(selectedRow);
-//                }
-//                selectionListener.readerSelected(selectedReader);
-//            }
-//        });
+        final ListSelectionModel model = readerTable.getSelectionModel();
+        model.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+                Reader selectedReader = null;
+                if (!lsm.isSelectionEmpty()) {
+                    int selectedRow = lsm.getMinSelectionIndex();
+                    selectedReader = readerTableModel.getTableData().get(selectedRow);
+                }
+                selectionListener.readerSelected(selectedReader);
+            }
+        });
     }
 }

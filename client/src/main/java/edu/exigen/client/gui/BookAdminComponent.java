@@ -22,6 +22,13 @@ public class BookAdminComponent {
     private static final String CREATE_BUTTON_NAME = "Create";
     private static final String UPDATE_BUTTON_NAME = "Update";
     private static final String DELETE_BUTTON_NAME = "Delete";
+    private static final String ISBN = "ISBN:";
+    private static final String TITLE = "Title:";
+    private static final String AUTHOR = "Author:";
+    private static final String TOPIC = "Topic:";
+    private static final String YEAR = "Year:";
+    private static final String COUNT_OF_COPIES = "Count of copies:";
+    private static final String COUNT_OF_RESERVED_COPIES = "Count of reserved copies:";
 
     private BookProvider bookProvider;
     private ReservationRecordProvider reservationRecordProvider;
@@ -64,7 +71,7 @@ public class BookAdminComponent {
                     reservedBookCountField.setText(selectedBook != null ? String.valueOf
                             (reservationRecordProvider.getReservedBookCount(selectedBook.getId())) : "");
                 } catch (RemoteException e) {
-                    JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                    throw new RuntimeException(e.getMessage(), e);
                 }
                 tableBook = selectedBook;
             }
@@ -81,34 +88,34 @@ public class BookAdminComponent {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
         List<JComponent> adminComponents = new ArrayList<JComponent>();
-        JLabel isbn = new JLabel("ISBN :");
+        JLabel isbn = new JLabel(ISBN);
         adminComponents.add(isbn);
         isbnField = new JTextField();
         adminComponents.add(isbnField);
-        JLabel titleLabel = new JLabel("Title :");
+        JLabel titleLabel = new JLabel(TITLE);
         adminComponents.add(titleLabel);
         titleField = new JTextField();
         adminComponents.add(titleField);
-        JLabel authorLabel = new JLabel("Author :");
+        JLabel authorLabel = new JLabel(AUTHOR);
         adminComponents.add(authorLabel);
         authorField = new JTextField();
         adminComponents.add(authorField);
-        JLabel topicLabel = new JLabel("Topic:");
+        JLabel topicLabel = new JLabel(TOPIC);
         adminComponents.add(topicLabel);
         topicField = new JTextField();
         adminComponents.add(topicField);
-        JLabel yearLabel = new JLabel("Year:");
+        JLabel yearLabel = new JLabel(YEAR);
         adminComponents.add(yearLabel);
         yearField = new JTextField();
         adminComponents.add(yearField);
-        JLabel countLabel = new JLabel("Count of copies:");
+        JLabel countLabel = new JLabel(COUNT_OF_COPIES);
         adminComponents.add(countLabel);
         countField = new JTextField();
         adminComponents.add(countField);
-        JLabel countOfReservedLabel = new JLabel("Count of reserved copies");
+        JLabel countOfReservedLabel = new JLabel(COUNT_OF_RESERVED_COPIES);
         adminComponents.add(countOfReservedLabel);
         reservedBookCountField = new JTextField();
-        reservedBookCountField.setEnabled(false);
+        reservedBookCountField.setEditable(false);
         adminComponents.add(reservedBookCountField);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
@@ -166,7 +173,7 @@ public class BookAdminComponent {
                 book.setCount(Integer.parseInt(countField.getText()));
                 bookProvider.createBook(book);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
     }
@@ -188,7 +195,7 @@ public class BookAdminComponent {
             try {
                 bookProvider.updateBook(tableBook, newBook);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
     }
@@ -203,7 +210,6 @@ public class BookAdminComponent {
                 bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

@@ -37,9 +37,9 @@ public class LibraryClient {
             public void uncaughtException(Thread t, Throwable e) {
                 e.printStackTrace();
                 if (e.getMessage().contains("java.net.ConnectException")) {
-                    JOptionPane.showMessageDialog(null, "Client was disconnected, please, check server.", "Library client", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Client was disconnected, please, check server.", "Library client", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });

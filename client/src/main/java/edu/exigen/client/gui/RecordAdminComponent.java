@@ -171,7 +171,6 @@ public class RecordAdminComponent {
                 recordProvider.deleteRecord(tableRecord);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(recordAdminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
