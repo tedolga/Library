@@ -22,10 +22,9 @@ public class LibraryClient {
     private static final String READER_PROVIDER_URL = "rmi://localhost/reader_provider";
     private static final String RECORD_PROVIDER_URL = "rmi://localhost/record_provider";
 
-    private ProvidersHolder providersHolder;
+    private static ProvidersHolder providersHolder;
 
-    public LibraryClient(ProvidersHolder providersHolder) {
-        this.providersHolder = providersHolder;
+    public LibraryClient() {
     }
 
     public static void main(String[] args) {
@@ -40,10 +39,11 @@ public class LibraryClient {
                         BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);
                         ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
                         ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
-                        providersHolder = new ProvidersHolder(bookProvider, readerProvider, recordProvider);
+                        providersHolder.setBookProvider(bookProvider);
+                        providersHolder.setReaderProvider(readerProvider);
+                        providersHolder.setRecordProvider(recordProvider);
                     } catch (NamingException ne) {
-                        JOptionPane.showMessageDialog(null, "Can't find 'Library Server' at localhost.", "Library client", JOptionPane.INFORMATION_MESSAGE);
-                        System.exit(-1);
+                        throw new RuntimeException(ne.getMessage(), ne);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
@@ -55,8 +55,8 @@ public class LibraryClient {
             BookProvider bookProvider = (BookProvider) namingContext.lookup(BOOK_PROVIDER_URL);
             ReaderProvider readerProvider = (ReaderProvider) namingContext.lookup(READER_PROVIDER_URL);
             ReservationRecordProvider recordProvider = (ReservationRecordProvider) namingContext.lookup(RECORD_PROVIDER_URL);
-            ProvidersHolder providersHolder = new ProvidersHolder(bookProvider, readerProvider, recordProvider);
-            final LibraryClient libraryClient = new LibraryClient(providersHolder);
+            providersHolder = new ProvidersHolder(bookProvider, readerProvider, recordProvider);
+            final LibraryClient libraryClient = new LibraryClient();
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {

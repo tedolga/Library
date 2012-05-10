@@ -138,9 +138,11 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         addFieldTokens(tokens, reader.getFirstName().toLowerCase());
         addFieldTokens(tokens, reader.getLastName().toLowerCase());
         addFieldTokens(tokens, reader.getAddress().toLowerCase());
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(reader.getDateOfBirth());
-        addFieldTokens(tokens, String.valueOf(calendar.get(Calendar.YEAR)));
+        if (reader.getDateOfBirth() != null) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(reader.getDateOfBirth());
+            addFieldTokens(tokens, String.valueOf(calendar.get(Calendar.YEAR)));
+        }
         return tokens;
     }
 
