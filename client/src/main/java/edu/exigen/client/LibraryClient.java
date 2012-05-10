@@ -39,7 +39,7 @@ public class LibraryClient {
                 if (e.getMessage().contains("java.net.ConnectException")) {
                     JOptionPane.showMessageDialog(null, "Client was disconnected, please, check server.", "Library client", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Internal client error. " + e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
