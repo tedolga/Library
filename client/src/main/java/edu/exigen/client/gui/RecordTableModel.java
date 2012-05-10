@@ -2,6 +2,7 @@ package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.ReservationRecord;
+import edu.exigen.server.ProvidersHolder;
 import edu.exigen.server.provider.BookProvider;
 
 import javax.swing.table.AbstractTableModel;
@@ -13,12 +14,12 @@ import java.util.List;
  */
 public class RecordTableModel extends AbstractTableModel {
 
-    BookProvider bookProvider;
     private List<ReservationRecord> tableData;
+    private ProvidersHolder providersHolder;
 
-    public RecordTableModel(List<ReservationRecord> tableData, BookProvider bookProvider) {
+    public RecordTableModel(List<ReservationRecord> tableData, ProvidersHolder providersHolder) {
         this.tableData = tableData;
-        this.bookProvider = bookProvider;
+        this.providersHolder = providersHolder;
     }
 
     public int getRowCount() {
@@ -47,20 +48,7 @@ public class RecordTableModel extends AbstractTableModel {
     }
 
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return Integer.class;
-            case 1:
-                return Integer.class;
-            case 2:
-                return String.class;
-            case 3:
-                return String.class;
-            case 4:
-                return String.class;
-            default:
-                return Object.class;
-        }
+        return getValueAt(0, columnIndex).getClass();
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -73,7 +61,7 @@ public class RecordTableModel extends AbstractTableModel {
             case 2:
                 Book book;
                 try {
-                    book = bookProvider.getBookById(record.getBookId());
+                    book = providersHolder.getBookProvider().getBookById(record.getBookId());
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }

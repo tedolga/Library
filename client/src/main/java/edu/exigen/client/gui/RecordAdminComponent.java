@@ -72,7 +72,7 @@ public class RecordAdminComponent {
     }
 
     private JComponent createDataViewPanel() throws RemoteException {
-        recordTableModel = new RecordTableModel(providersHolder.getRecordProvider().readAll(), providersHolder.getBookProvider());
+        recordTableModel = new RecordTableModel(providersHolder.getRecordProvider().readAll(), providersHolder);
         recordTable = new JTable(recordTableModel);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return new JScrollPane(recordTable);
