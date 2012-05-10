@@ -18,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,7 +48,7 @@ public class RecordAdminComponent {
     }
 
     private void initComponents() throws RemoteException {
-        JPanel dataViewPanel = createDataViewPanel();
+        JComponent dataViewPanel = createDataViewPanel();
         addRecordSelectionListener(new RecordSelectionListener() {
             @Override
             public void recordSelected(ReservationRecord selectedRecord) {
@@ -80,16 +79,11 @@ public class RecordAdminComponent {
         recordAdminPanel.add(deleteButton, BorderLayout.SOUTH);
     }
 
-    private JPanel createDataViewPanel() throws RemoteException {
-        JPanel dataViewPanel = new JPanel();
-        dataViewPanel.setBorder(BorderFactory.createTitledBorder(VIEW_PANEL_NAME));
+    private JComponent createDataViewPanel() throws RemoteException {
         recordTableModel = new RecordTableModel(recordProvider.readAll(), bookProvider);
         recordTable = new JTable(recordTableModel);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        recordTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
-        JScrollPane scrollPane = new JScrollPane(recordTable);
-        dataViewPanel.add(scrollPane, BorderLayout.CENTER);
-        return dataViewPanel;
+        return new JScrollPane(recordTable);
     }
 
     public JPanel getRecordAdminPanel() {
