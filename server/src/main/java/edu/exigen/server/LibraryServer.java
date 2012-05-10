@@ -38,6 +38,7 @@ public class LibraryServer {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Internal server error. " + e.getMessage(), "Library server", JOptionPane.ERROR_MESSAGE);
             }
         });

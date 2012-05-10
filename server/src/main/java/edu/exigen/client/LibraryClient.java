@@ -35,6 +35,7 @@ public class LibraryClient {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Internal client error. " + e.getMessage(), "Library client", JOptionPane.ERROR_MESSAGE);
             }
         });

@@ -59,7 +59,7 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
             int sumCount = bookDAO.readBook(bookId).getCount();
             int reservedCount = getReservedBookCount(bookId);
             if ((sumCount - reservedCount) < 1) {
-                throw new LibraryProviderException("Reservation failed. There are no available books now.");
+                throw new LibraryProviderException("There are no available books now.");
             }
         } catch (LibraryDAOException e) {
             throw new LibraryProviderException(e.getMessage(), e);

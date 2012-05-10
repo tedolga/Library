@@ -35,7 +35,6 @@ public class BookReservationComponent {
     private ReservationRecordProvider reservationRecordProvider;
     private JPanel reservationPanel;
 
-
     public BookReservationComponent(BookProvider bookProvider, ReaderProvider readerProvider, ReservationRecordProvider
             reservationRecordProvider) throws RemoteException {
         this.bookProvider = bookProvider;
@@ -109,7 +108,7 @@ public class BookReservationComponent {
                 }
                 reservationRecordProvider.createRecord(readerId, bookId, returnDateField.getDate());
             } catch (Exception ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
