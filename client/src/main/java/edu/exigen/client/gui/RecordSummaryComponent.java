@@ -57,23 +57,22 @@ public class RecordSummaryComponent {
 
     private void fillSummaryPanel(List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.EAST;
         c.weighty = 1;
         c.gridx = 0;
         c.gridy = 0;
-
+        c.anchor = GridBagConstraints.WEST;
         for (int i = 0; i < components.size(); i++) {
             panel.add(components.get(i), c);
             if (i % 2 == 0) {
-                c.gridx = 1;
-                c.weightx = 1;
                 c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                c.gridx = 1;
             } else {
+                c.fill = GridBagConstraints.NONE;
+                c.anchor = GridBagConstraints.WEST;
+                c.weightx = 0;
                 c.gridy += 1;
                 c.gridx = 0;
-                c.weightx = 0;
-                c.anchor = GridBagConstraints.WEST;
-                c.fill = GridBagConstraints.NONE;
             }
         }
     }
