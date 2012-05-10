@@ -35,11 +35,13 @@ public class RecordSummaryComponent {
         JLabel libraryCardLabel = new JLabel(LIBRARY_CARD);
         panelComponents.add(libraryCardLabel);
         libraryCardField = new JTextField();
+        libraryCardField.setText("<Please, select the Reader>");
         libraryCardField.setEditable(false);
         panelComponents.add(libraryCardField);
         JLabel isbnLabel = new JLabel(BOOK_ISBN);
         panelComponents.add(isbnLabel);
         isbnField = new JTextField();
+        isbnField.setText("<Please, select the Book>");
         isbnField.setEditable(false);
         panelComponents.add(isbnField);
         JLabel issueDateLabel = new JLabel(ISSUE_DATE);

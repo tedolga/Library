@@ -57,7 +57,7 @@ public class BookReservationComponent {
             @Override
             public void bookSelected(Book selectedBook) {
                 book = selectedBook;
-                recordSummaryComponent.getIsbnField().setText(selectedBook != null ? selectedBook.getIsbn() : "");
+                recordSummaryComponent.getIsbnField().setText(selectedBook != null ? selectedBook.getIsbn() : "<Please, select the Book>");
             }
         });
         readerSearchComponent.addReaderSelectionListener(new ReaderSelectionListener() {
@@ -65,7 +65,7 @@ public class BookReservationComponent {
             public void readerSelected(Reader selectedReader) {
                 reader = selectedReader;
                 recordSummaryComponent.getLibraryCardField().setText(selectedReader != null ? String.valueOf(selectedReader
-                        .getId()) : "");
+                        .getId()) : "<Please, select the Reader>");
             }
         });
         reserveButton = new JButton(CREATE_BUTTON_NAME);
