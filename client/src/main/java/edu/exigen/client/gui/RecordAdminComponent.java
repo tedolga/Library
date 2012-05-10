@@ -82,23 +82,18 @@ public class RecordAdminComponent {
         return recordAdminPanel;
     }
 
-    private class RefreshButtonListener implements ActionListener {
-        /**
-         * Invoked when an action occurs.
-         */
-        public void actionPerformed(ActionEvent e) {
-            List<ReservationRecord> records;
-            int rowCount = recordTableModel.getRowCount();
-            recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
-            recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
-            try {
-                records = providersHolder.getRecordProvider().readAll();
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
-            recordTableModel.setTableData(records);
-            recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
+    public void updateTable() {
+        List<ReservationRecord> records;
+        int rowCount = recordTableModel.getRowCount();
+        recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
+        recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
+        try {
+            records = providersHolder.getRecordProvider().readAll();
+        } catch (RemoteException e1) {
+            throw new RuntimeException(e1.getMessage(), e1);
         }
+        recordTableModel.setTableData(records);
+        recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
     }
 
     public void addRecordSelectionListener(final RecordSelectionListener selectionListener) {
@@ -118,23 +113,6 @@ public class RecordAdminComponent {
         });
     }
 
-    public static void main(String[] args) throws Exception {
-//        JFrame frame = new JFrame("Test reader admin component");
-//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        frame.setLayout(new BorderLayout());
-//        final BookDAO bookStore = new BookDAO("bookStore");
-//        bookStore.loadStorage();
-//        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("reservationStore");
-//        recordDAO.loadStorage();
-//        final ReaderDAO readerDAO = new ReaderDAO("readerStore");
-//        readerDAO.loadStorage();
-//        final ReservationRecordProviderImpl reservationRecordProvider = new ReservationRecordProviderImpl(bookStore, readerDAO, recordDAO);
-//        final RecordAdminComponent recordAdminComponent = new RecordAdminComponent(new BookProviderImpl(bookStore, reservationRecordProvider), reservationRecordProvider);
-//        frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
-//        frame.setVisible(true);
-//        frame.pack();
-    }
-
     private class DeleteRecordListener implements ActionListener {
         /**
          * Invoked when an action occurs.
@@ -142,7 +120,10 @@ public class RecordAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                providersHolder.getRecordProvider().deleteRecord(tableRecord);
+                if (tableRecord != null) {
+                    providersHolder.getRecordProvider().deleteRecord(tableRecord);
+                    updateTable();
+                }
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }

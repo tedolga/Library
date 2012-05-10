@@ -37,9 +37,9 @@ public class BookReservationComponent {
     }
 
     public void initComponents() throws RemoteException {
-        BookSearchComponent bookSearchComponent = new BookSearchComponent(providersHolder.getBookProvider());
+        BookSearchComponent bookSearchComponent = new BookSearchComponent(providersHolder);
         bookSearchPanel = bookSearchComponent.getBookSearchPanel();
-        final ReaderSearchComponent readerSearchComponent = new ReaderSearchComponent(providersHolder.getReaderProvider());
+        final ReaderSearchComponent readerSearchComponent = new ReaderSearchComponent(providersHolder);
         readerSearchPanel = readerSearchComponent.getReaderSearchPanel();
         final RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
         recordSummaryPanel = recordSummaryComponent.getRecordSummaryPanel();
