@@ -23,8 +23,8 @@ public class BookReservationComponent {
     private static final String ADMIN_PANEL_NAME = "Book Reservation";
     private static final String CREATE_BUTTON_NAME = "Reserve Book";
 
-    private int bookId;
-    private int readerId;
+    private Book book;
+    private Reader reader;
     private JPanel bookSearchPanel;
     private JPanel readerSearchPanel;
     private JPanel recordSummaryPanel;
@@ -56,14 +56,14 @@ public class BookReservationComponent {
         bookSearchComponent.addBookSelectionListener(new BookSelectionListener() {
             @Override
             public void bookSelected(Book selectedBook) {
-                bookId = selectedBook != null ? selectedBook.getId() : 0;
+                book = selectedBook;
                 recordSummaryComponent.getIsbnField().setText(selectedBook != null ? selectedBook.getIsbn() : "");
             }
         });
         readerSearchComponent.addReaderSelectionListener(new ReaderSelectionListener() {
             @Override
             public void readerSelected(Reader selectedReader) {
-                readerId = selectedReader != null ? selectedReader.getId() : 0;
+                reader = selectedReader;
                 recordSummaryComponent.getLibraryCardField().setText(selectedReader != null ? String.valueOf(selectedReader
                         .getId()) : "");
             }
@@ -103,10 +103,19 @@ public class BookReservationComponent {
         public void actionPerformed(ActionEvent e) {
             try {
                 Date currentDate = returnDateField.getDate();
+                if (reader == null) {
+                    throw new IllegalArgumentException("Please, select the reader.");
+                }
+                if (book == null) {
+                    throw new IllegalArgumentException("Please, select the book.");
+                }
+                if (currentDate == null) {
+                    throw new IllegalArgumentException("Please, set return date.");
+                }
                 if (currentDate.before(new Date())) {
                     throw new IllegalArgumentException("Date of return must be after current date");
                 }
-                reservationRecordProvider.createRecord(readerId, bookId, returnDateField.getDate());
+                reservationRecordProvider.createRecord(reader.getId(), book.getId(), returnDateField.getDate());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }

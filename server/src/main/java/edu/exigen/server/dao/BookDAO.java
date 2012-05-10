@@ -34,7 +34,7 @@ public class BookDAO {
     public Book readBook(int id) throws LibraryDAOException {
         Book book = storage.getBook(id);
         if (book == null) {
-            throw new LibraryDAOException("Book with id=" + id + "is not found");
+            throw new LibraryDAOException("Book with id=" + id + " is not found");
         }
         return book;
     }
