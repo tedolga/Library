@@ -1,7 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.Reader;
-import edu.exigen.server.provider.ReaderProvider;
+import edu.exigen.server.ProvidersHolder;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -25,18 +25,18 @@ public class ReaderSearchComponent {
     private JPanel readerSearchPanel;
     private JTextField searchField;
 
-    private ReaderProvider readerProvider;
     private ReaderTableModel readerTableModel;
     private JTable readerTable;
+    private ProvidersHolder providersHolder;
 
-    public ReaderSearchComponent(ReaderProvider readerProvider) throws RemoteException {
-        this.readerProvider = readerProvider;
+    public ReaderSearchComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
         initComponents();
     }
 
     private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
-        readerTableModel = new ReaderTableModel(readerProvider.readAll());
+        readerTableModel = new ReaderTableModel(providersHolder.getReaderProvider().readAll());
         readerTable = new JTable(readerTableModel);
         readerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(readerTable);
@@ -82,9 +82,9 @@ public class ReaderSearchComponent {
             readerTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
                 if (!"".equals(searchField.getText())) {
-                    readers = readerProvider.searchReaders(searchField.getText());
+                    readers = providersHolder.getReaderProvider().searchReaders(searchField.getText());
                 } else {
-                    readers = readerProvider.readAll();
+                    readers = providersHolder.getReaderProvider().readAll();
                 }
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);

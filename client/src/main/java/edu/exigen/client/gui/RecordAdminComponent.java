@@ -1,13 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.ReservationRecord;
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
-import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.BookProviderImpl;
-import edu.exigen.server.provider.ReservationRecordProvider;
-import edu.exigen.server.provider.ReservationRecordProviderImpl;
+import edu.exigen.server.ProvidersHolder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -18,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,11 +22,8 @@ public class RecordAdminComponent {
 
     private static final String PANEL_NAME = "Reservation Record Administration";
     private static final String VIEW_PANEL_NAME = "Available Records";
-    private static final String REFRESH_BUTTON_TEXT = "Refresh";
 
     private JPanel recordAdminPanel;
-    private BookProvider bookProvider;
-    private ReservationRecordProvider recordProvider;
     private RecordTableModel recordTableModel;
     private JTextField libraryCardField;
     private JTextField isbnField;
@@ -42,27 +32,27 @@ public class RecordAdminComponent {
     private JPanel recordSummaryPanel;
     private JTable recordTable;
     private ReservationRecord tableRecord;
+    private ProvidersHolder providersHolder;
 
-    public RecordAdminComponent(BookProvider bookProvider, ReservationRecordProvider recordProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
-        this.recordProvider = recordProvider;
+    public RecordAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
         initComponents();
     }
 
     private void initComponents() throws RemoteException {
-        JPanel dataViewPanel = createDataViewPanel();
+        JComponent dataViewPanel = createDataViewPanel();
         addRecordSelectionListener(new RecordSelectionListener() {
             @Override
             public void recordSelected(ReservationRecord selectedRecord) {
                 tableRecord = selectedRecord;
                 libraryCardField.setText(selectedRecord != null ? String.valueOf(selectedRecord.getReaderId()) : "");
                 try {
-                    isbnField.setText(selectedRecord != null ? bookProvider.getBookById(selectedRecord.getBookId()).getIsbn() : "");
+                    isbnField.setText(selectedRecord != null ? providersHolder.getBookProvider().getBookById(selectedRecord.getBookId()).getIsbn() : "");
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }
-                issueDateField.setDate(selectedRecord != null ? selectedRecord.getIssueDate() : new Date());
-                returnDateField.setDate(selectedRecord != null ? selectedRecord.getReturnDate() : new Date());
+                issueDateField.setDate(selectedRecord != null ? selectedRecord.getIssueDate() : null);
+                returnDateField.setDate(selectedRecord != null ? selectedRecord.getReturnDate() : null);
             }
         });
         RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
@@ -81,47 +71,29 @@ public class RecordAdminComponent {
         recordAdminPanel.add(deleteButton, BorderLayout.SOUTH);
     }
 
-    private JPanel createDataViewPanel() throws RemoteException {
-        JPanel dataViewPanel = new JPanel();
-        dataViewPanel.setBorder(BorderFactory.createTitledBorder(VIEW_PANEL_NAME));
-        recordTableModel = new RecordTableModel(recordProvider.readAll(), bookProvider);
+    private JComponent createDataViewPanel() throws RemoteException {
+        recordTableModel = new RecordTableModel(providersHolder.getRecordProvider().readAll(), providersHolder);
         recordTable = new JTable(recordTableModel);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        recordTable.setPreferredScrollableViewportSize(new Dimension(600, 300));
-        JScrollPane scrollPane = new JScrollPane(recordTable);
-        JButton refreshButton = new JButton(REFRESH_BUTTON_TEXT);
-        refreshButton.addActionListener(new RefreshButtonListener());
-        dataViewPanel.add(scrollPane, BorderLayout.CENTER);
-        dataViewPanel.add(refreshButton, BorderLayout.SOUTH);
-        return dataViewPanel;
+        return new JScrollPane(recordTable);
     }
-
 
     public JPanel getRecordAdminPanel() {
         return recordAdminPanel;
     }
 
-    public JPanel getRecordSummaryPanel() {
-        return recordSummaryPanel;
-    }
-
-    private class RefreshButtonListener implements ActionListener {
-        /**
-         * Invoked when an action occurs.
-         */
-        public void actionPerformed(ActionEvent e) {
-            List<ReservationRecord> records;
-            int rowCount = recordTableModel.getRowCount();
-            recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
-            recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
-            try {
-                records = recordProvider.readAll();
-            } catch (RemoteException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
-            recordTableModel.setTableData(records);
-            recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
+    public void updateTable() {
+        List<ReservationRecord> records;
+        int rowCount = recordTableModel.getRowCount();
+        recordTableModel.setTableData(Collections.<ReservationRecord>emptyList());
+        recordTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
+        try {
+            records = providersHolder.getRecordProvider().readAll();
+        } catch (RemoteException e1) {
+            throw new RuntimeException(e1.getMessage(), e1);
         }
+        recordTableModel.setTableData(records);
+        recordTableModel.fireTableRowsInserted(0, Math.max(0, records.size() - 1));
     }
 
     public void addRecordSelectionListener(final RecordSelectionListener selectionListener) {
@@ -138,27 +110,7 @@ public class RecordAdminComponent {
                 }
                 selectionListener.recordSelected(selectedRecord);
             }
-
-        }
-
-        );
-    }
-
-    public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame("Test reader admin component");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        final BookDAO bookStore = new BookDAO("bookStore");
-        bookStore.loadStorage();
-        final ReservationRecordDAO recordDAO = new ReservationRecordDAO("reservationStore");
-        recordDAO.loadStorage();
-        final ReaderDAO readerDAO = new ReaderDAO("readerStore");
-        readerDAO.loadStorage();
-        final ReservationRecordProviderImpl reservationRecordProvider = new ReservationRecordProviderImpl(bookStore, readerDAO, recordDAO);
-        final RecordAdminComponent recordAdminComponent = new RecordAdminComponent(new BookProviderImpl(bookStore, reservationRecordProvider), reservationRecordProvider);
-        frame.setContentPane(recordAdminComponent.getRecordAdminPanel());
-        frame.setVisible(true);
-        frame.pack();
+        });
     }
 
     private class DeleteRecordListener implements ActionListener {
@@ -167,12 +119,19 @@ public class RecordAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkRecordSelection();
             try {
-                recordProvider.deleteRecord(tableRecord);
+                providersHolder.getRecordProvider().deleteRecord(tableRecord);
+                updateTable();
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(recordAdminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void checkRecordSelection() {
+        if (tableRecord == null) {
+            throw new RuntimeException("Select record from table.");
         }
     }
 }

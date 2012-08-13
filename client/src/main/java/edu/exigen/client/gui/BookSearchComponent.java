@@ -1,7 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
-import edu.exigen.server.provider.BookProvider;
+import edu.exigen.server.ProvidersHolder;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -25,18 +25,18 @@ public class BookSearchComponent {
     private JPanel bookSearchPanel;
     private JTextField searchField;
 
-    private BookProvider bookProvider;
+    private ProvidersHolder providersHolder;
     private BookTableModel bookTableModel;
     private JTable bookTable;
 
-    public BookSearchComponent(BookProvider bookProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
+    public BookSearchComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
         initComponents();
     }
 
     private void initComponents() throws RemoteException {
         JPanel dataEnterPanel = createDataEnterPanel();
-        bookTableModel = new BookTableModel(bookProvider.readAll());
+        bookTableModel = new BookTableModel(providersHolder.getBookProvider().readAll());
         bookTable = new JTable(bookTableModel);
         bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(bookTable);
@@ -83,9 +83,9 @@ public class BookSearchComponent {
             bookTableModel.fireTableRowsDeleted(0, Math.max(0, rowCount - 1));
             try {
                 if (!"".equals(searchField.getText())) {
-                    books = bookProvider.searchBooks(searchField.getText());
+                    books = providersHolder.getBookProvider().searchBooks(searchField.getText());
                 } else {
-                    books = bookProvider.readAll();
+                    books = providersHolder.getBookProvider().readAll();
                 }
             } catch (RemoteException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);

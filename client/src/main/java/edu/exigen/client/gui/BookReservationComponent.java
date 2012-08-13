@@ -2,9 +2,7 @@ package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.ReaderProvider;
-import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.ProvidersHolder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -24,29 +22,24 @@ public class BookReservationComponent {
     private static final String CREATE_BUTTON_NAME = "Reserve Book";
 
     private Book book;
+    private ProvidersHolder providersHolder;
     private Reader reader;
     private JPanel bookSearchPanel;
     private JPanel readerSearchPanel;
     private JPanel recordSummaryPanel;
     private JButton reserveButton;
     private JXDatePicker returnDateField;
-    private BookProvider bookProvider;
-    private ReaderProvider readerProvider;
-    private ReservationRecordProvider reservationRecordProvider;
     private JPanel reservationPanel;
 
-    public BookReservationComponent(BookProvider bookProvider, ReaderProvider readerProvider, ReservationRecordProvider
-            reservationRecordProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
-        this.readerProvider = readerProvider;
-        this.reservationRecordProvider = reservationRecordProvider;
+    public BookReservationComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
         initComponents();
     }
 
     public void initComponents() throws RemoteException {
-        BookSearchComponent bookSearchComponent = new BookSearchComponent(bookProvider);
+        BookSearchComponent bookSearchComponent = new BookSearchComponent(providersHolder);
         bookSearchPanel = bookSearchComponent.getBookSearchPanel();
-        final ReaderSearchComponent readerSearchComponent = new ReaderSearchComponent(readerProvider);
+        final ReaderSearchComponent readerSearchComponent = new ReaderSearchComponent(providersHolder);
         readerSearchPanel = readerSearchComponent.getReaderSearchPanel();
         final RecordSummaryComponent recordSummaryComponent = new RecordSummaryComponent();
         recordSummaryPanel = recordSummaryComponent.getRecordSummaryPanel();
@@ -115,10 +108,9 @@ public class BookReservationComponent {
                 if (currentDate.before(new Date())) {
                     throw new IllegalArgumentException("Date of return must be after current date");
                 }
-                reservationRecordProvider.createRecord(reader.getId(), book.getId(), returnDateField.getDate());
+                providersHolder.getRecordProvider().createRecord(reader.getId(), book.getId(), returnDateField.getDate());
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(null, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

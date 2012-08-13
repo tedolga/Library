@@ -14,6 +14,7 @@ import java.util.List;
  * @version 1.0
  */
 public interface ReservationRecordProvider extends Remote {
+
     void createRecord(int readerId, int bookId, Date dateOfReturn) throws LibraryProviderException, RemoteException;
 
     void deleteRecord(ReservationRecord reservationRecord) throws LibraryProviderException, RemoteException;

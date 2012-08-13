@@ -2,8 +2,7 @@ package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.provider.ReaderProvider;
-import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.ProvidersHolder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -12,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -29,12 +29,10 @@ public class ReaderAdminComponent {
     private static final String LAST_NAME = "Last Name:";
     private static final String ADDRESS = "Address:";
     private static final String DATE_OF_BIRTH = "Date of birth:";
-    private static final String CURRENTLY_RESERVED_BOOKS = "Currently reserved books:";
+    private static final String RESERVED_BOOKS = "Reserved books:";
 
-    private ReaderProvider readerProvider;
     private ReaderSearchComponent searchComponent;
     private Reader tableReader;
-    private String[] readerBooksInfo = new String[0];
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField addressField;
@@ -44,12 +42,11 @@ public class ReaderAdminComponent {
     private JButton updateButton;
     private JButton deleteButton;
     private JList reservedBooksList;
-    private ReservationRecordProvider recordProvider;
+    private ProvidersHolder providersHolder;
 
-    public ReaderAdminComponent(ReaderProvider readerProvider, ReservationRecordProvider recordProvider) throws RemoteException {
-        this.readerProvider = readerProvider;
-        this.recordProvider = recordProvider;
-        searchComponent = new ReaderSearchComponent(readerProvider);
+    public ReaderAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
+        searchComponent = new ReaderSearchComponent(providersHolder);
         initComponents();
     }
 
@@ -68,14 +65,14 @@ public class ReaderAdminComponent {
                 dateOfBirthField.setDate(selectedReader != null ? selectedReader.getDateOfBirth() : new Date());
                 java.util.List<Book> readerBooks;
                 try {
-                    readerBooks = recordProvider.getReservedReaderBooks(tableReader);
-                    readerBooksInfo = new String[readerBooks.size()];
-                    for (int i = 0; i < readerBooks.size(); i++) {
-                        readerBooksInfo[i] = readerBooks.get(i).getIsbn() + " " + readerBooks.get(i).getTitle();
+                    readerBooks = tableReader != null ? providersHolder.getRecordProvider().getReservedReaderBooks(tableReader) : Collections.<Book>emptyList();
+                    final DefaultListModel model = new DefaultListModel();
+                    for (Book readerBook : readerBooks) {
+                        model.addElement(readerBook.getIsbn() + " " + readerBook.getTitle());
                     }
+                    reservedBooksList.setModel(model);
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage(), e);
-                    //JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -107,10 +104,9 @@ public class ReaderAdminComponent {
         adminComponents.add(dateOfBirthLabel);
         dateOfBirthField = new JXDatePicker();
         adminComponents.add(dateOfBirthField);
-        JLabel reservedBooksLabel = new JLabel(CURRENTLY_RESERVED_BOOKS);
+        JLabel reservedBooksLabel = new JLabel(RESERVED_BOOKS);
         adminComponents.add(reservedBooksLabel);
-        reservedBooksList = new JList(readerBooksInfo);
-        reservedBooksList.setEnabled(false);
+        reservedBooksList = new JList();
         adminComponents.add(reservedBooksList);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
@@ -119,15 +115,19 @@ public class ReaderAdminComponent {
     private void fillAdminPanel(java.util.List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
         c.weighty = 1;
-        c.weightx = 1;
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.WEST;
         for (int i = 0; i < components.size(); i++) {
             panel.add(components.get(i), c);
             if (i % 2 == 0) {
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
                 c.gridx = 1;
             } else {
+                c.fill = GridBagConstraints.NONE;
+                c.anchor = GridBagConstraints.WEST;
+                c.weightx = 0;
                 c.gridy += 1;
                 c.gridx = 0;
             }
@@ -159,16 +159,43 @@ public class ReaderAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Reader reader = new Reader();
+            checkFirstNameField();
             reader.setFirstName(firstNameField.getText());
+            checkLastNameField();
             reader.setLastName(lastNameField.getText());
+            checkAddressField();
             reader.setAddress(addressField.getText());
+            checkDateOfBirthField();
             reader.setDateOfBirth(dateOfBirthField.getDate());
             try {
-                readerProvider.createReader(reader);
+                providersHolder.getReaderProvider().createReader(reader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void checkDateOfBirthField() {
+        if (dateOfBirthField.getDate() == null) {
+            throw new RuntimeException("Enter date of birth");
+        }
+    }
+
+    private void checkAddressField() {
+        if ("".equals(addressField.getText())) {
+            throw new RuntimeException("Enter address");
+        }
+    }
+
+    private void checkLastNameField() {
+        if ("".equals(lastNameField.getText())) {
+            throw new RuntimeException("Enter last name");
+        }
+    }
+
+    private void checkFirstNameField() {
+        if ("".equals(firstNameField.getText())) {
+            throw new RuntimeException("Enter first name");
         }
     }
 
@@ -180,17 +207,26 @@ public class ReaderAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Reader newReader = new Reader();
+            checkReaderSelection();
             newReader.setId(tableReader.getId());
+            checkFirstNameField();
             newReader.setFirstName(firstNameField.getText());
+            checkLastNameField();
             newReader.setLastName(lastNameField.getText());
             newReader.setAddress(addressField.getText());
             try {
+                checkDateOfBirthField();
                 newReader.setDateOfBirth(dateOfBirthField.getDate());
-                readerProvider.updateReader(tableReader, newReader);
+                providersHolder.getReaderProvider().updateReader(tableReader, newReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void checkReaderSelection() {
+        if (tableReader == null) {
+            throw new RuntimeException("Select reader from table");
         }
     }
 
@@ -200,11 +236,11 @@ public class ReaderAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkReaderSelection();
             try {
-                readerProvider.deleteReader(tableReader);
+                providersHolder.getReaderProvider().deleteReader(tableReader);
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

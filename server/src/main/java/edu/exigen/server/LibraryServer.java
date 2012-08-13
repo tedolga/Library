@@ -16,19 +16,34 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 /**
+ * RMI library server for managing book, reader and record information.
+ *
  * @author Tedikova O.
  * @version 1.0
  */
 public class LibraryServer {
 
     private static final String BOOK_PROVIDER_NAME = "rmi:book_provider";
+
+    /**
+     * Reader provider name in rmi registry
+     */
     private static final String READER_PROVIDER_NAME = "rmi:reader_provider";
+
+    /**
+     * Record provider name in rmi registry
+     */
     private static final String RECORD_PROVIDER_NAME = "rmi:record_provider";
+
+    /**
+     * Connection port.
+     */
     private static final int SERVER_PORT = 1099;
 
     private ReservationRecordProvider recordProvider;
     private BookProvider bookProvider;
     private ReaderProvider readerProvider;
+
 
     public static void main(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -44,6 +59,13 @@ public class LibraryServer {
             libraryServer.loadServer();
             LocateRegistry.createRegistry(SERVER_PORT);
             libraryServer.registerProviders();
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(null, "Server was started.\nPress 'OK' to destroy the Server", "Library server", JOptionPane.INFORMATION_MESSAGE);
+                    System.exit(0);
+                }
+            });
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Server is already started.", "Library server", JOptionPane.INFORMATION_MESSAGE);
             System.exit(-1);
@@ -59,12 +81,23 @@ public class LibraryServer {
     public LibraryServer() {
     }
 
+    /**
+     * Loads all provider's initialization data.
+     *
+     * @throws LibraryProviderException in case of library provider errors.
+     * @throws RemoteException          in case of RemoteException
+     */
     public void loadServer() throws LibraryProviderException, RemoteException {
         bookProvider.loadData();
         readerProvider.loadData();
         recordProvider.loadData();
     }
 
+    /**
+     * Registers all server providers.
+     *
+     * @throws NamingException in case of naming exceptions.
+     */
     public void registerProviders() throws NamingException {
         Context namingContext = new InitialContext();
         namingContext.bind(BOOK_PROVIDER_NAME, bookProvider);

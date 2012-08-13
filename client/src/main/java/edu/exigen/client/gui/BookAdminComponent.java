@@ -1,8 +1,7 @@
 package edu.exigen.client.gui;
 
 import edu.exigen.entities.Book;
-import edu.exigen.server.provider.BookProvider;
-import edu.exigen.server.provider.ReservationRecordProvider;
+import edu.exigen.server.ProvidersHolder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +21,15 @@ public class BookAdminComponent {
     private static final String CREATE_BUTTON_NAME = "Create";
     private static final String UPDATE_BUTTON_NAME = "Update";
     private static final String DELETE_BUTTON_NAME = "Delete";
+    private static final String ISBN = "ISBN:";
+    private static final String TITLE = "Title:";
+    private static final String AUTHOR = "Author:";
+    private static final String TOPIC = "Topic:";
+    private static final String YEAR = "Year:";
+    private static final String COUNT_OF_COPIES = "Count of copies:";
+    private static final String COUNT_OF_RESERVED_COPIES = "Count of reserved copies:";
 
-    private BookProvider bookProvider;
-    private ReservationRecordProvider reservationRecordProvider;
+    private ProvidersHolder providersHolder;
     private BookSearchComponent searchComponent;
     private Book tableBook;
     private JTextField isbnField;
@@ -39,10 +44,9 @@ public class BookAdminComponent {
     private JButton deleteButton;
     private JTextField reservedBookCountField;
 
-    public BookAdminComponent(BookProvider bookProvider, ReservationRecordProvider reservationRecordProvider) throws RemoteException {
-        this.bookProvider = bookProvider;
-        this.reservationRecordProvider = reservationRecordProvider;
-        searchComponent = new BookSearchComponent(bookProvider);
+    public BookAdminComponent(ProvidersHolder providersHolder) throws RemoteException {
+        this.providersHolder = providersHolder;
+        searchComponent = new BookSearchComponent(providersHolder);
         initComponents();
     }
 
@@ -62,9 +66,9 @@ public class BookAdminComponent {
                 countField.setText(selectedBook != null ? String.valueOf(selectedBook.getCount()) : "");
                 try {
                     reservedBookCountField.setText(selectedBook != null ? String.valueOf
-                            (reservationRecordProvider.getReservedBookCount(selectedBook.getId())) : "");
+                            (providersHolder.getRecordProvider().getReservedBookCount(selectedBook.getId())) : "");
                 } catch (RemoteException e) {
-                    JOptionPane.showMessageDialog(adminPanel, e.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                    throw new RuntimeException(e.getMessage(), e);
                 }
                 tableBook = selectedBook;
             }
@@ -81,34 +85,34 @@ public class BookAdminComponent {
         JPanel adminPanel = new JPanel();
         adminPanel.setLayout(new GridBagLayout());
         List<JComponent> adminComponents = new ArrayList<JComponent>();
-        JLabel isbn = new JLabel("ISBN :");
+        JLabel isbn = new JLabel(ISBN);
         adminComponents.add(isbn);
         isbnField = new JTextField();
         adminComponents.add(isbnField);
-        JLabel titleLabel = new JLabel("Title :");
+        JLabel titleLabel = new JLabel(TITLE);
         adminComponents.add(titleLabel);
         titleField = new JTextField();
         adminComponents.add(titleField);
-        JLabel authorLabel = new JLabel("Author :");
+        JLabel authorLabel = new JLabel(AUTHOR);
         adminComponents.add(authorLabel);
         authorField = new JTextField();
         adminComponents.add(authorField);
-        JLabel topicLabel = new JLabel("Topic:");
+        JLabel topicLabel = new JLabel(TOPIC);
         adminComponents.add(topicLabel);
         topicField = new JTextField();
         adminComponents.add(topicField);
-        JLabel yearLabel = new JLabel("Year:");
+        JLabel yearLabel = new JLabel(YEAR);
         adminComponents.add(yearLabel);
         yearField = new JTextField();
         adminComponents.add(yearField);
-        JLabel countLabel = new JLabel("Count of copies:");
+        JLabel countLabel = new JLabel(COUNT_OF_COPIES);
         adminComponents.add(countLabel);
         countField = new JTextField();
         adminComponents.add(countField);
-        JLabel countOfReservedLabel = new JLabel("Count of reserved copies");
+        JLabel countOfReservedLabel = new JLabel(COUNT_OF_RESERVED_COPIES);
         adminComponents.add(countOfReservedLabel);
         reservedBookCountField = new JTextField();
-        reservedBookCountField.setEnabled(false);
+        reservedBookCountField.setEditable(false);
         adminComponents.add(reservedBookCountField);
         fillAdminPanel(adminComponents, adminPanel);
         return adminPanel;
@@ -117,15 +121,19 @@ public class BookAdminComponent {
     private void fillAdminPanel(List<JComponent> components, JPanel panel) {
         GridBagConstraints c = new GridBagConstraints();
         c.weighty = 1;
-        c.weightx = 1;
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.WEST;
         for (int i = 0; i < components.size(); i++) {
             panel.add(components.get(i), c);
             if (i % 2 == 0) {
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
                 c.gridx = 1;
             } else {
+                c.fill = GridBagConstraints.NONE;
+                c.anchor = GridBagConstraints.WEST;
+                c.weightx = 0;
                 c.gridy += 1;
                 c.gridx = 0;
             }
@@ -157,18 +165,30 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Book book = new Book();
+            checkISBNField();
             book.setIsbn(isbnField.getText());
+            checkTitleField();
             book.setTitle(titleField.getText());
+            checkAuthorField();
             book.setAuthor(authorField.getText());
+            checkTopicField();
             book.setTopic(topicField.getText());
+            String countFieldValue = countField.getText();
+            checkCountValue(countFieldValue);
+            book.setCount(Integer.parseInt(countFieldValue));
             try {
                 book.setYear(Integer.parseInt(yearField.getText()));
-                book.setCount(Integer.parseInt(countField.getText()));
-                bookProvider.createBook(book);
+            } catch (IllegalArgumentException iae) {
+                throw new RuntimeException("Set valid year data");
+            }
+            try {
+                providersHolder.getBookProvider().createBook(book);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
+
+
     }
 
     private class UpdateButtonActionListener implements ActionListener {
@@ -178,19 +198,30 @@ public class BookAdminComponent {
         @Override
         public void actionPerformed(ActionEvent e) {
             Book newBook = new Book();
+            checkSelectedBook();
             newBook.setId(tableBook.getId());
+            checkISBNField();
             newBook.setIsbn(isbnField.getText());
+            checkTitleField();
             newBook.setTitle(titleField.getText());
+            checkAuthorField();
             newBook.setAuthor(authorField.getText());
+            checkTopicField();
             newBook.setTopic(topicField.getText());
-            newBook.setYear(Integer.parseInt(yearField.getText()));
+            try {
+                newBook.setYear(Integer.parseInt(yearField.getText()));
+            } catch (IllegalArgumentException iae) {
+                throw new RuntimeException("Set valid year data");
+            }
+            checkCountValue(countField.getText());
             newBook.setCount(Integer.parseInt(countField.getText()));
             try {
-                bookProvider.updateBook(tableBook, newBook);
+                providersHolder.getBookProvider().updateBook(tableBook, newBook);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
+                throw new RuntimeException(ex.getMessage(), ex);
             }
         }
+
     }
 
     private class DeleteBookListener implements ActionListener {
@@ -199,12 +230,53 @@ public class BookAdminComponent {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
+            checkSelectedBook();
+            checkCountValue(countField.getText());
             try {
-                bookProvider.deleteBooks(tableBook, Integer.parseInt(countField.getText()));
+                providersHolder.getBookProvider().deleteBooks(tableBook, Integer.parseInt(countField.getText()));
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
-                //JOptionPane.showMessageDialog(adminPanel, ex.getMessage(), "Library client", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+
+    private void checkISBNField() {
+        if ("".equals(isbnField.getText())) {
+            throw new RuntimeException("Enter ISBN data");
+        }
+    }
+
+    private void checkTitleField() {
+        if ("".equals(titleField.getText())) {
+            throw new RuntimeException("Enter title data");
+        }
+    }
+
+    private void checkAuthorField() {
+        if ("".equals(authorField.getText())) {
+            throw new RuntimeException("Enter author data");
+        }
+    }
+
+    private void checkTopicField() {
+        if ("".equals(topicField.getText())) {
+            throw new RuntimeException("Enter topic data");
+        }
+    }
+
+    private void checkCountValue(String countFieldValue) {
+        try {
+            if (Integer.parseInt(countField.getText()) < 0) {
+                throw new RuntimeException("Count must be > 0");
+            }
+        } catch (IllegalArgumentException iae) {
+            throw new RuntimeException("Set valid count value > 0 ");
+        }
+    }
+
+    private void checkSelectedBook() {
+        if (tableBook == null) {
+            throw new RuntimeException("Select book from table");
         }
     }
 }
