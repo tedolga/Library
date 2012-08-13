@@ -25,4 +25,6 @@ public interface BookProvider extends Remote {
     List<Book> readAll() throws RemoteException;
 
     Book getBookById(int id) throws RemoteException, LibraryDAOException;
+
+    void loadData() throws LibraryProviderException, RemoteException;
 }

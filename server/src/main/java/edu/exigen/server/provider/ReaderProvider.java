@@ -21,4 +21,6 @@ public interface ReaderProvider extends Remote {
     void updateReader(Reader oldReader, Reader newReader) throws LibraryProviderException, RemoteException;
 
     void deleteReader(Reader reader) throws LibraryProviderException, RemoteException;
+
+    void loadData() throws LibraryProviderException, RemoteException;
 }

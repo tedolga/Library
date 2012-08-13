@@ -17,9 +17,9 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
     private Map<String, Book> isbnCash = new HashMap<String, Book>();
     private Map<String, HashSet<Book>> searchCash = new HashMap<String, HashSet<Book>>();
     private BookDAO bookDAO;
-    private ReservationRecordProviderImpl recordProvider;
+    private ReservationRecordProvider recordProvider;
 
-    public BookProviderImpl(BookDAO bookDAO, ReservationRecordProviderImpl recordProvider) throws RemoteException {
+    public BookProviderImpl(BookDAO bookDAO, ReservationRecordProvider recordProvider) throws RemoteException {
         super();
         this.bookDAO = bookDAO;
         this.recordProvider = recordProvider;

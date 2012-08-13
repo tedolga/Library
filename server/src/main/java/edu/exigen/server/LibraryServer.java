@@ -1,12 +1,12 @@
 package edu.exigen.server;
 
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
-import edu.exigen.server.provider.BookProviderImpl;
+import edu.exigen.server.provider.BookProvider;
 import edu.exigen.server.provider.LibraryProviderException;
-import edu.exigen.server.provider.ReaderProviderImpl;
-import edu.exigen.server.provider.ReservationRecordProviderImpl;
+import edu.exigen.server.provider.ReaderProvider;
+import edu.exigen.server.provider.ReservationRecordProvider;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -21,18 +21,14 @@ import java.rmi.registry.LocateRegistry;
  */
 public class LibraryServer {
 
-    private static final String READER_PROVIDED_XML = "readers.xml";
-    private static final String BOOK_PROVIDED_XML = "books.xml";
-    private static final String RECORD_PROVIDED_XML = "records.xml";
-
     private static final String BOOK_PROVIDER_NAME = "rmi:book_provider";
     private static final String READER_PROVIDER_NAME = "rmi:reader_provider";
     private static final String RECORD_PROVIDER_NAME = "rmi:record_provider";
     private static final int SERVER_PORT = 1099;
 
-    private ReservationRecordProviderImpl recordProvider;
-    private BookProviderImpl bookProvider;
-    private ReaderProviderImpl readerProvider;
+    private ReservationRecordProvider recordProvider;
+    private BookProvider bookProvider;
+    private ReaderProvider readerProvider;
 
     public static void main(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -43,7 +39,8 @@ public class LibraryServer {
             }
         });
         try {
-            LibraryServer libraryServer = new LibraryServer();
+            ApplicationContext context = new FileSystemXmlApplicationContext("spring-config.xml");
+            LibraryServer libraryServer = context.getBean(LibraryServer.class);
             libraryServer.loadServer();
             LocateRegistry.createRegistry(SERVER_PORT);
             libraryServer.registerProviders();
@@ -59,13 +56,7 @@ public class LibraryServer {
         }
     }
 
-    public LibraryServer() throws RemoteException {
-        BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
-        ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
-        ReservationRecordDAO recordDAO = new ReservationRecordDAO(RECORD_PROVIDED_XML);
-        recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
-        bookProvider = new BookProviderImpl(bookDAO, recordProvider);
-        readerProvider = new ReaderProviderImpl(readerDAO, recordProvider);
+    public LibraryServer() {
     }
 
     public void loadServer() throws LibraryProviderException, RemoteException {
@@ -79,5 +70,20 @@ public class LibraryServer {
         namingContext.bind(BOOK_PROVIDER_NAME, bookProvider);
         namingContext.bind(READER_PROVIDER_NAME, readerProvider);
         namingContext.bind(RECORD_PROVIDER_NAME, recordProvider);
+    }
+
+    @Required
+    public void setBookProvider(BookProvider bookProvider) {
+        this.bookProvider = bookProvider;
+    }
+
+    @Required
+    public void setReaderProvider(ReaderProvider readerProvider) {
+        this.readerProvider = readerProvider;
+    }
+
+    @Required
+    public void setRecordProvider(ReservationRecordProvider recordProvider) {
+        this.recordProvider = recordProvider;
     }
 }

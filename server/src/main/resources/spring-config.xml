@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="serverProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:serverProperties.properties"/>
+    </bean>
+
+    <bean id="bookDAO" class="edu.exigen.server.dao.BookDAO">
+        <constructor-arg value="${bookXML}"/>
+    </bean>
+
+    <bean id="readerDAO" class="edu.exigen.server.dao.ReaderDAO">
+        <constructor-arg value="${readerXML}"/>
+    </bean>
+
+    <bean id="recordDAO" class="edu.exigen.server.dao.ReservationRecordDAO">
+        <constructor-arg value="${recordXML}"/>
+    </bean>
+
+    <bean id="bookProvider" class="edu.exigen.server.provider.BookProviderImpl">
+        <constructor-arg index="0" ref="bookDAO"/>
+        <constructor-arg index="1" ref="recordProvider"/>
+    </bean>
+
+    <bean id="recordProvider" class="edu.exigen.server.provider.ReservationRecordProviderImpl">
+        <constructor-arg index="0" ref="bookDAO"/>
+        <constructor-arg index="1" ref="readerDAO"/>
+        <constructor-arg index="2" ref="recordDAO"/>
+    </bean>
+
+    <bean id="readerProvider" class="edu.exigen.server.provider.ReaderProviderImpl">
+        <constructor-arg index="0" ref="readerDAO"/>
+        <constructor-arg index="1" ref="recordProvider"/>
+    </bean>
+
+    <bean id="server" class="edu.exigen.server.LibraryServer">
+        <property name="bookProvider" ref="bookProvider"/>
+        <property name="readerProvider" ref="readerProvider"/>
+        <property name="recordProvider" ref="recordProvider"/>
+    </bean>
+</beans>

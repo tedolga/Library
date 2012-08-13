@@ -15,10 +15,10 @@ import java.util.*;
 public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderProvider {
 
     private ReaderDAO readerDAO;
-    private ReservationRecordProviderImpl recordProvider;
+    private ReservationRecordProvider recordProvider;
     private Map<String, HashSet<Reader>> searchCash = new HashMap<String, HashSet<Reader>>();
 
-    public ReaderProviderImpl(ReaderDAO readerDAO, ReservationRecordProviderImpl recordProvider) throws RemoteException {
+    public ReaderProviderImpl(ReaderDAO readerDAO, ReservationRecordProvider recordProvider) throws RemoteException {
         super();
         this.readerDAO = readerDAO;
         this.recordProvider = recordProvider;
@@ -33,7 +33,7 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
         addReaderToSearchCash(reader);
     }
 
-    public List<Reader> readAll() throws RemoteException {
+    public List<Reader> readAll() {
         return readerDAO.readAll();
     }
 

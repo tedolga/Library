@@ -25,4 +25,6 @@ public interface ReservationRecordProvider extends Remote {
     int getReservedBookCount(int bookId) throws RemoteException;
 
     List<Book> getReservedReaderBooks(Reader reader) throws LibraryProviderException, RemoteException;
+
+    void loadData() throws LibraryProviderException, RemoteException;
 }
