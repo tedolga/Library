@@ -13,6 +13,7 @@ public class Book extends Entity {
 
     @XmlElement
     private String isbn;
+
     @XmlElement
     private String title;
     @XmlElement
@@ -92,5 +93,15 @@ public class Book extends Entity {
         return copy;
     }
 
-
+    @Override
+    public String toString() {
+        return "Book{" +
+                "author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", title='" + title + '\'' +
+                ", topic='" + topic + '\'' +
+                ", year=" + year +
+                ", count=" + count +
+                '}';
+    }
 }

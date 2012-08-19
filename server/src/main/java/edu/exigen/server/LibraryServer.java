@@ -30,6 +30,18 @@ public class LibraryServer {
      */
     private static final String READER_PROVIDER_NAME = "rmi:reader_provider";
 
+    public BookProvider getBookProvider() {
+        return bookProvider;
+    }
+
+    public ReaderProvider getReaderProvider() {
+        return readerProvider;
+    }
+
+    public ReservationRecordProvider getRecordProvider() {
+        return recordProvider;
+    }
+
     /**
      * Record provider name in rmi registry
      */
