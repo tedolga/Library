@@ -2,11 +2,9 @@ package edu.exigen.servlet;
 
 import edu.exigen.entities.Book;
 import edu.exigen.server.LibraryServer;
-import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.LibraryDAOException;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
-import edu.exigen.server.provider.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,32 +19,15 @@ import java.io.PrintWriter;
  * @version 1.0
  */
 public class HelloServlet extends HttpServlet {
-    private static final int SERVER_PORT = 1099;
-    private LibraryServer libraryServer = new LibraryServer();
+    private LibraryServer libraryServer;
 
     @Override
     public void init() throws ServletException {
-
-        BookDAO bookDAO = new BookDAO("book.xml");
-        ReaderDAO readerDAO = new ReaderDAO("reader.xml");
-        ReservationRecordDAO recordDAO = new ReservationRecordDAO("record.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+        libraryServer = context.getBean(LibraryServer.class);
         try {
-            ReservationRecordProvider reservationRecordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
-            BookProvider bookProvider = new BookProviderImpl(bookDAO, reservationRecordProvider);
-            ReaderProvider readerProvider = new ReaderProviderImpl(readerDAO, reservationRecordProvider);
-            libraryServer.setBookProvider(bookProvider);
-            libraryServer.setReaderProvider(readerProvider);
-            libraryServer.setRecordProvider(reservationRecordProvider);
             libraryServer.loadServer();
-            //LocateRegistry.createRegistry(SERVER_PORT);
-            //libraryServer.registerProviders();
-            Book book = new Book();
-            book.setIsbn("12345");
-            book.setTitle("book");
-            book.setAuthor("author");
-            book.setTopic("author");
-            book.setYear(1988);
-            book.setCount(1);
+            Book book = context.getBean(Book.class);
             libraryServer.getBookProvider().createBook(book);
         } catch (Exception e) {
             throw new ServletException(e);
