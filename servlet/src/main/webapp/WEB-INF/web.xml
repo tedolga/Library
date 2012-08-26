@@ -1,11 +1,16 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
     <servlet>
-        <servlet-name>helloServlet</servlet-name>
-        <servlet-class>edu.exigen.servlet.HelloServlet</servlet-class>
+        <servlet-name>hello</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>helloServlet</servlet-name>
-        <url-pattern>/helloServlet</url-pattern>
+        <servlet-name>hello</servlet-name>
+        <url-pattern>*.html</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 </web-app>
