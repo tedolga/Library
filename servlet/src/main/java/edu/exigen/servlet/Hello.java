@@ -1,24 +1,26 @@
 package edu.exigen.servlet;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-public class Hello implements Controller {
-    private String helloString;
+@org.springframework.stereotype.Controller
+public class Hello {
 
-    @Override
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        return new ModelAndView("helloServlet", "helloString", helloString);
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView helloWorld() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("index");
+        return mav;
     }
 
-    public void setHelloString(String helloString) {
-        this.helloString = helloString;
-    }
+//    @RequestMapping(method = RequestMethod.POST)
+//    public ModelAndView helloWorld() {
+//
+//    }
+
 }
