@@ -1,26 +1,22 @@
 package edu.exigen.servlet;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Tedikova O.
  * @version 1.0
  */
-@org.springframework.stereotype.Controller
+
+@Controller
 public class Hello {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView helloWorld() {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("index");
-        return mav;
+    @RequestMapping(value = "/")
+    public String home() {
+        System.out.println("HomeController: Passing through...");
+        return "WEB-INF/jsp/hello.jsp";
     }
-
-//    @RequestMapping(method = RequestMethod.POST)
-//    public ModelAndView helloWorld() {
-//
-//    }
-
 }
+
+
+
