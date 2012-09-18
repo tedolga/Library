@@ -1,17 +1,37 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: uder
-  Date: 03.09.12
-  Time: 20:25
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="sql_rt" uri="http://java.sun.com/jstl/sql_rt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Hello</title>
 </head>
 <body>
-<%--<jsp:forward page="helloServlet.jsp"></jsp:forward>--%>
-<h1>Hello!</h1>
+<table border="0" width="700">
+    <tr>
+        <td width="150"> &nbsp; </td>
+        <td width="550">
+            <h1>What is your name?</h1>
+        </td>
+    </tr>
+    <tr>
+        <td width="150"> &nbsp; </td>
+        <td width="550">
+            <form method="post">
+                <input type="text" name="personName" size="25">
+                <br>
+                <input type="submit" value="Submit">
+                <input type="reset" value="Reset">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td width="150">&nbsp;</td>
+        <td width="550">
+            <c:out value="${nameHandler}.greet()">fff</c:out>
+        </td>
+    </tr>
+
+</table>
+
 </body>
 </html>
