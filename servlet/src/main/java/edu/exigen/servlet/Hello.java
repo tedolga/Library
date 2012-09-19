@@ -23,7 +23,7 @@ public class Hello {
     public String greet(@RequestParam("personName") String personName, Model model) {
         NameHandler nameHandler = new NameHandler();
         nameHandler.setPersonName(personName);
-        model.addAttribute("nameHandler", nameHandler);
+        model.addAttribute("greeting", nameHandler.getGreet());
         return "hello";
     }
 

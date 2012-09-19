@@ -17,7 +17,7 @@ public class NameHandler {
         return personName;
     }
 
-    public String greet() {
+    public String getGreet() {
         return String.format("%s, %s!", helloString, personName);
     }
 
