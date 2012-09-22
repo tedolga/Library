@@ -2,9 +2,7 @@ package edu.exigen.server.provider;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
+import edu.exigen.server.dao.*;
 import org.junit.*;
 
 import java.io.File;
@@ -19,9 +17,9 @@ public class ReaderProviderTest {
     private static final String READER_PROVIDED_XML = "readerProvided.xml";
     private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
-    private ReaderDAO readerDAO = new ReaderDAO(READER_PROVIDED_XML);
-    private BookDAO bookDAO = new BookDAO(BOOK_PROVIDED_XML);
-    private ReservationRecordDAO recordDAO = new ReservationRecordDAO(RECORD_PROVIDED_XML);
+    private ReaderDAO readerDAO = new XMLReaderDAO(READER_PROVIDED_XML);
+    private BookDAO bookDAO = new XMLBookDAO(BOOK_PROVIDED_XML);
+    private ReservationRecordDAO recordDAO = new XMLReservationRecordDAO(RECORD_PROVIDED_XML);
     private ReservationRecordProviderImpl recordProvider;
     private ReaderProviderImpl provider;
 
