@@ -10,7 +10,7 @@ import java.util.Date;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ReservationRecord extends Entity {
+public class ReservationRecord {
 
     @XmlElement
     private int readerId;
@@ -20,6 +20,17 @@ public class ReservationRecord extends Entity {
     private Date issueDate;
     @XmlElement
     private Date returnDate;
+
+    @XmlElement
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getReaderId() {
         return readerId;

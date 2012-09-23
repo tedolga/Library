@@ -2,7 +2,12 @@ package edu.exigen.server.provider;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.dao.*;
+import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.ReaderDAO;
+import edu.exigen.server.dao.ReservationRecordDAO;
+import edu.exigen.server.dao.xml.XMLBookDAO;
+import edu.exigen.server.dao.xml.XMLReaderDAO;
+import edu.exigen.server.dao.xml.XMLReservationRecordDAO;
 import org.junit.*;
 
 import java.io.File;

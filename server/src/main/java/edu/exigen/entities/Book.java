@@ -1,5 +1,10 @@
 package edu.exigen.entities;
 
+import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.LibraryDAOException;
+import edu.exigen.server.dao.hibernate.HibernateBookDAO;
+
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -9,21 +14,61 @@ import javax.xml.bind.annotation.XmlElement;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Book extends Entity {
+@Entity
+@Table(name = "BOOKS")
+public class Book {
+
+    public static void main(String[] args) throws LibraryDAOException {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("postgresUnit");
+        BookDAO bookDAO = new HibernateBookDAO();
+        Book book = new Book();
+        book.setAuthor("Pushkin");
+        book.setIsbn("ISBN-67676-09-98");
+        book.setTitle("Fairy tales");
+        book.setTopic("Classic");
+        book.setYear(1980);
+        book.setCount(4);
+        System.out.println(bookDAO.createBook(book));
+    }
 
     @XmlElement
+    @Id
+    @GeneratedValue
+    @Column(name = "ID")
+    private int id;
+
+    @XmlElement
+    @Column(name = "ISBN")
     private String isbn;
 
     @XmlElement
+    @Column(name = "TITLE")
     private String title;
+
     @XmlElement
+    @Column(name = "AUTHOR")
     private String author;
+
     @XmlElement
+    @Column(name = "TOPIC")
     private String topic;
+
     @XmlElement
+    @Column(name = "YEAR")
     private int year;
+
     @XmlElement
+    @Column(name = "COUNT")
     private int count;
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getIsbn() {
         return isbn;

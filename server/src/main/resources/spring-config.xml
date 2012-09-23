@@ -6,15 +6,15 @@
         <property name="location" value="classpath:serverProperties.properties"/>
     </bean>
 
-    <bean id="bookDAO" class="edu.exigen.server.dao.XMLBookDAO">
+    <bean id="bookDAO" class="edu.exigen.server.dao.xml.XMLBookDAO">
         <constructor-arg value="${bookXML}"/>
     </bean>
 
-    <bean id="readerDAO" class="edu.exigen.server.dao.XMLReaderDAO">
+    <bean id="readerDAO" class="edu.exigen.server.dao.xml.XMLReaderDAO">
         <constructor-arg value="${readerXML}"/>
     </bean>
 
-    <bean id="recordDAO" class="edu.exigen.server.dao.XMLReservationRecordDAO">
+    <bean id="recordDAO" class="edu.exigen.server.dao.xml.XMLReservationRecordDAO">
         <constructor-arg value="${recordXML}"/>
     </bean>
 

@@ -1,8 +1,10 @@
-package edu.exigen.server.dao;
+package edu.exigen.server.dao.xml;
 
-import edu.exigen.entities.Reader;
+import edu.exigen.entities.Book;
 import edu.exigen.server.IOUtils;
-import edu.exigen.server.storage.ReaderStorage;
+import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.LibraryDAOException;
+import edu.exigen.server.storage.BookStorage;
 import edu.exigen.server.storage.StorageUtils;
 
 import java.io.File;
@@ -11,56 +13,59 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 /**
- * @author O. Tedikova
+ * @author Tedikova O.
  * @version 1.0
  */
-public class XMLReaderDAO implements ReaderDAO {
-    private final String storeFileName;
-    private ReaderStorage storage;
+public class XMLBookDAO implements BookDAO {
 
-    public XMLReaderDAO(String storeFileName) {
+    private final String storeFileName;
+    private BookStorage storage;
+
+    public XMLBookDAO(String storeFileName) {
         this.storeFileName = storeFileName;
     }
 
     @Override
-    public int createReader(Reader reader) throws LibraryDAOException {
+    public int createBook(Book book) throws LibraryDAOException {
         int id = storage.incrementAndGet();
-        reader.setId(id);
-        storage.addReader(reader);
+        book.setId(id);
+        storage.addBook(book);
         updateStorage();
         return id;
     }
 
     @Override
-    public Reader readReader(int id) throws LibraryDAOException {
-        Reader reader = storage.getReader(id);
-        if (reader == null) {
-            throw new LibraryDAOException("Reader with id=" + id + "is not found");
+    public Book readBook(int id) throws LibraryDAOException {
+        Book book = storage.getBook(id);
+        if (book == null) {
+            throw new LibraryDAOException("Book with id=" + id + " is not found");
         }
-        return reader;
+        return book;
     }
 
     @Override
-    public List<Reader> readAll() {
+    public List<Book> readAll() {
         return storage.getElements();
     }
 
 
     @Override
-    public boolean updateReader(int id, Reader newReader) throws LibraryDAOException {
-        Reader oldReader = readReader(id);
-        oldReader.setFirstName(newReader.getFirstName());
-        oldReader.setLastName(newReader.getLastName());
-        oldReader.setAddress(newReader.getAddress());
-        oldReader.setDateOfBirth(newReader.getDateOfBirth());
+    public boolean updateBook(int id, Book newBook) throws LibraryDAOException {
+        Book oldBook = readBook(id);
+        oldBook.setIsbn(newBook.getIsbn());
+        oldBook.setTitle(newBook.getTitle());
+        oldBook.setAuthor(newBook.getAuthor());
+        oldBook.setTopic(newBook.getTopic());
+        oldBook.setYear(newBook.getYear());
+        oldBook.setCount(newBook.getCount());
         updateStorage();
         return true;
     }
 
     @Override
     public boolean delete(int id) throws LibraryDAOException {
-        Reader reader = readReader(id);
-        boolean result = storage.removeReader(reader);
+        Book book = readBook(id);
+        boolean result = storage.removeBook(book);
         updateStorage();
         return result;
     }
@@ -71,7 +76,7 @@ public class XMLReaderDAO implements ReaderDAO {
         FileInputStream inputStream = null;
         try {
             if (!storageFile.exists() || storageFile.length() == 0) {
-                storage = new ReaderStorage();
+                storage = new BookStorage();
             } else {
                 inputStream = new FileInputStream(storeFileName);
                 storage = StorageUtils.retrieveStorage(inputStream);

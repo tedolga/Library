@@ -10,7 +10,7 @@ import java.util.Date;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Reader extends Entity {
+public class Reader {
 
     @XmlElement
     private String firstName;
@@ -20,6 +20,17 @@ public class Reader extends Entity {
     private String address;
     @XmlElement
     private Date dateOfBirth;
+
+    @XmlElement
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
