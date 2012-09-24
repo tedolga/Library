@@ -1,5 +1,15 @@
 package edu.exigen.server.provider;
 
+import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
 import edu.exigen.server.dao.BookDAO;
@@ -8,11 +18,6 @@ import edu.exigen.server.dao.ReservationRecordDAO;
 import edu.exigen.server.dao.xml.XMLBookDAO;
 import edu.exigen.server.dao.xml.XMLReaderDAO;
 import edu.exigen.server.dao.xml.XMLReservationRecordDAO;
-import org.junit.*;
-
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 
 
 /**
@@ -101,6 +106,7 @@ public class BookProviderTest {
         Assert.assertEquals(2, provider.getBookCount(book));
         Assert.assertEquals("Pushkin A", provider.searchBooks(newBook.getIsbn()).get(0).getAuthor());
         Assert.assertEquals(2, provider.searchBooks("Pushkin").size());
+        book = provider.searchBooks("Povesti").get(0);
         newBook = new Book();
         newBook.setIsbn("6767-466-676-79");
         newBook.setTitle("Povesti Belkina");
@@ -110,7 +116,7 @@ public class BookProviderTest {
         newBook.setCount(4);
         provider.updateBook(book, newBook);
         Assert.assertEquals(2, provider.readAll().size());
-        Assert.assertEquals(4, provider.getBookCount(book));
+        Assert.assertEquals(4, provider.getBookCount(newBook));
         Assert.assertEquals("Pushkin A", provider.searchBooks(newBook.getIsbn()).get(0).getAuthor());
         book = new Book();
         book.setIsbn(isbn);

@@ -1,13 +1,20 @@
 package edu.exigen.entities;
 
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.LibraryDAOException;
-import edu.exigen.server.dao.hibernate.HibernateBookDAO;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Persistence;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
+
+import edu.exigen.server.dao.BookDAO;
+import edu.exigen.server.dao.LibraryDAOException;
+import edu.exigen.server.dao.hibernate.HibernateBookDAO;
 
 /**
  * @author O. Tedikova
@@ -16,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "BOOKS")
-public class Book {
+public class Book implements Serializable {
 
     public static void main(String[] args) throws LibraryDAOException {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("postgresUnit");
@@ -148,5 +155,21 @@ public class Book {
                 ", year=" + year +
                 ", count=" + count +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+
+        Book book = (Book) o;
+
+        return id == book.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

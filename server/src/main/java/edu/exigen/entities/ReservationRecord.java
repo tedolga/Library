@@ -3,6 +3,7 @@ package edu.exigen.entities;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ReservationRecord {
+public class ReservationRecord implements Serializable {
 
     @XmlElement
     private int readerId;
