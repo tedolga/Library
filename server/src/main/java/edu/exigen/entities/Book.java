@@ -2,19 +2,13 @@ package edu.exigen.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Persistence;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
-
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.LibraryDAOException;
-import edu.exigen.server.dao.hibernate.HibernateBookDAO;
 
 /**
  * @author O. Tedikova
@@ -24,19 +18,6 @@ import edu.exigen.server.dao.hibernate.HibernateBookDAO;
 @Entity
 @Table(name = "BOOKS")
 public class Book implements Serializable {
-
-    public static void main(String[] args) throws LibraryDAOException {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("postgresUnit");
-        BookDAO bookDAO = new HibernateBookDAO();
-        Book book = new Book();
-        book.setAuthor("Pushkin");
-        book.setIsbn("ISBN-67676-09-98");
-        book.setTitle("Fairy tales");
-        book.setTopic("Classic");
-        book.setYear(1980);
-        book.setCount(4);
-        System.out.println(bookDAO.createBook(book));
-    }
 
     @XmlElement
     @Id
