@@ -3,7 +3,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
-    <persistence-unit name="postgresUnit">
+    <persistence-unit name="postgresUnitHome">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>edu.exigen.entities.Book</class>
         <properties>
@@ -34,7 +34,7 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
             <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
     </persistence-unit>
-    <persistence-unit name="mySQLUnit">
+    <persistence-unit name="postgresUnitWork">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>edu.exigen.entities.Book</class>
         <properties>
@@ -43,13 +43,13 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.connection.driver_class"
-                      value="com.mysql.jdbc.Driver"/>
+                      value="org.postgresql.Driver"/>
             <property name="hibernate.connection.url"
                       value="jdbc:postgresql://localhost/library"/>
             <property name="hibernate.connection.username"
                       value="postgres"/>
             <property name="hibernate.connection.password"
-                      value="postgres"/>
+                      value="P_ostgres_1234"/>
             <property name="hibernate.c3p0.min_size"
                       value="5"/>
             <property name="hibernate.c3p0.max_size"
@@ -62,6 +62,37 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
                       value="3000"/>
             <property name="hibernate.dialect"
                       value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="mySQLUnit">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>edu.exigen.entities.Book</class>
+        <properties>
+            <property name="hibernate.archive.autodetection"
+                      value="class, hbm"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.connection.driver_class"
+                      value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="hibernate.connection.url"
+                      value="jdbc:sqlserver://localhost:1433;databaseName=library"/>
+            <property name="hibernate.connection.username"
+                      value="mysql"/>
+            <property name="hibernate.connection.password"
+                      value="My_Sql_1234"/>
+            <property name="hibernate.c3p0.min_size"
+                      value="20"/>
+            <property name="hibernate.c3p0.max_size"
+                      value="20"/>
+            <property name="hibernate.c3p0.timeout"
+                      value="300"/>
+            <property name="hibernate.c3p0.max_statements"
+                      value="50"/>
+            <property name="hibernate.c3p0.idle_test_period"
+                      value="3000"/>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.SQLServer2005Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
     </persistence-unit>
