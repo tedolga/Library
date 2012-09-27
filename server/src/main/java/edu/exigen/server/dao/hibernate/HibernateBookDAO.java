@@ -77,11 +77,14 @@ public class HibernateBookDAO implements BookDAO {
 
     @Override
     public boolean delete(int id) throws LibraryDAOException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        EntityManager em = entityManagerFactory.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Book book = em.find(Book.class, id);
+        em.remove(book);
+        tx.commit();
+        em.close();
+        return true;
     }
 
-    @Override
-    public void loadStorage() throws LibraryDAOException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

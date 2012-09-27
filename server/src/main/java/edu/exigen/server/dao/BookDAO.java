@@ -1,8 +1,8 @@
 package edu.exigen.server.dao;
 
-import edu.exigen.entities.Book;
-
 import java.util.List;
+
+import edu.exigen.entities.Book;
 
 /**
  * @author Tedikova O.
@@ -19,5 +19,4 @@ public interface BookDAO {
 
     boolean delete(int id) throws LibraryDAOException;
 
-    void loadStorage() throws LibraryDAOException;
 }

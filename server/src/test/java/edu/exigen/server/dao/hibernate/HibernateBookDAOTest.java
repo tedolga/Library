@@ -65,7 +65,21 @@ public class HibernateBookDAOTest {
 
     @Test
     public void testUpdateBook() throws Exception {
-
+        int id = 1;
+        Book newBook = new Book();
+        newBook.setIsbn("ISBN-67676-09-99");
+        newBook.setAuthor("Pushkin A. S.");
+        newBook.setTitle("Fairy-Tales");
+        newBook.setTopic("Russian Classic");
+        newBook.setYear(1999);
+        newBook.setCount(2);
+        bookDAO.updateBook(id, newBook);
+        Assert.assertEquals(newBook.getIsbn(), bookDAO.readBook(id).getIsbn());
+        Assert.assertEquals(newBook.getAuthor(), bookDAO.readBook(id).getAuthor());
+        Assert.assertEquals(newBook.getTitle(), bookDAO.readBook(id).getTitle());
+        Assert.assertEquals(newBook.getTopic(), bookDAO.readBook(id).getTopic());
+        Assert.assertEquals(newBook.getYear(), bookDAO.readBook(id).getYear());
+        Assert.assertEquals(newBook.getCount(), bookDAO.readBook(id).getCount());
     }
 
     @Test
