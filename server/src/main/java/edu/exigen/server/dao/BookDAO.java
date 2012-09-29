@@ -1,8 +1,8 @@
 package edu.exigen.server.dao;
 
-import java.util.List;
-
 import edu.exigen.entities.Book;
+
+import java.util.List;
 
 /**
  * @author Tedikova O.
@@ -15,8 +15,18 @@ public interface BookDAO {
 
     List<Book> readAll();
 
+    /**
+     * Updates book data.
+     *
+     * @param id      of book which should be updated.
+     * @param newBook book which properties should be set to the updated book.
+     * @return true if book was updated successfully or false - if book was not found.
+     * @throws LibraryDAOException
+     */
     boolean updateBook(int id, Book newBook) throws LibraryDAOException;
 
     boolean delete(int id) throws LibraryDAOException;
+
+    void loadStorage() throws LibraryDAOException;
 
 }

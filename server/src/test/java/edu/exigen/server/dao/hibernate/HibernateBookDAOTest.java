@@ -1,26 +1,25 @@
 package edu.exigen.server.dao.hibernate;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import edu.exigen.entities.Book;
 import junit.framework.Assert;
+import org.junit.AfterClass;
+import org.junit.Test;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author O. Tedikova
  * @version 1.0
  */
 public class HibernateBookDAOTest {
-    private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("postgresUnitWork");
-    private static HibernateBookDAO bookDAO = new HibernateBookDAO();
+    private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("postgresUnitHome");
+    private static HibernateBookDAO bookDAO = new HibernateBookDAO(entityManagerFactory);
     private static int rowCounter = 0;
 
-    @BeforeClass
-    public static void beforeAll() {
-        bookDAO.setEntityManagerFactory(entityManagerFactory);
+    @AfterClass
+    public static void afterAll() {
+        entityManagerFactory.close();
     }
 
     @Test
@@ -80,10 +79,14 @@ public class HibernateBookDAOTest {
         Assert.assertEquals(newBook.getTopic(), bookDAO.readBook(id).getTopic());
         Assert.assertEquals(newBook.getYear(), bookDAO.readBook(id).getYear());
         Assert.assertEquals(newBook.getCount(), bookDAO.readBook(id).getCount());
+        Assert.assertFalse(bookDAO.updateBook(3, new Book()));
     }
 
     @Test
     public void testDelete() throws Exception {
-
+        int id = 2;
+        bookDAO.delete(id);
+        Assert.assertEquals(--rowCounter, bookDAO.readAll().size());
+        Assert.assertFalse(bookDAO.delete(3));
     }
 }

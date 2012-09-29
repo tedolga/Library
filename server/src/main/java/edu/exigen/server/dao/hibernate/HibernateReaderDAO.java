@@ -1,8 +1,8 @@
 package edu.exigen.server.dao.hibernate;
 
-import edu.exigen.entities.Book;
-import edu.exigen.server.dao.BookDAO;
+import edu.exigen.entities.Reader;
 import edu.exigen.server.dao.LibraryDAOException;
+import edu.exigen.server.dao.ReaderDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,59 +13,24 @@ import java.util.List;
  * @author Tedikova O.
  * @version 1.0
  */
-public class HibernateBookDAO implements BookDAO {
+public class HibernateReaderDAO implements ReaderDAO {
 
     private EntityManagerFactory entityManagerFactory;
 
-    public HibernateBookDAO(EntityManagerFactory entityManagerFactory) {
+    public HibernateReaderDAO(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
     @Override
-    public int createBook(Book book) throws LibraryDAOException {
+    public int createReader(Reader reader) throws LibraryDAOException {
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
             EntityTransaction tx = em.getTransaction();
             tx.begin();
-            em.persist(book);
+            em.persist(reader);
             tx.commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-        return book.getId();
-    }
-
-    @Override
-    public Book readBook(int id) throws LibraryDAOException {
-        EntityManager em = null;
-        try {
-            em = entityManagerFactory.createEntityManager();
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            Book book = em.find(Book.class, id);
-            tx.commit();
-            return book;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-
-        }
-    }
-
-    @Override
-    public List<Book> readAll() {
-        EntityManager em = null;
-        try {
-            em = entityManagerFactory.createEntityManager();
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
-            List<Book> allBooks = em.createQuery("select b from Book b order by b.id", Book.class).getResultList();
-            tx.commit();
-            return allBooks;
+            return reader.getId();
         } finally {
             if (em != null) {
                 em.close();
@@ -73,24 +38,55 @@ public class HibernateBookDAO implements BookDAO {
         }
     }
 
-
     @Override
-    public boolean updateBook(int id, Book newBook) throws LibraryDAOException {
+    public Reader readReader(int id) throws LibraryDAOException {
         EntityManager em = null;
         try {
             em = entityManagerFactory.createEntityManager();
             EntityTransaction tx = em.getTransaction();
             tx.begin();
-            Book oldBook = em.find(Book.class, id);
-            if (oldBook == null) {
+            Reader reader = em.find(Reader.class, id);
+            tx.commit();
+            return reader;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Reader> readAll() {
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            List<Reader> allReaders = em.createQuery("select r from Reader r order by r.id", Reader.class).getResultList();
+            tx.commit();
+            return allReaders;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    @Override
+    public boolean updateReader(int id, Reader newReader) throws LibraryDAOException {
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            Reader oldReader = em.find(Reader.class, id);
+            if (oldReader == null) {
                 return false;
             }
-            oldBook.setIsbn(newBook.getIsbn());
-            oldBook.setAuthor(newBook.getAuthor());
-            oldBook.setTitle(newBook.getTitle());
-            oldBook.setTopic(newBook.getTopic());
-            oldBook.setYear(newBook.getYear());
-            oldBook.setCount(newBook.getCount());
+            oldReader.setFirstName(newReader.getFirstName());
+            oldReader.setLastName(newReader.getLastName());
+            oldReader.setAddress(newReader.getAddress());
+            oldReader.setDateOfBirth(newReader.getDateOfBirth());
             tx.commit();
             return true;
         } finally {
@@ -100,7 +96,6 @@ public class HibernateBookDAO implements BookDAO {
         }
     }
 
-
     @Override
     public boolean delete(int id) throws LibraryDAOException {
         EntityManager em = null;
@@ -108,11 +103,11 @@ public class HibernateBookDAO implements BookDAO {
             em = entityManagerFactory.createEntityManager();
             EntityTransaction tx = em.getTransaction();
             tx.begin();
-            Book book = em.find(Book.class, id);
-            if (book == null) {
+            Reader reader = em.find(Reader.class, id);
+            if (reader == null) {
                 return false;
             }
-            em.remove(book);
+            em.remove(reader);
             tx.commit();
             return true;
         } finally {
@@ -126,5 +121,4 @@ public class HibernateBookDAO implements BookDAO {
     public void loadStorage() throws LibraryDAOException {
 
     }
-
 }

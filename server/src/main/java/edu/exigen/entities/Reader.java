@@ -1,5 +1,6 @@
 package edu.exigen.entities;
 
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,18 +12,27 @@ import java.util.Date;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table(name = "READERS")
 public class Reader implements Serializable {
 
     @XmlElement
+    @Column(name = "FIRST_NAME")
     private String firstName;
     @XmlElement
+    @Column(name = "LAST_NAME")
     private String lastName;
     @XmlElement
+    @Column(name = "ADDRESS")
     private String address;
     @XmlElement
+    @Column(name = "DATE_OF_BIRTH")
     private Date dateOfBirth;
 
     @XmlElement
+    @Id
+    @GeneratedValue
+    @Column(name = "ID")
     private int id;
 
     public int getId() {

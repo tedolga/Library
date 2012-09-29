@@ -1,16 +1,16 @@
 package edu.exigen.server.dao.xml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.List;
-
 import edu.exigen.entities.Book;
 import edu.exigen.server.IOUtils;
 import edu.exigen.server.dao.BookDAO;
 import edu.exigen.server.dao.LibraryDAOException;
 import edu.exigen.server.storage.BookStorage;
 import edu.exigen.server.storage.StorageUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
 
 /**
  * @author Tedikova O.
@@ -72,7 +72,6 @@ public class XMLBookDAO implements BookDAO {
         return result;
     }
 
-    @Override
     public void loadStorage() throws LibraryDAOException {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;
