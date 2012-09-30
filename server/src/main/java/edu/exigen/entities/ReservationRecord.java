@@ -1,5 +1,6 @@
 package edu.exigen.entities;
 
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,18 +12,27 @@ import java.util.Date;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table(name = "RESERVATION_RECORDS")
 public class ReservationRecord implements Serializable {
 
     @XmlElement
+    @Column(name = "READER_ID")
     private int readerId;
     @XmlElement
+    @Column(name = "BOOK_ID")
     private int bookId;
     @XmlElement
+    @Column(name = "ISSUE_DATE")
     private Date issueDate;
     @XmlElement
+    @Column(name = "RETURN_DATE")
     private Date returnDate;
 
     @XmlElement
+    @Id
+    @GeneratedValue
+    @Column(name = "ID")
     private int id;
 
     public int getId() {
