@@ -84,4 +84,20 @@ public class Reader implements Serializable {
         copy.setDateOfBirth(dateOfBirth);
         return copy;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reader)) return false;
+
+        Reader reader = (Reader) o;
+
+        return id == reader.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

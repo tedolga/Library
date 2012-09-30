@@ -17,5 +17,4 @@ public interface ReservationRecordDAO {
 
     boolean delete(int id) throws LibraryDAOException;
 
-    void loadStorage() throws LibraryDAOException;
 }

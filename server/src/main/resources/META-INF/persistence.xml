@@ -33,7 +33,7 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
                       value="3000"/>
             <property name="hibernate.dialect"
                       value="org.hibernate.dialect.PostgreSQL82Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <!--<property name="hibernate.hbm2ddl.auto" value="create"/>-->
         </properties>
     </persistence-unit>
     <persistence-unit name="postgresUnitWork">

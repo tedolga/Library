@@ -7,6 +7,7 @@ import edu.exigen.server.dao.ReaderDAO;
 import edu.exigen.server.storage.ReaderStorage;
 import edu.exigen.server.storage.StorageUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -67,7 +68,7 @@ public class XMLReaderDAO implements ReaderDAO {
         return result;
     }
 
-    @Override
+    @PostConstruct
     public void loadStorage() throws LibraryDAOException {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;

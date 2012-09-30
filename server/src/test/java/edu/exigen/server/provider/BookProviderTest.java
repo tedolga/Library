@@ -1,23 +1,15 @@
 package edu.exigen.server.provider;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
 import edu.exigen.server.dao.xml.XMLBookDAO;
 import edu.exigen.server.dao.xml.XMLReaderDAO;
 import edu.exigen.server.dao.xml.XMLReservationRecordDAO;
+import org.junit.*;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -28,9 +20,9 @@ public class BookProviderTest {
     private static final String READER_PROVIDED_XML = "readerProvided.xml";
     private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
-    private BookDAO bookDAO = new XMLBookDAO(BOOK_PROVIDED_XML);
-    private ReaderDAO readerDAO = new XMLReaderDAO(READER_PROVIDED_XML);
-    private ReservationRecordDAO recordDAO = new XMLReservationRecordDAO(RECORD_PROVIDED_XML);
+    private XMLBookDAO bookDAO = new XMLBookDAO(BOOK_PROVIDED_XML);
+    private XMLReaderDAO readerDAO = new XMLReaderDAO(READER_PROVIDED_XML);
+    private XMLReservationRecordDAO recordDAO = new XMLReservationRecordDAO(RECORD_PROVIDED_XML);
     private ReservationRecordProviderImpl recordProvider;
     private BookProviderImpl provider;
 
@@ -38,6 +30,9 @@ public class BookProviderTest {
     public void setUp() throws Exception {
         recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
         provider = new BookProviderImpl(bookDAO, recordProvider);
+        bookDAO.loadStorage();
+        readerDAO.loadStorage();
+        recordDAO.loadStorage();
         provider.loadData();
     }
 

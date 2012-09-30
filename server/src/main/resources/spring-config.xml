@@ -1,42 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
     <bean id="serverProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:serverProperties.properties"/>
     </bean>
 
-    <bean id="bookDAO" class="edu.exigen.server.dao.xml.XMLBookDAO">
+    <bean id="xmlBookDAO" class="edu.exigen.server.dao.xml.XMLBookDAO">
         <constructor-arg value="${bookXML}"/>
     </bean>
 
-    <bean id="readerDAO" class="edu.exigen.server.dao.xml.XMLReaderDAO">
+    <bean id="xmlReaderDAO" class="edu.exigen.server.dao.xml.XMLReaderDAO">
         <constructor-arg value="${readerXML}"/>
     </bean>
 
-    <bean id="recordDAO" class="edu.exigen.server.dao.xml.XMLReservationRecordDAO">
+    <bean id="xmlRecordDAO" class="edu.exigen.server.dao.xml.XMLReservationRecordDAO">
         <constructor-arg value="${recordXML}"/>
     </bean>
 
-    <bean id="bookProvider" class="edu.exigen.server.provider.BookProviderImpl">
-        <constructor-arg index="0" ref="bookDAO"/>
-        <constructor-arg index="1" ref="recordProvider"/>
+    <bean id="xmlBookProvider" class="edu.exigen.server.provider.BookProviderImpl">
+        <constructor-arg index="0" ref="xmlBookDAO"/>
+        <constructor-arg index="1" ref="xmlRecordProvider"/>
     </bean>
 
-    <bean id="recordProvider" class="edu.exigen.server.provider.ReservationRecordProviderImpl">
-        <constructor-arg index="0" ref="bookDAO"/>
-        <constructor-arg index="1" ref="readerDAO"/>
-        <constructor-arg index="2" ref="recordDAO"/>
+    <bean id="xmlRecordProvider" class="edu.exigen.server.provider.ReservationRecordProviderImpl">
+        <constructor-arg index="0" ref="xmlBookDAO"/>
+        <constructor-arg index="1" ref="xmlReaderDAO"/>
+        <constructor-arg index="2" ref="xmlRecordDAO"/>
     </bean>
 
-    <bean id="readerProvider" class="edu.exigen.server.provider.ReaderProviderImpl">
-        <constructor-arg index="0" ref="readerDAO"/>
-        <constructor-arg index="1" ref="recordProvider"/>
+    <bean id="xmlReaderProvider" class="edu.exigen.server.provider.ReaderProviderImpl">
+        <constructor-arg index="0" ref="xmlReaderDAO"/>
+        <constructor-arg index="1" ref="xmlRecordProvider"/>
+    </bean>
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="postgresUnitHome"/>
+    </bean>
+
+    <bean id="hibernateBookDAO" class="edu.exigen.server.dao.hibernate.HibernateBookDAO">
+        <constructor-arg ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="hibernateReaderDAO" class="edu.exigen.server.dao.hibernate.HibernateReaderDAO">
+        <constructor-arg ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="hibernateRecordDAO" class="edu.exigen.server.dao.hibernate.HibernateRecordDAO">
+        <constructor-arg ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="hibernateBookProvider" class="edu.exigen.server.provider.BookProviderImpl">
+        <constructor-arg index="0" ref="hibernateBookDAO"/>
+        <constructor-arg index="1" ref="hibernateRecordProvider"/>
+    </bean>
+
+    <bean id="hibernateReaderProvider" class="edu.exigen.server.provider.ReaderProviderImpl">
+        <constructor-arg index="0" ref="hibernateReaderDAO"/>
+        <constructor-arg index="1" ref="hibernateRecordProvider"/>
+    </bean>
+
+    <bean id="hibernateRecordProvider" class="edu.exigen.server.provider.ReservationRecordProviderImpl">
+        <constructor-arg index="0" ref="hibernateBookDAO"/>
+        <constructor-arg index="1" ref="hibernateReaderDAO"/>
+        <constructor-arg index="2" ref="hibernateRecordDAO"/>
     </bean>
 
     <bean id="server" class="edu.exigen.server.LibraryServer">
-        <property name="bookProvider" ref="bookProvider"/>
-        <property name="readerProvider" ref="readerProvider"/>
-        <property name="recordProvider" ref="recordProvider"/>
+        <property name="bookProvider" ref="xmlBookProvider"/>
+        <property name="readerProvider" ref="xmlReaderProvider"/>
+        <property name="recordProvider" ref="xmlRecordProvider"/>
     </bean>
+
+    <context:annotation-config/>
+
 </beans>

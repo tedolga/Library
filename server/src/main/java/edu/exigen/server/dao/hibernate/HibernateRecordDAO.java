@@ -92,9 +92,4 @@ public class HibernateRecordDAO implements ReservationRecordDAO {
             }
         }
     }
-
-    @Override
-    public void loadStorage() throws LibraryDAOException {
-
-    }
 }

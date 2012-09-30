@@ -18,7 +18,7 @@ public class BookDAOTest {
 
     @Test
     public void testBookDAOPositive() throws Exception {
-        BookDAO bookDAO = new XMLBookDAO(booksFile);
+        XMLBookDAO bookDAO = new XMLBookDAO(booksFile);
         bookDAO.loadStorage();
         Book book = new Book();
         book.setIsbn("BE-5656");
@@ -54,7 +54,7 @@ public class BookDAOTest {
     public void testReadEmptyStorage() throws Exception {
         File file = new File("Empty.xml");
         file.createNewFile();
-        BookDAO bookDAO = new XMLBookDAO("Empty.xml");
+        XMLBookDAO bookDAO = new XMLBookDAO("Empty.xml");
         bookDAO.loadStorage();
         Assert.assertEquals(0, bookDAO.readAll().size());
     }

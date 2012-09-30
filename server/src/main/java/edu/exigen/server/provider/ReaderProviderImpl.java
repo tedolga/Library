@@ -81,12 +81,6 @@ public class ReaderProviderImpl extends UnicastRemoteObject implements ReaderPro
     }
 
     public void loadData() throws LibraryProviderException, RemoteException {
-        try {
-            readerDAO.loadStorage();
-            recordProvider.loadData();
-        } catch (LibraryDAOException e) {
-            throw new LibraryProviderException(e.getMessage(), e);
-        }
         List<Reader> readers = readAll();
         for (Reader reader : readers) {
             addReaderToSearchCash(reader);

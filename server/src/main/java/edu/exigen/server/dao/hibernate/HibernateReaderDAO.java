@@ -117,8 +117,4 @@ public class HibernateReaderDAO implements ReaderDAO {
         }
     }
 
-    @Override
-    public void loadStorage() throws LibraryDAOException {
-
-    }
 }

@@ -2,9 +2,6 @@ package edu.exigen.server.provider;
 
 import edu.exigen.entities.Book;
 import edu.exigen.entities.Reader;
-import edu.exigen.server.dao.BookDAO;
-import edu.exigen.server.dao.ReaderDAO;
-import edu.exigen.server.dao.ReservationRecordDAO;
 import edu.exigen.server.dao.xml.XMLBookDAO;
 import edu.exigen.server.dao.xml.XMLReaderDAO;
 import edu.exigen.server.dao.xml.XMLReservationRecordDAO;
@@ -22,9 +19,9 @@ public class ReaderProviderTest {
     private static final String READER_PROVIDED_XML = "readerProvided.xml";
     private static final String BOOK_PROVIDED_XML = "bookProvided.xml";
     private static final String RECORD_PROVIDED_XML = "recordProvided.xml";
-    private ReaderDAO readerDAO = new XMLReaderDAO(READER_PROVIDED_XML);
-    private BookDAO bookDAO = new XMLBookDAO(BOOK_PROVIDED_XML);
-    private ReservationRecordDAO recordDAO = new XMLReservationRecordDAO(RECORD_PROVIDED_XML);
+    private XMLReaderDAO readerDAO = new XMLReaderDAO(READER_PROVIDED_XML);
+    private XMLBookDAO bookDAO = new XMLBookDAO(BOOK_PROVIDED_XML);
+    private XMLReservationRecordDAO recordDAO = new XMLReservationRecordDAO(RECORD_PROVIDED_XML);
     private ReservationRecordProviderImpl recordProvider;
     private ReaderProviderImpl provider;
 
@@ -32,6 +29,9 @@ public class ReaderProviderTest {
     public void setUp() throws Exception {
         recordProvider = new ReservationRecordProviderImpl(bookDAO, readerDAO, recordDAO);
         provider = new ReaderProviderImpl(readerDAO, recordProvider);
+        readerDAO.loadStorage();
+        recordDAO.loadStorage();
+        bookDAO.loadStorage();
         provider.loadData();
     }
 

@@ -28,7 +28,7 @@ public class ReservationRecordDAOTest {
 
     @Test
     public void testAllDAOPositive() throws Exception {
-        ReservationRecordDAO recordDAO = new XMLReservationRecordDAO(recordsFileName);
+        XMLReservationRecordDAO recordDAO = new XMLReservationRecordDAO(recordsFileName);
         recordDAO.loadStorage();
         Assert.assertEquals(0, recordDAO.readAll().size());
         ReservationRecord record = new ReservationRecord();

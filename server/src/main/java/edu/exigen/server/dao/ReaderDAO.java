@@ -19,5 +19,4 @@ public interface ReaderDAO {
 
     boolean delete(int id) throws LibraryDAOException;
 
-    void loadStorage() throws LibraryDAOException;
 }

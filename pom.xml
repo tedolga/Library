@@ -12,6 +12,12 @@
         <module>servlet</module>
     </modules>
 
+    <properties>
+        <hibernate.main.version>4.1.6.Final</hibernate.main.version>
+        <hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -28,12 +34,17 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>3.1.2.RELEASE</version>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>3.1.2.RELEASE</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -43,7 +54,7 @@
             <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.0-api</artifactId>
-                <version>1.0.1.Final</version>
+                <version>${hibernate.jpa.version}</version>
             </dependency>
             <dependency>
                 <groupId>postgresql</groupId>
@@ -53,12 +64,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>4.1.6.Final</version>
+                <version>${hibernate.main.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>4.1.6.Final</version>
+                <version>${hibernate.main.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -83,7 +94,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-c3p0</artifactId>
-                <version>4.1.6.Final</version>
+                <version>${hibernate.main.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

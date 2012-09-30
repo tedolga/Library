@@ -105,12 +105,6 @@ public class ReservationRecordProviderImpl extends UnicastRemoteObject implement
     }
 
     public void loadData() throws LibraryProviderException {
-        try {
-            bookDAO.loadStorage();
-            readerDAO.loadStorage();
-            recordDAO.loadStorage();
-        } catch (LibraryDAOException e) {
-            throw new LibraryProviderException(e.getMessage(), e);
-        }
+
     }
 }

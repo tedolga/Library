@@ -7,6 +7,7 @@ import edu.exigen.server.dao.LibraryDAOException;
 import edu.exigen.server.storage.BookStorage;
 import edu.exigen.server.storage.StorageUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -72,6 +73,7 @@ public class XMLBookDAO implements BookDAO {
         return result;
     }
 
+    @PostConstruct
     public void loadStorage() throws LibraryDAOException {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;

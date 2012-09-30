@@ -154,12 +154,6 @@ public class BookProviderImpl extends UnicastRemoteObject implements BookProvide
     }
 
     public void loadData() throws LibraryProviderException, RemoteException {
-        try {
-            bookDAO.loadStorage();
-            recordProvider.loadData();
-        } catch (LibraryDAOException e) {
-            throw new LibraryProviderException(e.getMessage(), e);
-        }
         List<Book> books = readAll();
         for (Book book : books) {
             isbnCash.put(book.getIsbn(), book);

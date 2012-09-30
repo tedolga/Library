@@ -18,7 +18,7 @@ public class ReaderDAOTest {
 
     @Test
     public void testCreateReader() throws Exception {
-        ReaderDAO readerDAO = new XMLReaderDAO(readersFile);
+        XMLReaderDAO readerDAO = new XMLReaderDAO(readersFile);
         readerDAO.loadStorage();
         Assert.assertEquals(0, readerDAO.readAll().size());
         Reader reader = new Reader();

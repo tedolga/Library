@@ -122,9 +122,4 @@ public class HibernateBookDAO implements BookDAO {
         }
     }
 
-    @Override
-    public void loadStorage() throws LibraryDAOException {
-
-    }
-
 }

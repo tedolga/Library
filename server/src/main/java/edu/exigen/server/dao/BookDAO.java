@@ -27,6 +27,4 @@ public interface BookDAO {
 
     boolean delete(int id) throws LibraryDAOException;
 
-    void loadStorage() throws LibraryDAOException;
-
 }

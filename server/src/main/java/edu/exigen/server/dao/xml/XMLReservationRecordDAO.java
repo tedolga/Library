@@ -7,6 +7,7 @@ import edu.exigen.server.dao.ReservationRecordDAO;
 import edu.exigen.server.storage.ReservationRecordStorage;
 import edu.exigen.server.storage.StorageUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -57,7 +58,7 @@ public class XMLReservationRecordDAO implements ReservationRecordDAO {
         return result;
     }
 
-    @Override
+    @PostConstruct
     public void loadStorage() throws LibraryDAOException {
         File storageFile = new File(storeFileName);
         FileInputStream inputStream = null;
