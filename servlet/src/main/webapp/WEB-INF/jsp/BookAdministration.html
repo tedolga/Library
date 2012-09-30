@@ -1,0 +1,84 @@
+<html>
+<head>
+    <title>Book Administration</title>
+</head>
+<body>
+<table id="bookAdministration" border="0" width="700" align="center">
+    <tr>
+        <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="150">&nbsp;</td>
+        <td width="400" align="center"> Book Editor:</td>
+        <td width="150">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="150">&nbsp;</td>
+        <td width="400" align="left">
+            <form method="post" id="bookForm">
+                <table id="bookFormTable" align="center">
+                    <tr>
+                        <td>
+                            <label for="isbn">ISBN: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="isbn" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="title">Title: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="title" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="author">Author: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="author" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="topic">Topic: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="topic" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="year">Year: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="year" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="count">Count: </label>
+                        </td>
+                        <td>
+                            <input type="text" id="count" size="30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <table id="bookFormButtons" align="center">
+                            <tr>
+                                <td><input type="submit" value="Create" id="createBookBtn"></td>
+                                <td><input type="submit" value="Update" id="updateBookBth"></td>
+                                <td><input type="submit" value="Delete" id="deleteBookBtn"></td>
+                            </tr>
+                        </table>
+                    </tr>
+                </table>
+            </form>
+        </td>
+        <td width="150">&nbsp;</td>
+    </tr>
+</table>
+</body>
+</html>
